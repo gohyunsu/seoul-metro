@@ -36,16 +36,37 @@ def metric_row(name, actual, predicted):
 
 
 def load_source():
-    source = pd.read_csv(RAW_PATH, encoding='cp949')
-    source = source.replace(r'^\s*$', np.nan, regex=True).dropna(how='all').copy()
+    raw = pd.read_csv(RAW_PATH, encoding='cp949')
+    physical_rows = len(raw)
+    blank_mask = raw.replace(r'^\s*$', np.nan, regex=True).isna().all(axis=1)
+    blank_rows = int(blank_mask.sum())
+    source = raw.loc[~blank_mask].copy()
     time_columns = list(source.columns[6:])
+    numeric_values = source[time_columns].apply(pd.to_numeric, errors='coerce')
+    missing_cells = int(numeric_values.isna().sum().sum())
+    negative_cells = int((numeric_values < 0).sum().sum())
+    duplicate_rows = int(source.duplicated().sum())
+    duplicate_keys = int(source.duplicated(subset=['수송일자', '호선', '역번호', '역명', '승하차구분']).sum())
     source['date'] = pd.to_datetime(source['수송일자'])
     source['line'] = source['호선'].astype('string')
     source['station_code'] = source['역번호'].astype('string')
     source['station'] = source['역명'].astype('string')
     source['direction'] = source['승하차구분'].astype('string')
-    source[time_columns] = source[time_columns].apply(pd.to_numeric, errors='coerce').fillna(0).astype('int32')
-    return source, time_columns
+    source[time_columns] = numeric_values.fillna(0).astype('int32')
+    audit = {
+        'physicalRows': physical_rows,
+        'blankRowsRemoved': blank_rows,
+        'validRows': len(source),
+        'sourceColumns': len(time_columns) + 6,
+        'timeBandCount': len(time_columns),
+        'missingCells': missing_cells,
+        'negativeCells': negative_cells,
+        'duplicateRows': duplicate_rows,
+        'duplicateKeys': duplicate_keys,
+        'dateStart': source['date'].min().strftime('%Y-%m-%d'),
+        'dateEnd': source['date'].max().strftime('%Y-%m-%d'),
+    }
+    return source, time_columns, audit
 
 
 def build_model_frame(source, time_columns):
@@ -64,6 +85,7 @@ def build_model_frame(source, time_columns):
     model['month'] = model['date'].dt.month.astype('int8')
     model['week_of_year'] = model['date'].dt.isocalendar().week.astype('int16')
     model['day_of_month'] = model['date'].dt.day.astype('int8')
+    model['day_of_year'] = model['date'].dt.dayofyear.astype('int16')
     model['is_weekend'] = (model['weekday'] >= 5).astype('int8')
     return model
 
@@ -81,6 +103,34 @@ def build_summary(source, time_columns):
     top_line = line_totals.index[0]
     top_station = station_totals.index[0]
     peak_time = band_totals.idxmax()
+    daily_frame = pd.DataFrame({'total': daily})
+    daily_frame['weekday'] = daily_frame.index.dayofweek
+    weekday_mean = daily_frame.groupby('weekday')['total'].mean()
+    weekday_labels = ['월', '화', '수', '목', '금', '토', '일']
+    weekday_table = [
+        {'label': weekday_labels[index], 'mean': int(value), 'isWeekend': index >= 5}
+        for index, value in weekday_mean.reindex(range(7)).items()
+    ]
+    band_table = [
+        {'label': label, 'total': int(value), 'share': float(value / band_totals.sum()), 'dailyMean': int(value / len(daily))}
+        for label, value in band_totals.items()
+    ]
+    line_station_counts = source.groupby('line')['station'].nunique()
+    line_table = [
+        {'label': label, 'total': int(value), 'share': float(value / line_totals.sum()), 'dailyMean': int(value / len(daily)), 'stationCount': int(line_station_counts.get(label, 0))}
+        for label, value in line_totals.items()
+    ]
+    direction_table = [
+        {'label': label, 'total': int(value), 'share': float(value / direction_totals.sum())}
+        for label, value in direction_totals.items()
+    ]
+    high_dates = daily.sort_values(ascending=False).head(5)
+    low_dates = daily.sort_values().head(5)
+    date_records = lambda values: [
+        {'date': date.strftime('%m.%d'), 'weekday': weekday_labels[date.dayofweek], 'total': int(value)}
+        for date, value in values.items()
+    ]
+    top10_share = float(station_totals.head(10).sum() / station_totals.sum())
     return {
         'totalPassengers': int(source[time_columns].to_numpy().sum()),
         'stationCount': int(source['station'].nunique()),
@@ -97,7 +147,22 @@ def build_summary(source, time_columns):
         'placeInsight': f'{top_station}이 연간 {int(station_totals.iloc[0]):,}명으로 가장 많습니다. 상위 10개 역이 전체의 {station_totals.head(10).sum() / station_totals.sum() * 100:.1f}%를 차지합니다.',
         'forecastInsight': '최근 7일 리듬을 기준선으로 삼아, 달력과 역의 조합이 만드는 추가 신호를 비교합니다.',
         'splitText': '80 / 10 / 10',
-    }, daily, band_totals, line_totals, station_totals, heatmap
+        'weekdayMean': int(daily_frame[daily_frame['weekday'] < 5]['total'].mean()),
+        'weekendMean': int(daily_frame[daily_frame['weekday'] >= 5]['total'].mean()),
+        'weekdayLift': f'{(daily_frame[daily_frame["weekday"] < 5]["total"].mean() / daily_frame[daily_frame["weekday"] >= 5]["total"].mean() - 1) * 100:.1f}%',
+        'dailyMedian': int(daily.median()),
+        'dailyStd': int(daily.std()),
+        'top10Share': f'{top10_share * 100:.1f}%',
+        'edaLead': f'평일 평균은 주말보다 {(daily_frame[daily_frame["weekday"] < 5]["total"].mean() / daily_frame[daily_frame["weekday"] >= 5]["total"].mean() - 1) * 100:.1f}% 높고, 18–19시가 전체 시간대 중 가장 큽니다.',
+    }, daily, band_totals, line_totals, station_totals, heatmap, {
+        'weekday': weekday_table,
+        'bands': band_table,
+        'lines': line_table,
+        'directions': direction_table,
+        'highDates': date_records(high_dates),
+        'lowDates': date_records(low_dates),
+        'daily': {'mean': int(daily.mean()), 'median': int(daily.median()), 'std': int(daily.std()), 'min': int(daily.min()), 'max': int(daily.max()), 'minDate': daily.idxmin().strftime('%m.%d'), 'maxDate': daily.idxmax().strftime('%m.%d')},
+    }
 
 
 def make_figures(daily, band_totals, line_totals, station_totals, heatmap, time_columns):
@@ -128,10 +193,10 @@ def make_figures(daily, band_totals, line_totals, station_totals, heatmap, time_
 
 
 def run_models(model_frame):
-    feature_columns = ['line', 'station', 'direction', 'weekday', 'month', 'week_of_year', 'day_of_month', 'is_weekend', 'lag_1', 'lag_7', 'lag_14', 'lag_28', 'rolling_7']
+    feature_columns = ['line', 'station', 'direction', 'weekday', 'month', 'week_of_year', 'day_of_month', 'day_of_year', 'is_weekend', 'lag_1', 'lag_7', 'lag_14', 'lag_28', 'rolling_7']
     categorical = ['line', 'station', 'direction']
     numeric = [column for column in feature_columns if column not in categorical]
-    model_frame = long.dropna(subset=['lag_1', 'lag_7', 'lag_14', 'lag_28', 'rolling_7']).copy()
+    model_frame = model_frame.dropna(subset=['lag_1', 'lag_7', 'lag_14', 'lag_28', 'rolling_7']).copy()
     dates = sorted(model_frame['date'].unique())
     train_end = dates[int(len(dates) * .8) - 1]
     validation_end = dates[int(len(dates) * .9) - 1]
@@ -175,17 +240,31 @@ def run_models(model_frame):
         row['best'] = name == best_name
         public_models.append(row)
     pd.DataFrame(results).to_csv(REPORT_DIR / 'model_metrics.csv', index=False)
-    audit = {'train_end': str(train_end)[:10], 'validation_end': str(validation_end)[:10], 'test_start': str(validation_end)[:10], 'train_rows': len(train), 'validation_rows': len(validation), 'test_rows': len(test), 'training_sample_rows': len(sample), 'selected_by_validation': best_name}
+    audit = {
+        'trainStart': str(train['date'].min())[:10],
+        'trainEnd': str(train_end)[:10],
+        'validationStart': str(validation['date'].min())[:10],
+        'validationEnd': str(validation_end)[:10],
+        'testStart': str(test['date'].min())[:10],
+        'testEnd': str(test['date'].max())[:10],
+        'trainRows': len(train),
+        'validationRows': len(validation),
+        'testRows': len(test),
+        'trainingSampleRows': len(sample),
+        'selectedByValidation': best_name,
+    }
     return public_models, audit
 
 
 def main():
     REPORT_DIR.mkdir(parents=True, exist_ok=True)
-    source, time_columns = load_source()
+    source, time_columns, source_audit = load_source()
     model_frame = build_model_frame(source, time_columns)
-    summary, daily, band_totals, line_totals, station_totals, heatmap = build_summary(source, time_columns)
+    summary, daily, band_totals, line_totals, station_totals, heatmap, eda = build_summary(source, time_columns)
     make_figures(daily, band_totals, line_totals, station_totals, heatmap, time_columns)
     models, model_audit = run_models(model_frame)
+    summary['selectedModel'] = model_audit['selectedByValidation']
+    summary['testWindow'] = f"{model_audit['testStart']}–{model_audit['testEnd']}"
     direction = source.groupby('direction')[time_columns].sum().reindex(['승차', '하차']).fillna(0)
     site_data = {
         'summary': summary,
@@ -195,7 +274,8 @@ def main():
         'heatmap': {'labels': time_columns, 'values': [[int(value) for value in heatmap[time_column].values] for time_column in time_columns], 'min': int(heatmap.to_numpy().min()), 'max': int(heatmap.to_numpy().max())},
         'stations': {'values': [{'name': str(name), 'value': int(value)} for name, value in station_totals.head(10).items()]},
         'models': models,
-        'audit': {'physical_rows': 199424, 'blank_rows_removed': 134, 'valid_rows': len(source), 'columns': len(source.columns) - 5, 'model': model_audit},
+        'eda': eda,
+        'audit': {**source_audit, 'stationCount': int(source['station'].nunique()), 'lineCount': int(source['line'].nunique()), 'model': model_audit},
     }
     SITE_DATA_PATH.parent.mkdir(parents=True, exist_ok=True)
     SITE_DATA_PATH.write_text(json.dumps(site_data, ensure_ascii=False, indent=2), encoding='utf-8')

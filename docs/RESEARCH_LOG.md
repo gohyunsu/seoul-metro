@@ -9,7 +9,9 @@
 - Found CP949 encoding, 26 columns, 199,424 physical rows, and 134 completely blank rows.
 - Found 199,290 valid rows, 365 dates, 243 stations, 8 lines, and 20 time bands.
 - Found no negative values and no duplicate logical keys after blank-row removal.
-- Chosen project direction: station-time next-day demand forecasting supported by descriptive mobility analysis.
+- Confirmed project task: next-calendar-day daily demand forecasting for each station × line × boarding direction series, supported by a concrete EDA lab.
+- EDA result: weekday network mean is 49.6% higher than weekend mean; the 18–19 time band is the annual peak; the top ten stations account for 15.4% of total volume.
+- Model result: the seven-day seasonal-naive baseline remains selected on validation and reaches test MAE 1,008 passengers and WAPE 5.9% for 2025-11-28 through 2025-12-31.
 
 ## Decision register
 

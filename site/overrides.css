@@ -1,0 +1,44 @@
+.task-outcome {
+  display: grid;
+  grid-template-columns: 1.2fr .8fr;
+  gap: 8px 20px;
+  margin-bottom: 38px;
+  padding: 20px 22px;
+  border: 1px solid var(--line);
+  background: rgba(185, 227, 204, .3);
+}
+
+.task-outcome span {
+  color: var(--muted);
+  font-family: var(--mono);
+  font-size: 9px;
+  letter-spacing: .08em;
+}
+
+.task-outcome strong {
+  color: var(--green);
+  font-size: 18px;
+  letter-spacing: -.04em;
+}
+
+.task-outcome p {
+  grid-column: 1 / -1;
+  margin: 3px 0 0;
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.task-outcome b {
+  color: var(--green);
+  font-weight: 600;
+}
+
+@media (max-width: 600px) {
+  .task-outcome {
+    grid-template-columns: 1fr;
+  }
+
+  .task-outcome p {
+    grid-column: auto;
+  }
+}

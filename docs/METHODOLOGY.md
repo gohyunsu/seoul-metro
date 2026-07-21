@@ -2,11 +2,11 @@
 
 ## Research question
 
-Can recent station-level patterns and calendar context estimate the next day's passenger volume for each station, line, and boarding direction?
+Can recent station-level patterns and calendar context estimate the next calendar day's passenger volume for each station, line, and boarding direction?
 
 ## Target and unit of analysis
 
-The unit is a station-line-direction-day series. The target is the sum of passenger counts across the 20 time bands on the next date. Time-band behavior remains central to the descriptive analysis, while the daily target keeps the forecasting experiment efficient and directly interpretable.
+The unit is a station-line-direction-day series. The target is `daily_total`, the sum of passenger counts across the 20 time bands on the next calendar date. Time-band behavior remains central to the descriptive analysis, while the daily target keeps the forecasting experiment efficient and directly interpretable.
 
 ## Features
 
@@ -15,7 +15,7 @@ The unit is a station-line-direction-day series. The target is the sum of passen
 - History: lag 1, lag 7, lag 14, lag 28 and rolling mean features within each station-line-direction series.
 - Optional later extension: holiday, weather, event, disruption, and transfer-volume features.
 
-Historical features are generated after sorting each series by date. Rows without the required history are excluded from model training, never imputed from future observations.
+The source-wide table is retained for modeling and `daily_total` is added. For EDA, the 20 time-band columns are reshaped into a long view. Calendar and historical features are generated only after sorting each station-line-direction series by date. Rows without the required history are excluded from model training, never imputed from future observations.
 
 ## Split
 

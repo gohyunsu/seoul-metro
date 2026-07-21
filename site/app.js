@@ -8,10 +8,10 @@ async function loadData() {
 }
 
 function setText(data) {
-  const values = data.summary;
+  const values = { ...data.summary, ...data.audit, ...data.eda.daily };
   document.querySelectorAll('[data-value]').forEach((element) => {
     const key = element.dataset.value;
-    if (values[key] !== undefined) element.textContent = values[key];
+    if (values[key] !== undefined) element.textContent = typeof values[key] === 'number' ? numberFormat.format(values[key]) : values[key];
   });
   document.querySelector('[data-value="totalPassengers"]').textContent = compactFormat.format(values.totalPassengers);
 }
@@ -68,4 +68,25 @@ function drawModels(data) {
   });
 }
 
-loadData().then((data) => { setText(data); drawCharts(data); drawHeatmap(data); drawRanking(data); drawModels(data); }).catch((error) => { console.error(error); });
+function renderTableRow(cells, className = '') {
+  return `<div class="data-row ${className}">${cells.map((cell) => `<span>${cell}</span>`).join('')}</div>`;
+}
+
+function drawEdaTables(data) {
+  const weekdayRows = data.eda.weekday.map((row) => renderTableRow([row.label, numberFormat.format(row.mean), row.isWeekend ? 'weekend' : 'weekday'], row.isWeekend ? 'is-weekend' : ''));
+  document.getElementById('weekdayTable').innerHTML = renderTableRow(['DAY', 'MEAN', 'TYPE'], 'data-header') + weekdayRows.join('');
+
+  const maxBand = Math.max(...data.eda.bands.map((row) => row.total));
+  const bandRows = [...data.eda.bands].sort((left, right) => right.total - left.total).map((row) => renderTableRow([row.label, `<div class="table-bar"><i style="width:${row.total / maxBand * 100}%"></i></div>`, `${(row.share * 100).toFixed(1)}%`], ''));
+  document.getElementById('bandTable').innerHTML = renderTableRow(['TIME', 'SCALE', 'SHARE'], 'data-header') + bandRows.join('');
+
+  const maxLine = Math.max(...data.eda.lines.map((row) => row.total));
+  const lineRows = data.eda.lines.map((row) => renderTableRow([row.label, `<div class="table-bar"><i style="width:${row.total / maxLine * 100}%"></i></div>`, `${(row.share * 100).toFixed(1)}%`], ''));
+  document.getElementById('lineTable').innerHTML = renderTableRow(['LINE', 'SCALE', 'SHARE'], 'data-header') + lineRows.join('');
+
+  const highRows = data.eda.highDates.map((row) => renderTableRow([`<b class="high-mark">HIGH</b> ${row.date} ${row.weekday}`, numberFormat.format(row.total)]));
+  const lowRows = data.eda.lowDates.map((row) => renderTableRow([`<b class="low-mark">LOW</b> ${row.date} ${row.weekday}`, numberFormat.format(row.total)]));
+  document.getElementById('anomalyTable').innerHTML = highRows.join('') + lowRows.join('');
+}
+
+loadData().then((data) => { setText(data); drawCharts(data); drawHeatmap(data); drawRanking(data); drawModels(data); drawEdaTables(data); }).catch((error) => { console.error(error); });

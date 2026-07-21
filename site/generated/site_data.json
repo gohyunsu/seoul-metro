@@ -14,7 +14,16 @@
     "directionInsight": "승차 1,620,478,867명, 하차 1,621,184,738명으로 집계됩니다.",
     "placeInsight": "잠실(송파구청)이 연간 72,717,683명으로 가장 많습니다. 상위 10개 역이 전체의 15.4%를 차지합니다.",
     "forecastInsight": "최근 7일 리듬을 기준선으로 삼아, 달력과 역의 조합이 만드는 추가 신호를 비교합니다.",
-    "splitText": "80 / 10 / 10"
+    "splitText": "80 / 10 / 10",
+    "weekdayMean": 9807270,
+    "weekendMean": 6557364,
+    "weekdayLift": "49.6%",
+    "dailyMedian": 9831144,
+    "dailyStd": 1977776,
+    "top10Share": "15.4%",
+    "edaLead": "평일 평균은 주말보다 49.6% 높고, 18–19시가 전체 시간대 중 가장 큽니다.",
+    "selectedModel": "Seasonal naive",
+    "testWindow": "2025-11-28–2025-12-31"
   },
   "daily": {
     "labels": [
@@ -1097,46 +1106,352 @@
   "models": [
     {
       "name": "Seasonal naive",
-      "mae": 83.21453889248006,
-      "rmse": 246.3223036236131,
-      "wape": 0.09737452040063399,
-      "smape": 0.1312898022885267,
+      "mae": 1008.3341952165482,
+      "rmse": 2471.023844005304,
+      "wape": 0.05899573558271769,
+      "smape": 0.06294056507941673,
       "split": "test",
       "best": true
     },
     {
       "name": "Ridge",
-      "mae": 406.1025678343672,
-      "rmse": 1108.9631991944725,
-      "wape": 0.4752059351963909,
-      "smape": 0.3915453571561877,
+      "mae": 3729.464867873418,
+      "rmse": 8878.200874756485,
+      "wape": 0.2182039687376105,
+      "smape": 0.2783792143570976,
       "split": "test",
       "best": false
     },
     {
       "name": "HistGradientBoosting",
-      "mae": 110.05790892091723,
-      "rmse": 299.51451296350075,
-      "wape": 0.12878562136020477,
-      "smape": 0.18574656840840564,
+      "mae": 1806.615150595621,
+      "rmse": 3298.9471507148837,
+      "wape": 0.10570165152574384,
+      "smape": 0.12099097112198602,
       "split": "test",
       "best": false
     }
   ],
+  "eda": {
+    "weekday": [
+      {
+        "label": "월",
+        "mean": 9453613,
+        "isWeekend": false
+      },
+      {
+        "label": "화",
+        "mean": 9672598,
+        "isWeekend": false
+      },
+      {
+        "label": "수",
+        "mean": 9836882,
+        "isWeekend": false
+      },
+      {
+        "label": "목",
+        "mean": 9882743,
+        "isWeekend": false
+      },
+      {
+        "label": "금",
+        "mean": 10189946,
+        "isWeekend": false
+      },
+      {
+        "label": "토",
+        "mean": 7549139,
+        "isWeekend": true
+      },
+      {
+        "label": "일",
+        "mean": 5565589,
+        "isWeekend": true
+      }
+    ],
+    "bands": [
+      {
+        "label": "06-07시간대",
+        "total": 76241676,
+        "share": 0.023519305298181917,
+        "dailyMean": 208881
+      },
+      {
+        "label": "06시이전",
+        "total": 26610434,
+        "share": 0.008208881994712711,
+        "dailyMean": 72905
+      },
+      {
+        "label": "07-08시간대",
+        "total": 186121876,
+        "share": 0.05741554296779045,
+        "dailyMean": 509922
+      },
+      {
+        "label": "08-09시간대",
+        "total": 312295246,
+        "share": 0.09633795607857343,
+        "dailyMean": 855603
+      },
+      {
+        "label": "09-10시간대",
+        "total": 210072337,
+        "share": 0.0648038669638579,
+        "dailyMean": 575540
+      },
+      {
+        "label": "10-11시간대",
+        "total": 149614879,
+        "share": 0.046153733770904336,
+        "dailyMean": 409903
+      },
+      {
+        "label": "11-12시간대",
+        "total": 145818622,
+        "share": 0.04498265081394835,
+        "dailyMean": 399503
+      },
+      {
+        "label": "12-13시간대",
+        "total": 155306046,
+        "share": 0.047909365351930154,
+        "dailyMean": 425496
+      },
+      {
+        "label": "13-14시간대",
+        "total": 164561115,
+        "share": 0.050764402187252866,
+        "dailyMean": 450852
+      },
+      {
+        "label": "14-15시간대",
+        "total": 164144635,
+        "share": 0.05063592494508695,
+        "dailyMean": 449711
+      },
+      {
+        "label": "15-16시간대",
+        "total": 180554020,
+        "share": 0.05569795080572526,
+        "dailyMean": 494668
+      },
+      {
+        "label": "16-17시간대",
+        "total": 207520296,
+        "share": 0.0640166042151681,
+        "dailyMean": 568548
+      },
+      {
+        "label": "17-18시간대",
+        "total": 263633103,
+        "share": 0.08132648390578454,
+        "dailyMean": 722282
+      },
+      {
+        "label": "18-19시간대",
+        "total": 326964216,
+        "share": 0.10086309248611872,
+        "dailyMean": 895792
+      },
+      {
+        "label": "19-20시간대",
+        "total": 205137931,
+        "share": 0.06328168372671106,
+        "dailyMean": 562021
+      },
+      {
+        "label": "20-21시간대",
+        "total": 147661568,
+        "share": 0.045551169397171305,
+        "dailyMean": 404552
+      },
+      {
+        "label": "21-22시간대",
+        "total": 134525198,
+        "share": 0.041498814927158366,
+        "dailyMean": 368562
+      },
+      {
+        "label": "22-23시간대",
+        "total": 111294892,
+        "share": 0.034332646924972954,
+        "dailyMean": 304917
+      },
+      {
+        "label": "23-24시간대",
+        "total": 57986079,
+        "share": 0.017887753346942363,
+        "dailyMean": 158865
+      },
+      {
+        "label": "24시이후",
+        "total": 15599436,
+        "share": 0.0048121698920082735,
+        "dailyMean": 42738
+      }
+    ],
+    "lines": [
+      {
+        "label": "2호선",
+        "total": 1013126430,
+        "share": 0.31253286998605767,
+        "dailyMean": 2775688,
+        "stationCount": 50
+      },
+      {
+        "label": "5호선",
+        "total": 471559184,
+        "share": 0.14546826613121075,
+        "dailyMean": 1291942,
+        "stationCount": 56
+      },
+      {
+        "label": "7호선",
+        "total": 414146082,
+        "share": 0.12775726678154195,
+        "dailyMean": 1134646,
+        "stationCount": 42
+      },
+      {
+        "label": "3호선",
+        "total": 382710330,
+        "share": 0.11805985340665846,
+        "dailyMean": 1048521,
+        "stationCount": 33
+      },
+      {
+        "label": "4호선",
+        "total": 381041437,
+        "share": 0.117545027316306,
+        "dailyMean": 1043949,
+        "stationCount": 28
+      },
+      {
+        "label": "6호선",
+        "total": 244962263,
+        "share": 0.07556683630656982,
+        "dailyMean": 671129,
+        "stationCount": 38
+      },
+      {
+        "label": "1호선",
+        "total": 186645972,
+        "share": 0.05757721797909996,
+        "dailyMean": 511358,
+        "stationCount": 10
+      },
+      {
+        "label": "8호선",
+        "total": 147471907,
+        "share": 0.045492662092555404,
+        "dailyMean": 404032,
+        "stationCount": 19
+      }
+    ],
+    "directions": [
+      {
+        "label": "승차",
+        "total": 1620478867,
+        "share": 0.4998911251928005
+      },
+      {
+        "label": "하차",
+        "total": 1621184738,
+        "share": 0.5001088748071995
+      }
+    ],
+    "highDates": [
+      {
+        "date": "12.19",
+        "weekday": "금",
+        "total": 11349481
+      },
+      {
+        "date": "04.11",
+        "weekday": "금",
+        "total": 11203748
+      },
+      {
+        "date": "12.05",
+        "weekday": "금",
+        "total": 11088583
+      },
+      {
+        "date": "09.26",
+        "weekday": "금",
+        "total": 11022344
+      },
+      {
+        "date": "12.12",
+        "weekday": "금",
+        "total": 11008711
+      }
+    ],
+    "lowDates": [
+      {
+        "date": "01.29",
+        "weekday": "수",
+        "total": 2907370
+      },
+      {
+        "date": "10.06",
+        "weekday": "월",
+        "total": 3129746
+      },
+      {
+        "date": "01.28",
+        "weekday": "화",
+        "total": 3340983
+      },
+      {
+        "date": "01.30",
+        "weekday": "목",
+        "total": 3837607
+      },
+      {
+        "date": "01.01",
+        "weekday": "수",
+        "total": 3949907
+      }
+    ],
+    "daily": {
+      "mean": 8881270,
+      "median": 9831144,
+      "std": 1977776,
+      "min": 2907370,
+      "max": 11349481,
+      "minDate": "01.29",
+      "maxDate": "12.19"
+    }
+  },
   "audit": {
-    "physical_rows": 199424,
-    "blank_rows_removed": 134,
-    "valid_rows": 199290,
-    "columns": 26,
+    "physicalRows": 199424,
+    "blankRowsRemoved": 134,
+    "validRows": 199290,
+    "sourceColumns": 26,
+    "timeBandCount": 20,
+    "missingCells": 0,
+    "negativeCells": 0,
+    "duplicateRows": 0,
+    "duplicateKeys": 0,
+    "dateStart": "2025-01-01",
+    "dateEnd": "2025-12-31",
+    "stationCount": 242,
+    "lineCount": 8,
     "model": {
-      "train_end": "2025-10-24",
-      "validation_end": "2025-11-27",
-      "test_start": "2025-11-27",
-      "train_rows": 2937480,
-      "validation_rows": 371280,
-      "test_rows": 371280,
-      "training_sample_rows": 250000,
-      "selected_by_validation": "Seasonal naive"
+      "trainStart": "2025-01-29",
+      "trainEnd": "2025-10-24",
+      "validationStart": "2025-10-25",
+      "validationEnd": "2025-11-27",
+      "testStart": "2025-11-28",
+      "testEnd": "2025-12-31",
+      "trainRows": 146874,
+      "validationRows": 18564,
+      "testRows": 18564,
+      "trainingSampleRows": 146874,
+      "selectedByValidation": "Seasonal naive"
     }
   }
 }

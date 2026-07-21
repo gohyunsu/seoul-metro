@@ -68,7 +68,7 @@ def load_source():
     duplicate_keys = int(source.duplicated(subset=['수송일자', '호선', '역번호', '역명', '승하차구분']).sum())
     source['date'] = pd.to_datetime(source['수송일자'])
     source['line'] = source['호선'].astype('string')
-    source['station_code'] = source['역번호'].astype('string')
+    source['station_code'] = source['역번호'].astype('string').str.replace(r'\.0$', '', regex=True)
     source['station'] = source['역명'].astype('string')
     source['direction'] = source['승하차구분'].astype('string')
     source[time_columns] = numeric_values.fillna(0).astype('int32')
@@ -224,13 +224,16 @@ def run_models(model_frame):
     dates = sorted(model_frame['date'].unique())
     train_end = dates[int(len(dates) * .8) - 1]
     validation_end = dates[int(len(dates) * .9) - 1]
-    train = model_frame[model_frame['date'] <= train_end]
-    validation = model_frame[(model_frame['date'] > train_end) & (model_frame['date'] <= validation_end)]
-    test = model_frame[model_frame['date'] > validation_end]
+    train = model_frame[model_frame['date'] <= train_end].copy()
+    validation = model_frame[(model_frame['date'] > train_end) & (model_frame['date'] <= validation_end)].copy()
+    test = model_frame[model_frame['date'] > validation_end].copy().reset_index(drop=True)
     sample = train.sample(n=min(250_000, len(train)), random_state=42)
+    categorical_levels = {column: int(train[column].nunique()) for column in categorical}
     results = []
-    baseline_validation = metric_row('Seasonal naive', validation['passengers'], validation['lag_7'])
-    baseline_test = metric_row('Seasonal naive', test['passengers'], test['lag_7'])
+    baseline_validation_prediction = validation['lag_7'].to_numpy()
+    baseline_test_prediction = test['lag_7'].to_numpy()
+    baseline_validation = metric_row('Seasonal naive', validation['passengers'], baseline_validation_prediction)
+    baseline_test = metric_row('Seasonal naive', test['passengers'], baseline_test_prediction)
     baseline_validation['split'] = 'validation'; baseline_test['split'] = 'test'
     results.extend([baseline_validation, baseline_test])
 
@@ -240,8 +243,10 @@ def run_models(model_frame):
     ])
     ridge = Pipeline([('preprocess', ridge_preprocessor), ('model', Ridge(alpha=10.0))])
     ridge.fit(sample[feature_columns], sample['passengers'])
-    ridge_validation = metric_row('Ridge', validation['passengers'], ridge.predict(validation[feature_columns]))
-    ridge_test = metric_row('Ridge', test['passengers'], ridge.predict(test[feature_columns]))
+    ridge_validation_prediction = ridge.predict(validation[feature_columns])
+    ridge_test_prediction = ridge.predict(test[feature_columns])
+    ridge_validation = metric_row('Ridge', validation['passengers'], ridge_validation_prediction)
+    ridge_test = metric_row('Ridge', test['passengers'], ridge_test_prediction)
     ridge_validation['split'] = 'validation'; ridge_test['split'] = 'test'
     results.extend([ridge_validation, ridge_test])
 
@@ -251,8 +256,10 @@ def run_models(model_frame):
     ])
     tree = Pipeline([('preprocess', tree_preprocessor), ('model', HistGradientBoostingRegressor(max_iter=120, learning_rate=.08, max_leaf_nodes=31, l2_regularization=10, random_state=42))])
     tree.fit(sample[feature_columns], sample['passengers'])
-    tree_validation = metric_row('HistGradientBoosting', validation['passengers'], tree.predict(validation[feature_columns]))
-    tree_test = metric_row('HistGradientBoosting', test['passengers'], tree.predict(test[feature_columns]))
+    tree_validation_prediction = tree.predict(validation[feature_columns])
+    tree_test_prediction = tree.predict(test[feature_columns])
+    tree_validation = metric_row('HistGradientBoosting', validation['passengers'], tree_validation_prediction)
+    tree_test = metric_row('HistGradientBoosting', test['passengers'], tree_test_prediction)
     tree_validation['split'] = 'validation'; tree_test['split'] = 'test'
     results.extend([tree_validation, tree_test])
 
@@ -269,6 +276,38 @@ def run_models(model_frame):
         }
         public_models.append(test_row)
     pd.DataFrame(results).to_csv(REPORT_DIR / 'model_metrics.csv', index=False)
+    preferred_example = test[(test['line'] == '2호선') & (test['station'] == '강남') & (test['direction'] == '승차')]
+    example = (preferred_example if not preferred_example.empty else test).sort_values('date').iloc[0]
+    example_position = int(example.name)
+    example_actual = int(example['passengers'])
+    test_example = {
+        'date': example['date'].strftime('%Y-%m-%d'),
+        'series': {
+            'line': str(example['line']),
+            'station': str(example['station']),
+            'stationCode': str(example['station_code']),
+            'direction': str(example['direction']),
+        },
+        'calendar': {
+            key: int(example[key])
+            for key in ['weekday', 'month', 'week_of_year', 'day_of_month', 'day_of_year', 'is_weekend']
+        },
+        'history': {
+            key: int(round(example[key]))
+            for key in ['lag_1', 'lag_7', 'lag_14', 'lag_28', 'rolling_7']
+        },
+        'actual': example_actual,
+        'predictions': {
+            'Seasonal naive': int(round(baseline_test_prediction[example_position])),
+            'Ridge': int(round(ridge_test_prediction[example_position])),
+            'HistGradientBoosting': int(round(tree_test_prediction[example_position])),
+        },
+        'absoluteErrors': {
+            'Seasonal naive': int(round(abs(example_actual - baseline_test_prediction[example_position]))),
+            'Ridge': int(round(abs(example_actual - ridge_test_prediction[example_position]))),
+            'HistGradientBoosting': int(round(abs(example_actual - tree_test_prediction[example_position]))),
+        },
+    }
     audit = {
         'trainStart': str(train['date'].min())[:10],
         'trainEnd': str(train_end)[:10],
@@ -287,10 +326,18 @@ def run_models(model_frame):
         'modelDateCount': len(dates),
         'featureCount': len(feature_columns),
         'categoricalFeatureCount': len(categorical),
+        'numericFeatureCount': len(numeric),
+        'categoricalLevels': categorical_levels,
+        'lineLevels': categorical_levels['line'],
+        'stationLevels': categorical_levels['station'],
+        'directionLevels': categorical_levels['direction'],
+        'ridgeDesignColumns': sum(categorical_levels.values()) + len(numeric),
+        'treeInputColumns': len(feature_columns),
         'calendarFeatureCount': 6,
         'historyFeatureCount': 5,
         'predictionRows': len(test),
         'selectedByValidation': best_name,
+        'testExample': test_example,
     }
     return public_models, audit
 
@@ -331,6 +378,9 @@ def main():
             'scope': '2025 annual ridership · top 10 ranked station names only',
             'coordinateMethod': 'representative station-complex centroid',
             'sourceUrl': SPATIAL_SOURCE_URL,
+            'rankedStationCount': int(len(top_stations)),
+            'coordinatesMatched': int(len(spatial_stations)),
+            'coordinatesMissing': int(len(top_stations) - len(spatial_stations)),
         },
         'models': models,
         'eda': eda,

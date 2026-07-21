@@ -8,7 +8,7 @@ async function loadData() {
 }
 
 function setText(data) {
-  const values = { ...data.summary, ...data.audit, ...data.audit.model, ...data.eda.daily };
+  const values = { ...data.summary, ...data.audit, ...data.audit.model, ...data.eda.daily, ...data.spatial };
   document.querySelectorAll('[data-value]').forEach((element) => {
     const key = element.dataset.value;
     if (values[key] !== undefined) element.textContent = typeof values[key] === 'number' ? numberFormat.format(values[key]) : values[key];
@@ -119,6 +119,47 @@ function drawStationMap(data) {
   });
 }
 
+function escapeHtml(value) {
+  return String(value).replace(/[&<>'"]/g, (character) => ({
+    '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;',
+  }[character]));
+}
+
+function drawPredictionExample(data) {
+  const container = document.getElementById('predictionExample');
+  const example = data.audit?.model?.testExample;
+  if (!container || !example) return;
+  const weekdayLabels = ['월', '화', '수', '목', '금', '토', '일'];
+  const calendarRows = [
+    ['weekday', `요일 ${weekdayLabels[example.calendar.weekday] ?? example.calendar.weekday}`],
+    ['month', `${example.calendar.month}월`],
+    ['week_of_year', `ISO ${example.calendar.week_of_year}주`],
+    ['day_of_month', `${example.calendar.day_of_month}일`],
+    ['day_of_year', `${example.calendar.day_of_year}일째`],
+    ['is_weekend', example.calendar.is_weekend ? '주말 = 1' : '평일 = 0'],
+  ];
+  const historyRows = Object.entries(example.history).map(([key, value]) => `<div><span>${escapeHtml(key)}</span><strong>${numberFormat.format(value)}명</strong></div>`).join('');
+  const predictionRows = ['Seasonal naive', 'Ridge', 'HistGradientBoosting'].map((name) => `
+    <div class="example-prediction-row">
+      <strong>${escapeHtml(name)}</strong>
+      <span>${numberFormat.format(example.predictions[name])}명</span>
+      <span>절대오차 ${numberFormat.format(example.absoluteErrors[name])}명</span>
+    </div>`).join('');
+  container.innerHTML = `
+    <div class="prediction-example-head">
+      <div><span>TEST DATE</span><strong>${escapeHtml(example.date)}</strong></div>
+      <div><span>SERIES KEY</span><strong>${escapeHtml(example.series.line)} · ${escapeHtml(example.series.station)} · ${escapeHtml(example.series.direction)}</strong></div>
+      <div><span>STATION CODE</span><strong>${escapeHtml(example.series.stationCode)}</strong></div>
+      <div><span>ACTUAL TARGET</span><strong>${numberFormat.format(example.actual)}명</strong></div>
+    </div>
+    <div class="prediction-example-grid">
+      <article><p>01 / IDENTITY INPUTS</p><h3>시리즈가 무엇인가</h3><dl><div><dt>line</dt><dd>${escapeHtml(example.series.line)}</dd></div><div><dt>station</dt><dd>${escapeHtml(example.series.station)}</dd></div><div><dt>direction</dt><dd>${escapeHtml(example.series.direction)}</dd></div></dl></article>
+      <article><p>02 / CALENDAR INPUTS</p><h3>목표일 t에서 이미 아는 값</h3><dl>${calendarRows.map(([key, value]) => `<div><dt>${escapeHtml(key)}</dt><dd>${escapeHtml(value)}</dd></div>`).join('')}</dl></article>
+      <article><p>03 / HISTORY INPUTS</p><h3>t 이전의 같은 시리즈</h3><div class="example-history">${historyRows}</div></article>
+    </div>
+    <div class="example-predictions"><p>04 / THREE MODEL OUTPUTS</p>${predictionRows}</div>`;
+}
+
 function drawModels(data) {
   const container = document.getElementById('modelTable');
   if (!container) return;
@@ -177,4 +218,4 @@ function drawEdaTables(data) {
   if (anomalyTable) anomalyTable.innerHTML = highRows.join('') + lowRows.join('');
 }
 
-loadData().then((data) => { setText(data); drawCharts(data); drawHeatmap(data); drawRanking(data); drawStationMap(data); drawModels(data); drawModelComparison(data); drawBandBars(data); drawEdaTables(data); }).catch((error) => { console.error(error); });
+loadData().then((data) => { setText(data); drawCharts(data); drawHeatmap(data); drawRanking(data); drawStationMap(data); drawPredictionExample(data); drawModels(data); drawModelComparison(data); drawBandBars(data); drawEdaTables(data); }).catch((error) => { console.error(error); });

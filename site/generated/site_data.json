@@ -1180,7 +1180,10 @@
     ],
     "scope": "2025 annual ridership · top 10 ranked station names only",
     "coordinateMethod": "representative station-complex centroid",
-    "sourceUrl": "https://portal.esrikr.com/arcgis/rest/services/Hosted/MOIS_KR_Subway/FeatureServer/1"
+    "sourceUrl": "https://portal.esrikr.com/arcgis/rest/services/Hosted/MOIS_KR_Subway/FeatureServer/1",
+    "rankedStationCount": 10,
+    "coordinatesMatched": 10,
+    "coordinatesMissing": 0
   },
   "models": [
     {
@@ -1557,10 +1560,56 @@
       "modelDateCount": 337,
       "featureCount": 14,
       "categoricalFeatureCount": 3,
+      "numericFeatureCount": 11,
+      "categoricalLevels": {
+        "line": 8,
+        "station": 242,
+        "direction": 2
+      },
+      "lineLevels": 8,
+      "stationLevels": 242,
+      "directionLevels": 2,
+      "ridgeDesignColumns": 263,
+      "treeInputColumns": 14,
       "calendarFeatureCount": 6,
       "historyFeatureCount": 5,
       "predictionRows": 18564,
-      "selectedByValidation": "Seasonal naive"
+      "selectedByValidation": "Seasonal naive",
+      "testExample": {
+        "date": "2025-11-28",
+        "series": {
+          "line": "2호선",
+          "station": "강남",
+          "stationCode": "222",
+          "direction": "승차"
+        },
+        "calendar": {
+          "weekday": 4,
+          "month": 11,
+          "week_of_year": 48,
+          "day_of_month": 28,
+          "day_of_year": 332,
+          "is_weekend": 0
+        },
+        "history": {
+          "lag_1": 90913,
+          "lag_7": 96558,
+          "lag_14": 95593,
+          "lag_28": 96635,
+          "rolling_7": 80548
+        },
+        "actual": 99239,
+        "predictions": {
+          "Seasonal naive": 96558,
+          "Ridge": 93751,
+          "HistGradientBoosting": 93027
+        },
+        "absoluteErrors": {
+          "Seasonal naive": 2681,
+          "Ridge": 5488,
+          "HistGradientBoosting": 6212
+        }
+      }
     }
   }
 }

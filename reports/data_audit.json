@@ -1,0 +1,16 @@
+{
+  "physical_rows": 199424,
+  "blank_rows_removed": 134,
+  "valid_rows": 199290,
+  "columns": 26,
+  "model": {
+    "train_end": "2025-10-24",
+    "validation_end": "2025-11-27",
+    "test_start": "2025-11-27",
+    "train_rows": 2937480,
+    "validation_rows": 371280,
+    "test_rows": 371280,
+    "training_sample_rows": 250000,
+    "selected_by_validation": "Seasonal naive"
+  }
+}

@@ -246,3 +246,67 @@
   .pulse-chart-head { padding-left: 0; }
   .pulse-note { gap: 12px; font-size: 8px; }
 }
+
+.site-architecture {
+  padding-top: 0;
+  padding-bottom: 110px;
+}
+
+.architecture-heading {
+  display: grid;
+  grid-template-columns: 1.1fr .9fr;
+  gap: 40px;
+  align-items: end;
+  margin-bottom: 30px;
+}
+
+.architecture-heading h2 {
+  margin: 0;
+  font-size: clamp(34px, 4vw, 54px);
+  letter-spacing: -.07em;
+  line-height: 1.06;
+}
+
+.architecture-heading h2 em { color: var(--green); font-style: normal; }
+.architecture-heading > p { max-width: 390px; margin: 0; color: var(--muted); font-size: 13px; }
+
+.architecture-flow {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1px;
+  border: 1px solid var(--line);
+  background: var(--line);
+}
+
+.architecture-card {
+  display: flex;
+  min-height: 260px;
+  flex-direction: column;
+  padding: 24px;
+  background: var(--paper);
+}
+
+.architecture-card > span,
+.architecture-card a {
+  color: var(--green);
+  font-family: var(--mono);
+  font-size: 9px;
+  letter-spacing: .06em;
+}
+
+.architecture-card h3 { margin: 14px 0 10px; font-size: 21px; letter-spacing: -.055em; }
+.architecture-card p { margin: 0; color: var(--muted); font-size: 12px; }
+.architecture-card > a, .architecture-card > div { margin-top: auto; padding-top: 20px; }
+.architecture-card > div { display: flex; flex-wrap: wrap; gap: 9px 13px; }
+.architecture-card a:hover { color: var(--orange); }
+
+@media (max-width: 850px) {
+  .site-architecture { padding-bottom: 78px; }
+  .architecture-heading { grid-template-columns: 1fr; gap: 16px; }
+  .architecture-flow { grid-template-columns: repeat(2, 1fr); }
+}
+
+@media (max-width: 460px) {
+  .architecture-flow { grid-template-columns: 1fr; }
+  .architecture-card { min-height: 210px; }
+}

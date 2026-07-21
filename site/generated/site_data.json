@@ -1105,6 +1105,83 @@
       }
     ]
   },
+  "spatial": {
+    "stations": [
+      {
+        "name": "잠실(송파구청)",
+        "value": 72717683,
+        "rank": 1,
+        "lat": 37.514339,
+        "lng": 127.103366
+      },
+      {
+        "name": "서울역",
+        "value": 63640266,
+        "rank": 2,
+        "lat": 37.555341,
+        "lng": 126.971876
+      },
+      {
+        "name": "홍대입구",
+        "value": 55950717,
+        "rank": 3,
+        "lat": 37.557271,
+        "lng": 126.925318
+      },
+      {
+        "name": "강남",
+        "value": 55564369,
+        "rank": 4,
+        "lat": 37.498051,
+        "lng": 127.027974
+      },
+      {
+        "name": "사당",
+        "value": 49465006,
+        "rank": 5,
+        "lat": 37.475909,
+        "lng": 126.981412
+      },
+      {
+        "name": "고속터미널",
+        "value": 48250131,
+        "rank": 6,
+        "lat": 37.504454,
+        "lng": 127.004575
+      },
+      {
+        "name": "구로디지털단지",
+        "value": 39011152,
+        "rank": 7,
+        "lat": 37.485369,
+        "lng": 126.901376
+      },
+      {
+        "name": "신림",
+        "value": 38811319,
+        "rank": 8,
+        "lat": 37.484198,
+        "lng": 126.929592
+      },
+      {
+        "name": "종로3가",
+        "value": 37991357,
+        "rank": 9,
+        "lat": 37.571312,
+        "lng": 126.99151
+      },
+      {
+        "name": "삼성(무역센터)",
+        "value": 37957400,
+        "rank": 10,
+        "lat": 37.50891,
+        "lng": 127.063123
+      }
+    ],
+    "scope": "2025 annual ridership · top 10 ranked station names only",
+    "coordinateMethod": "representative station-complex centroid",
+    "sourceUrl": "https://portal.esrikr.com/arcgis/rest/services/Hosted/MOIS_KR_Subway/FeatureServer/1"
+  },
   "models": [
     {
       "name": "Seasonal naive",

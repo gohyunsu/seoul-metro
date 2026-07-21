@@ -67,6 +67,58 @@ function drawRanking(data) {
   });
 }
 
+function drawStationMap(data) {
+  const container = document.getElementById('stationMap');
+  const stations = data.spatial?.stations;
+  if (!container || !stations?.length || !window.L) return;
+
+  const map = window.L.map(container, {
+    attributionControl: true,
+    scrollWheelZoom: false,
+    zoomControl: true,
+  });
+  window.L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    maxZoom: 19,
+    attribution: '&copy; OpenStreetMap contributors',
+  }).addTo(map);
+
+  const max = Math.max(...stations.map((station) => station.value));
+  const bounds = stations.map((station) => [station.lat, station.lng]);
+  map.fitBounds(bounds, { padding: [34, 34], maxZoom: 12 });
+
+  if (typeof window.L.heatLayer === 'function') {
+    const heatPoints = stations.map((station) => [
+      station.lat,
+      station.lng,
+      Math.sqrt(station.value / max),
+    ]);
+    window.L.heatLayer(heatPoints, {
+      radius: 42,
+      blur: 34,
+      minOpacity: .28,
+      gradient: { .2: '#b9e3cc', .55: '#d5b73b', .78: '#ff8b4a', 1: '#c75238' },
+    }).addTo(map);
+  }
+
+  stations.forEach((station) => {
+    const ratio = station.value / max;
+    const color = ratio > .8 ? '#c75238' : ratio > .58 ? '#ff8b4a' : ratio > .38 ? '#d5b73b' : '#1c5b43';
+    const radius = 8 + Math.sqrt(ratio) * 17;
+    const marker = window.L.circleMarker([station.lat, station.lng], {
+      radius,
+      color: '#ffffff',
+      weight: 2,
+      fillColor: color,
+      fillOpacity: .9,
+    }).addTo(map);
+    marker.bindTooltip(`<b>${station.rank}. ${station.name}</b><br>${numberFormat.format(station.value)}명 / 2025년`, {
+      direction: 'top',
+      offset: [0, -radius],
+      opacity: .96,
+    });
+  });
+}
+
 function drawModels(data) {
   const container = document.getElementById('modelTable');
   if (!container) return;
@@ -125,4 +177,4 @@ function drawEdaTables(data) {
   if (anomalyTable) anomalyTable.innerHTML = highRows.join('') + lowRows.join('');
 }
 
-loadData().then((data) => { setText(data); drawCharts(data); drawHeatmap(data); drawRanking(data); drawModels(data); drawModelComparison(data); drawBandBars(data); drawEdaTables(data); }).catch((error) => { console.error(error); });
+loadData().then((data) => { setText(data); drawCharts(data); drawHeatmap(data); drawRanking(data); drawStationMap(data); drawModels(data); drawModelComparison(data); drawBandBars(data); drawEdaTables(data); }).catch((error) => { console.error(error); });

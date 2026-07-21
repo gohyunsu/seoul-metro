@@ -20,6 +20,24 @@ SITE_DATA_PATH = ROOT / 'site/generated/site_data.json'
 REPORT_DIR = ROOT / 'reports'
 FIGURE_DIR = REPORT_DIR / 'figures'
 
+# Representative centroids for the ten ranked station names. These were read from
+# the Korean national subway-station spatial feature service (2026.04 reference)
+# and are used only to position the summary overlay; ridership still comes solely
+# from RAW_PATH. Transfer complexes are represented by one point per station name.
+STATION_COORDINATES = {
+    '잠실(송파구청)': {'lat': 37.514339, 'lng': 127.103366},
+    '서울역': {'lat': 37.555341, 'lng': 126.971876},
+    '홍대입구': {'lat': 37.557271, 'lng': 126.925318},
+    '강남': {'lat': 37.498051, 'lng': 127.027974},
+    '사당': {'lat': 37.475909, 'lng': 126.981412},
+    '고속터미널': {'lat': 37.504454, 'lng': 127.004575},
+    '구로디지털단지': {'lat': 37.485369, 'lng': 126.901376},
+    '신림': {'lat': 37.484198, 'lng': 126.929592},
+    '종로3가': {'lat': 37.571312, 'lng': 126.991510},
+    '삼성(무역센터)': {'lat': 37.508910, 'lng': 127.063123},
+}
+SPATIAL_SOURCE_URL = 'https://portal.esrikr.com/arcgis/rest/services/Hosted/MOIS_KR_Subway/FeatureServer/1'
+
 
 def metric_row(name, actual, predicted):
     actual = np.asarray(actual, dtype='float64')
@@ -290,13 +308,30 @@ def main():
     summary['selectedTestMae'] = int(round(selected_test['mae']))
     summary['selectedTestWape'] = f"{selected_test['wape'] * 100:.1f}%"
     direction = source.groupby('direction')[time_columns].sum().reindex(['승차', '하차']).fillna(0)
+    top_stations = station_totals.head(10)
+    spatial_stations = [
+        {
+            'name': str(name),
+            'value': int(value),
+            'rank': rank,
+            **STATION_COORDINATES[str(name)],
+        }
+        for rank, (name, value) in enumerate(top_stations.items(), start=1)
+        if str(name) in STATION_COORDINATES
+    ]
     site_data = {
         'summary': summary,
         'daily': {'labels': [date.strftime('%m-%d') for date in daily.index], 'values': [int(value) for value in daily.values]},
         'lines': {'labels': [str(value) for value in line_totals.index], 'values': [int(value) for value in line_totals.values]},
         'direction': {'labels': time_columns, 'boarding': [int(value) for value in direction.loc['승차'].values], 'alighting': [int(value) for value in direction.loc['하차'].values]},
         'heatmap': {'labels': time_columns, 'values': [[int(value) for value in heatmap[time_column].values] for time_column in time_columns], 'min': int(heatmap.to_numpy().min()), 'max': int(heatmap.to_numpy().max())},
-        'stations': {'values': [{'name': str(name), 'value': int(value)} for name, value in station_totals.head(10).items()]},
+        'stations': {'values': [{'name': str(name), 'value': int(value)} for name, value in top_stations.items()]},
+        'spatial': {
+            'stations': spatial_stations,
+            'scope': '2025 annual ridership · top 10 ranked station names only',
+            'coordinateMethod': 'representative station-complex centroid',
+            'sourceUrl': SPATIAL_SOURCE_URL,
+        },
         'models': models,
         'eda': eda,
         'audit': {**source_audit, 'stationCount': int(source['station'].nunique()), 'lineCount': int(source['line'].nunique()), 'model': model_audit},

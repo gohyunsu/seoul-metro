@@ -84,8 +84,6 @@
     }
   },
   "externalInputs": {
-    "weatherRows": 365,
-    "addressPairsMatched": 276,
-    "addressPairsTotal": 276
+    "weatherRows": 365
   }
 }

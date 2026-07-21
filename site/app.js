@@ -14,7 +14,7 @@ function setText(data) {
     ...data.audit.model,
     ...data.eda.daily,
     ...data.spatial,
-    ...(data.enrichment?.summary || {}),
+    ...(data.weatherAnalysis?.summary || {}),
   };
   document.querySelectorAll('[data-value]').forEach((element) => {
     const key = element.dataset.value;
@@ -187,19 +187,19 @@ function formatChange(value) {
   return `${sign}${(value * 100).toFixed(1)}%`;
 }
 
-function drawEnrichment(data) {
-  const enrichment = data.enrichment;
-  if (!enrichment) return;
-  const { weather, address, experiments, baselines, summary } = enrichment;
-  const decision = document.getElementById('enrichmentDecision');
-  if (decision) decision.textContent = summary.externalDecision;
+function drawWeatherAnalysis(data) {
+  const analysis = data.weatherAnalysis;
+  if (!analysis) return;
+  const { weather, experiments, baselines, summary } = analysis;
+  const decision = document.getElementById('weatherDecision');
+  if (decision) decision.textContent = summary.weatherDecision;
 
-  const sourceFacts = document.getElementById('enrichmentSources');
+  const sourceFacts = document.getElementById('weatherSources');
   if (sourceFacts) {
     sourceFacts.innerHTML = `
       <article><span>WEATHER COVERAGE</span><strong>${weather.dateStart}–${weather.dateEnd}</strong><p>${numberFormat.format(weather.rowCount)} daily rows · Seoul WMO ${weather.stationId}</p></article>
-      <article><span>ADDRESS JOIN</span><strong>${numberFormat.format(address.matchedPairs)} / ${numberFormat.format(address.lineStationPairs)}</strong><p>line × normalized station-name pairs matched</p></article>
-      <article><span>AREA LEVELS</span><strong>${numberFormat.format(address.districtLevels)} districts</strong><p>${numberFormat.format(address.regionLevels)} region labels · latitude / longitude included</p></article>`;
+      <article><span>USABLE AT t</span><strong>t−1 only</strong><p>8 lagged weather variables are eligible for an operational candidate</p></article>
+      <article><span>ABLATION STEPS</span><strong>0 → 4 → 8</strong><p>baseline, thermal-humidity subset, then full weather feature set</p></article>`;
   }
 
   const weatherLedger = document.getElementById('weatherLedger');
@@ -210,32 +210,51 @@ function drawEnrichment(data) {
     </tr>`).join('');
   }
 
-  const addressLedger = document.getElementById('addressLedger');
-  if (addressLedger) {
-    addressLedger.innerHTML = `
-      <div><span>JOIN KEY</span><strong>${escapeHtml(address.joinKey)}</strong></div>
-      <div><span>NORMALIZE</span><strong>${address.normalization.map(escapeHtml).join(' → ')}</strong></div>
-      <div><span>HISTORICAL ALIAS</span><strong>${escapeHtml(address.historicalAlias)}</strong></div>
-      <div><span>MODEL FEATURES</span><strong>${address.featureColumns.map((item) => `<code>${escapeHtml(item)}</code>`).join(' · ')}</strong></div>`;
-  }
-
-  const resultTable = document.getElementById('enrichmentResults');
+  const resultTable = document.getElementById('weatherResults');
+  const names = {
+    lagged_thermal_humidity: '전날 열·습도 4개',
+    lagged_weather_full: '전날 전체 날씨 8개',
+    target_weather_oracle: '목표일 사후 날씨 8개',
+  };
   if (resultTable) {
-    const names = {
-      address_only: '주소·좌표만',
-      address_plus_lagged_weather: '주소·좌표 + t−1 날씨',
-      address_plus_target_weather_oracle: '주소·좌표 + 목표일 사후 날씨',
-    };
     const baseRows = [
-      `<div class="enrichment-result-row baseline"><strong>기존 Seasonal naive</strong><span>운영 기준선</span><b>${formatMetric(baselines.seasonal.validation.mae)}</b><b>${formatMetric(baselines.seasonal.test.mae)}</b><i>비교 기준</i></div>`,
-      `<div class="enrichment-result-row baseline"><strong>기존 HGB</strong><span>외부변수 없음</span><b>${formatMetric(baselines.hgb.validation.mae)}</b><b>${formatMetric(baselines.hgb.test.mae)}</b><i>트리 기준</i></div>`,
+      `<div class="weather-result-row baseline"><strong>Seasonal naive</strong><span>운영 기준선</span><b>${formatMetric(baselines.seasonal.validation.mae)}</b><b>${formatMetric(baselines.seasonal.test.mae)}</b><i>최종 비교 기준</i></div>`,
+      `<div class="weather-result-row baseline"><strong>HGB / 날씨 없음</strong><span>14개 기본 변수</span><b>${formatMetric(baselines.hgb.validation.mae)}</b><b>${formatMetric(baselines.hgb.test.mae)}</b><i>날씨 ablation 기준</i></div>`,
     ];
-    const rows = experiments.map((experiment) => `<div class="enrichment-result-row ${experiment.eligibility.includes('불가') ? 'oracle' : ''}">
-      <strong>${names[experiment.id] || escapeHtml(experiment.id)}</strong><span>${escapeHtml(experiment.eligibility)}</span>
+    const rows = experiments.map((experiment) => `<div class="weather-result-row ${experiment.eligibility.includes('불가') ? 'oracle' : ''}">
+      <strong>${names[experiment.id] || escapeHtml(experiment.id)}</strong><span>${escapeHtml(experiment.eligibility)} · ${experiment.featureCount} inputs</span>
       <b>${formatMetric(experiment.validation.mae)}</b><b>${formatMetric(experiment.test.mae)}</b>
       <i>HGB 대비 ${formatChange(experiment.comparison.testMaeChangeVsHgb)}</i></div>`);
-    resultTable.innerHTML = `<div class="enrichment-result-row enrichment-result-head"><span>VARIANT</span><span>ELIGIBILITY</span><span>VALID MAE</span><span>TEST MAE</span><span>TEST Δ vs HGB</span></div>${baseRows.join('')}${rows.join('')}`;
+    resultTable.innerHTML = `<div class="weather-result-row weather-result-head"><span>VARIANT</span><span>AVAILABILITY / INPUTS</span><span>VALID MAE</span><span>TEST MAE</span><span>TEST Δ vs HGB</span></div>${baseRows.join('')}${rows.join('')}`;
   }
+
+  if (!window.Chart) return;
+  const dailyChart = document.getElementById('weatherDailyChart');
+  if (dailyChart) new Chart(dailyChart, {
+    data: {
+      labels: weather.visual.daily.labels,
+      datasets: [
+        { type: 'line', label: '평균 기온 (°C)', data: weather.visual.daily.temp, borderColor: '#ff8b4a', backgroundColor: 'rgba(255,139,74,.12)', fill: true, pointRadius: 0, borderWidth: 1.7, tension: .25, yAxisID: 'temperature' },
+        { type: 'bar', label: '강수량 (mm)', data: weather.visual.daily.prcp, backgroundColor: 'rgba(28,91,67,.45)', borderWidth: 0, yAxisID: 'precipitation' },
+      ],
+    },
+    options: { responsive: true, maintainAspectRatio: false, interaction: { intersect: false, mode: 'index' }, plugins: { legend: { display: true, labels: { color: '#526159', boxWidth: 10, font: { family: 'DM Mono', size: 9 } } }, tooltip: { backgroundColor: '#18241e', displayColors: false } }, scales: { x: { grid: { display: false }, ticks: { color: '#708078', maxTicksLimit: 8, font: { family: 'DM Mono', size: 9 } } }, temperature: { position: 'left', grid: { color: '#d8e1db' }, ticks: { color: '#ff8b4a' } }, precipitation: { position: 'right', grid: { drawOnChartArea: false }, ticks: { color: '#1c5b43' }, beginAtZero: true } } },
+  });
+  const monthlyChart = document.getElementById('weatherMonthlyChart');
+  if (monthlyChart) new Chart(monthlyChart, {
+    data: { labels: weather.visual.monthly.labels, datasets: [
+      { type: 'bar', label: '월 강수량 (mm)', data: weather.visual.monthly.prcp, backgroundColor: 'rgba(28,91,67,.64)', borderWidth: 0, yAxisID: 'precipitation' },
+      { type: 'line', label: '월 평균 기온 (°C)', data: weather.visual.monthly.temp, borderColor: '#ff8b4a', pointBackgroundColor: '#ff8b4a', pointRadius: 3, borderWidth: 2, tension: .28, yAxisID: 'temperature' },
+      { type: 'line', label: '월 평균 습도 (%)', data: weather.visual.monthly.rhum, borderColor: '#d5b73b', pointRadius: 2, borderWidth: 1.7, tension: .28, yAxisID: 'humidity' },
+    ] },
+    options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: true, labels: { color: '#526159', boxWidth: 10, font: { family: 'DM Mono', size: 9 } } }, tooltip: { backgroundColor: '#18241e', displayColors: false } }, scales: { x: { grid: { display: false }, ticks: { color: '#708078', font: { family: 'DM Mono', size: 9 } } }, precipitation: { position: 'left', beginAtZero: true, grid: { color: '#d8e1db' }, ticks: { color: '#1c5b43' } }, temperature: { position: 'right', grid: { drawOnChartArea: false }, ticks: { color: '#ff8b4a' } }, humidity: { display: false, min: 0, max: 100 } } },
+  });
+  const ablationChart = document.getElementById('weatherAblationChart');
+  if (ablationChart) new Chart(ablationChart, {
+    type: 'bar',
+    data: { labels: ['Seasonal', 'HGB / no weather', 't−1 thermal + humidity', 't−1 full weather', 't oracle'], datasets: [{ label: 'Test MAE (lower is better)', data: [baselines.seasonal.test.mae, baselines.hgb.test.mae, ...experiments.map((item) => item.test.mae)], backgroundColor: ['#1c5b43', '#9aaea1', '#d5b73b', '#ff8b4a', '#c75238'], borderWidth: 0 }] },
+    options: { ...chartDefaults(), plugins: { ...chartDefaults().plugins, legend: { display: false }, tooltip: { backgroundColor: '#18241e', displayColors: false } }, scales: { x: { ...chartDefaults().scales.x, ticks: { color: '#526159', font: { family: 'DM Mono', size: 8 }, maxRotation: 0, autoSkip: false } }, y: { ...chartDefaults().scales.y, beginAtZero: false } } },
+  });
 }
 
 function drawModelComparison(data) {
@@ -285,4 +304,4 @@ function drawEdaTables(data) {
   if (anomalyTable) anomalyTable.innerHTML = highRows.join('') + lowRows.join('');
 }
 
-loadData().then((data) => { setText(data); drawCharts(data); drawHeatmap(data); drawRanking(data); drawStationMap(data); drawPredictionExample(data); drawModels(data); drawModelComparison(data); drawBandBars(data); drawEdaTables(data); drawEnrichment(data); }).catch((error) => { console.error(error); });
+loadData().then((data) => { setText(data); drawCharts(data); drawHeatmap(data); drawRanking(data); drawStationMap(data); drawPredictionExample(data); drawModels(data); drawModelComparison(data); drawBandBars(data); drawEdaTables(data); drawWeatherAnalysis(data); }).catch((error) => { console.error(error); });

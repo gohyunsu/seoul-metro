@@ -911,3 +911,51 @@
   .method-path > div { grid-template-columns: 38px 1fr; gap: 10px; }
   .method-path p { grid-column: 1 / -1; }
 }
+
+/* Input profile: empirical distributions, validation diagnostics, and error slices. */
+.profile-chart-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px; }
+.profile-chart-card { padding: 24px; }
+.profile-chart-wrap { height: 294px; margin-top: 20px; }
+.profile-chart-tall { height: 390px; }
+
+.profile-fact-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px; margin: 18px 0; border: 1px solid var(--line); background: var(--line); }
+.profile-fact-grid > div { min-height: 82px; padding: 12px; background: rgba(185,227,204,.22); }
+.profile-fact-grid span { display: block; color: var(--muted); font-family: var(--mono); font-size: 8px; letter-spacing: .06em; line-height: 1.4; }
+.profile-fact-grid strong { display: block; margin-top: 8px; color: var(--green); font-size: 18px; letter-spacing: -.06em; }
+.station-multiplicity-card > p:last-of-type { color: #526159; font-size: 12px; }
+
+.mini-bars { margin-top: 16px; padding-top: 8px; border-top: 1px solid var(--line); }
+.mini-bars > div { display: grid; grid-template-columns: 68px 1fr 70px; gap: 10px; align-items: center; padding: 6px 0; color: var(--muted); font-family: var(--mono); font-size: 9px; }
+.mini-bars i { display: block; height: 6px; overflow: hidden; background: var(--line); border-radius: 99px; }
+.mini-bars b { display: block; height: 100%; background: var(--green); border-radius: inherit; }
+.mini-bars strong { color: var(--green); font-weight: 500; text-align: right; }
+
+.profile-table, .split-profile-table { margin-top: 18px; overflow-x: auto; border-top: 1px solid var(--line); }
+.profile-table > div, .split-profile-table > div { display: grid; align-items: center; min-width: 560px; padding: 11px 13px; border: 1px solid var(--line); border-top: 0; background: rgba(255,255,255,.44); color: #526159; font-family: var(--mono); font-size: 10px; }
+.profile-table > div { grid-template-columns: 1.2fr repeat(3, 1fr); }
+.profile-table > div > span:not(:first-child), .profile-table > div > strong + span, .split-profile-table span { text-align: right; }
+.profile-table strong, .split-profile-table strong { color: var(--green); font-family: var(--sans); font-size: 12px; letter-spacing: -.03em; }
+.profile-table .profile-table-head, .split-profile-table .split-profile-head { min-height: 34px; padding-top: 8px; padding-bottom: 8px; background: var(--dark); color: var(--mint); font-size: 8px; letter-spacing: .06em; }
+.profile-table .profile-table-head span { color: var(--mint); }
+.profile-table .history-head { grid-template-columns: 1.25fr repeat(5, 1fr); min-width: 720px; }
+.split-profile-table > div { grid-template-columns: 1fr 1.1fr repeat(5, 1fr); min-width: 820px; }
+.split-profile-table .split-profile-head span { color: var(--mint); }
+
+.importance-note dl { margin: 18px 0; border-top: 1px solid var(--line); }
+.importance-note dl > div { display: grid; grid-template-columns: 84px 1fr; gap: 12px; padding: 11px 0; border-bottom: 1px solid var(--line); }
+.importance-note dt { color: var(--green); font-family: var(--mono); font-size: 9px; }
+.importance-note dd { margin: 0; color: #526159; font-size: 11px; }
+.profile-note { margin: 0; color: var(--muted); font-family: var(--mono); font-size: 10px; line-height: 1.6; }
+
+@media (max-width: 850px) {
+  .profile-chart-grid { grid-template-columns: 1fr; }
+}
+
+@media (max-width: 560px) {
+  .profile-chart-card { padding: 22px; }
+  .profile-chart-wrap { height: 248px; }
+  .profile-chart-tall { height: 340px; }
+  .profile-fact-grid { grid-template-columns: 1fr; }
+  .profile-fact-grid > div { min-height: 0; }
+  .mini-bars > div { grid-template-columns: 58px 1fr 62px; gap: 7px; font-size: 8px; }
+}

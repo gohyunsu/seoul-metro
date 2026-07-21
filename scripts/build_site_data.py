@@ -132,6 +132,175 @@ def build_model_frame(source, time_columns):
     return model
 
 
+INPUT_LABELS = {
+    'line': '노선',
+    'station_code': '역번호',
+    'direction': '승하차 방향',
+    'weekday': '요일',
+    'week_of_year': 'ISO 주차',
+    'lag_1': '하루 전 수요',
+    'lag_7': '일주일 전 수요',
+    'lag_14': '2주 전 수요',
+    'lag_28': '4주 전 수요',
+    'rolling_7': '직전 7일 평균',
+}
+WEEKDAY_LABELS = ['월', '화', '수', '목', '금', '토', '일']
+
+
+def quantile_profile(values):
+    series = pd.Series(values).dropna().astype('float64')
+    points = [('P05', .05), ('P25', .25), ('P50', .50), ('P75', .75), ('P95', .95)]
+    return {
+        'count': int(len(series)),
+        'mean': float(series.mean()),
+        'std': float(series.std()),
+        'min': float(series.min()),
+        'max': float(series.max()),
+        'quantiles': [{'label': label, 'value': float(series.quantile(point))} for label, point in points],
+    }
+
+
+def binned_target_profile(frame, feature, bins=10):
+    """Return a post-hoc target profile over quantile bins of one input."""
+    values = frame[feature]
+    try:
+        buckets = pd.qcut(values, q=bins, duplicates='drop')
+    except ValueError:
+        return []
+    profiled = frame.assign(_bucket=buckets).groupby('_bucket', observed=True).agg(
+        inputMedian=(feature, 'median'), targetMean=('passengers', 'mean'), rows=('passengers', 'size')
+    )
+    return [
+        {
+            'label': f'Q{index:02d}',
+            'inputMedian': float(row['inputMedian']),
+            'targetMean': float(row['targetMean']),
+            'rows': int(row['rows']),
+        }
+        for index, (_, row) in enumerate(profiled.iterrows(), start=1)
+    ]
+
+
+def split_distribution(frame):
+    target = quantile_profile(frame['passengers'])
+    return {
+        'rows': int(len(frame)),
+        'target': target,
+        'lag7Median': float(frame['lag_7'].median()),
+        'rolling7Median': float(frame['rolling_7'].median()),
+    }
+
+
+def build_input_profile(model_frame, train, validation, test, ridge, ridge_validation_prediction, baseline_test_prediction):
+    """Build public, reproducible input diagnostics after the warm-up rule."""
+    profile = model_frame[BASE_FEATURE_COLUMNS + ['passengers']].copy()
+    category_rows = lambda column: [
+        {'label': str(label), 'rows': int(count), 'share': float(count / len(profile))}
+        for label, count in profile[column].value_counts().sort_index().items()
+    ]
+    station_series = (
+        model_frame[['line', 'station_code', 'direction']].drop_duplicates()
+        .groupby('station_code').size().sort_index()
+    )
+    multiplicity = station_series.value_counts().sort_index()
+    history_columns = ['lag_1', 'lag_7', 'lag_14', 'lag_28', 'rolling_7']
+    history_summary = [
+        {'key': column, 'label': INPUT_LABELS[column], **quantile_profile(profile[column])}
+        for column in history_columns
+    ]
+    history_correlations = [
+        {
+            'key': column,
+            'label': INPUT_LABELS[column],
+            'pearson': float(profile[[column, 'passengers']].corr().iloc[0, 1]),
+        }
+        for column in history_columns
+    ]
+    weekday = (
+        profile.groupby('weekday')['passengers'].agg(['size', 'mean', 'median'])
+        .reindex(range(7))
+    )
+    iso_week = profile.groupby('week_of_year')['passengers'].agg(['size', 'mean', 'median']).sort_index()
+    rng = np.random.default_rng(42)
+    validation_features = validation[BASE_FEATURE_COLUMNS].copy()
+    baseline_mae = float(mean_absolute_error(validation['passengers'], ridge_validation_prediction))
+    importance = []
+    for column in BASE_FEATURE_COLUMNS:
+        shuffled = validation_features.copy()
+        shuffled[column] = rng.permutation(shuffled[column].to_numpy())
+        shuffled_mae = float(mean_absolute_error(validation['passengers'], ridge.predict(shuffled)))
+        importance.append({
+            'key': column,
+            'label': INPUT_LABELS[column],
+            'maeIncrease': shuffled_mae - baseline_mae,
+            'relativeIncrease': (shuffled_mae - baseline_mae) / baseline_mae if baseline_mae else 0.0,
+        })
+    importance.sort(key=lambda row: row['maeIncrease'], reverse=True)
+    seasonal_errors = test.assign(_abs_error=np.abs(test['passengers'].to_numpy() - baseline_test_prediction))
+    error_weekday = seasonal_errors.groupby('weekday').agg(rows=('passengers', 'size'), mae=('_abs_error', 'mean'), actualMean=('passengers', 'mean')).reindex(range(7))
+    demand_bucket = pd.qcut(seasonal_errors['passengers'], 4, labels=['하위 25%', '25–50%', '50–75%', '상위 25%'], duplicates='drop')
+    error_demand = seasonal_errors.assign(_bucket=demand_bucket).groupby('_bucket', observed=True).agg(
+        rows=('passengers', 'size'), mae=('_abs_error', 'mean'), actualMean=('passengers', 'mean')
+    )
+    return {
+        'contract': {
+            'rawInputCount': len(BASE_FEATURE_COLUMNS),
+            'categoricalInputCount': len(BASE_CATEGORICAL_COLUMNS),
+            'numericInputCount': len(BASE_FEATURE_COLUMNS) - len(BASE_CATEGORICAL_COLUMNS),
+            'featureReadyRows': int(len(profile)),
+            'missingAfterWarmup': int(profile[BASE_FEATURE_COLUMNS].isna().sum().sum()),
+            'encodedColumns': int(sum(train[column].nunique() for column in BASE_CATEGORICAL_COLUMNS) + 7),
+        },
+        'categorical': {
+            'line': category_rows('line'),
+            'direction': category_rows('direction'),
+            'stationCode': {
+                'levels': int(station_series.size),
+                'minSeries': int(station_series.min()),
+                'medianSeries': float(station_series.median()),
+                'maxSeries': int(station_series.max()),
+                'multiplicity': [{'seriesPerCode': int(level), 'stationCodeCount': int(count)} for level, count in multiplicity.items()],
+            },
+        },
+        'calendar': {
+            'weekday': [
+                {'label': WEEKDAY_LABELS[index], 'rows': int(row['size']), 'targetMean': float(row['mean']), 'targetMedian': float(row['median'])}
+                for index, row in weekday.iterrows()
+            ],
+            'isoWeek': [
+                {'week': int(week), 'rows': int(row['size']), 'targetMean': float(row['mean']), 'targetMedian': float(row['median'])}
+                for week, row in iso_week.iterrows()
+            ],
+        },
+        'history': {
+            'quantiles': history_summary,
+            'correlation': history_correlations,
+            'targetByLag7Decile': binned_target_profile(profile, 'lag_7'),
+        },
+        'split': {
+            'train': split_distribution(train),
+            'validation': split_distribution(validation),
+            'test': split_distribution(test),
+        },
+        'ridgePermutationImportance': {
+            'baselineValidationMae': baseline_mae,
+            'rows': importance,
+            'method': 'validation rows에서 한 입력 열만 무작위로 섞은 뒤 MAE 증가를 측정',
+        },
+        'seasonalErrorSlices': {
+            'model': 'Seasonal naive',
+            'weekday': [
+                {'label': WEEKDAY_LABELS[index], 'rows': int(row['rows']), 'mae': float(row['mae']), 'actualMean': float(row['actualMean'])}
+                for index, row in error_weekday.iterrows()
+            ],
+            'demand': [
+                {'label': str(label), 'rows': int(row['rows']), 'mae': float(row['mae']), 'actualMean': float(row['actualMean'])}
+                for label, row in error_demand.iterrows()
+            ],
+        },
+    }
+
+
 def build_summary(source, time_columns):
     band_totals = source[time_columns].sum().sort_index()
     daily = source.groupby('date')[time_columns].sum().sum(axis=1).sort_index()
@@ -473,6 +642,10 @@ def run_models(model_frame):
             for key in ['mae', 'rmse', 'wape', 'smape']
         }
         public_models.append(test_row)
+    input_profile = build_input_profile(
+        model_frame, train, validation, test, ridge,
+        ridge_validation_prediction, baseline_test_prediction,
+    )
     pd.DataFrame(results).to_csv(REPORT_DIR / 'model_metrics.csv', index=False)
     preferred_example = test[(test['line'] == '2호선') & (test['station'] == '강남') & (test['direction'] == '승차')]
     example = (preferred_example if not preferred_example.empty else test).sort_values('date').iloc[0]
@@ -537,7 +710,7 @@ def run_models(model_frame):
         'selectedByValidation': best_name,
         'testExample': test_example,
     }
-    return public_models, audit
+    return public_models, audit, input_profile
 
 
 def main():
@@ -548,7 +721,7 @@ def main():
     weather_model_frame = model_frame.merge(weather_frame, on='date', how='left', validate='many_to_one')
     summary, daily, band_totals, line_totals, station_totals, heatmap, eda = build_summary(source, time_columns)
     make_figures(daily, band_totals, line_totals, station_totals, heatmap, time_columns)
-    models, model_audit = run_models(model_frame)
+    models, model_audit, input_profile = run_models(model_frame)
     weather_analysis = run_weather_ablation(weather_model_frame, models)
     summary['selectedModel'] = model_audit['selectedByValidation']
     summary['testWindow'] = f"{model_audit['testStart']}–{model_audit['testEnd']}"
@@ -584,6 +757,7 @@ def main():
             'coordinatesMissing': int(len(top_stations) - len(spatial_stations)),
         },
         'models': models,
+        'inputProfile': input_profile,
         'weatherAnalysis': {
             'weather': weather_audit,
             **weather_analysis,
@@ -604,6 +778,9 @@ def main():
     (REPORT_DIR / 'data_audit.json').write_text(json.dumps(site_data['audit'], ensure_ascii=False, indent=2), encoding='utf-8')
     (REPORT_DIR / 'weather_ablation.json').write_text(
         json.dumps(site_data['weatherAnalysis'], ensure_ascii=False, indent=2), encoding='utf-8'
+    )
+    (REPORT_DIR / 'input_profile.json').write_text(
+        json.dumps(input_profile, ensure_ascii=False, indent=2), encoding='utf-8'
     )
     print(json.dumps({'site_data': str(SITE_DATA_PATH), 'summary': summary, 'models': models, 'model_audit': model_audit}, ensure_ascii=False, indent=2))
 

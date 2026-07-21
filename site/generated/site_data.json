@@ -1232,6 +1232,917 @@
       }
     }
   ],
+  "inputProfile": {
+    "contract": {
+      "rawInputCount": 10,
+      "categoricalInputCount": 3,
+      "numericInputCount": 7,
+      "featureReadyRows": 184002,
+      "missingAfterWarmup": 0,
+      "encodedColumns": 290
+    },
+    "categorical": {
+      "line": [
+        {
+          "label": "1호선",
+          "rows": 6740,
+          "share": 0.03663003663003663
+        },
+        {
+          "label": "2호선",
+          "rows": 33700,
+          "share": 0.18315018315018314
+        },
+        {
+          "label": "3호선",
+          "rows": 22242,
+          "share": 0.12087912087912088
+        },
+        {
+          "label": "4호선",
+          "rows": 17524,
+          "share": 0.09523809523809523
+        },
+        {
+          "label": "5호선",
+          "rows": 37744,
+          "share": 0.20512820512820512
+        },
+        {
+          "label": "6호선",
+          "rows": 24938,
+          "share": 0.13553113553113552
+        },
+        {
+          "label": "7호선",
+          "rows": 28308,
+          "share": 0.15384615384615385
+        },
+        {
+          "label": "8호선",
+          "rows": 12806,
+          "share": 0.0695970695970696
+        }
+      ],
+      "direction": [
+        {
+          "label": "승차",
+          "rows": 92001,
+          "share": 0.5
+        },
+        {
+          "label": "하차",
+          "rows": 92001,
+          "share": 0.5
+        }
+      ],
+      "stationCode": {
+        "levels": 273,
+        "minSeries": 2,
+        "medianSeries": 2.0,
+        "maxSeries": 2,
+        "multiplicity": [
+          {
+            "seriesPerCode": 2,
+            "stationCodeCount": 273
+          }
+        ]
+      }
+    },
+    "calendar": {
+      "weekday": [
+        {
+          "label": "월",
+          "rows": 26208,
+          "targetMean": 17488.2734375,
+          "targetMedian": 13786.5
+        },
+        {
+          "label": "화",
+          "rows": 26208,
+          "targetMean": 17957.02734375,
+          "targetMedian": 14172.0
+        },
+        {
+          "label": "수",
+          "rows": 26754,
+          "targetMean": 18255.25,
+          "targetMedian": 14426.5
+        },
+        {
+          "label": "목",
+          "rows": 26208,
+          "targetMean": 18164.259765625,
+          "targetMedian": 14223.5
+        },
+        {
+          "label": "금",
+          "rows": 26208,
+          "targetMean": 18711.318359375,
+          "targetMedian": 14613.5
+        },
+        {
+          "label": "토",
+          "rows": 26208,
+          "targetMean": 13900.0380859375,
+          "targetMedian": 10342.0
+        },
+        {
+          "label": "일",
+          "rows": 26208,
+          "targetMean": 10279.345703125,
+          "targetMedian": 7603.5
+        }
+      ],
+      "isoWeek": [
+        {
+          "week": 1,
+          "rows": 1638,
+          "targetMean": 18482.919921875,
+          "targetMedian": 14288.5
+        },
+        {
+          "week": 5,
+          "rows": 2730,
+          "targetMean": 9543.0517578125,
+          "targetMedian": 6670.0
+        },
+        {
+          "week": 6,
+          "rows": 3822,
+          "targetMean": 15670.9873046875,
+          "targetMedian": 11909.5
+        },
+        {
+          "week": 7,
+          "rows": 3822,
+          "targetMean": 16357.0302734375,
+          "targetMedian": 12333.5
+        },
+        {
+          "week": 8,
+          "rows": 3822,
+          "targetMean": 16448.068359375,
+          "targetMedian": 12448.0
+        },
+        {
+          "week": 9,
+          "rows": 3822,
+          "targetMean": 16412.39453125,
+          "targetMedian": 12365.0
+        },
+        {
+          "week": 10,
+          "rows": 3822,
+          "targetMean": 15661.1044921875,
+          "targetMedian": 11904.5
+        },
+        {
+          "week": 11,
+          "rows": 3822,
+          "targetMean": 17321.55078125,
+          "targetMedian": 13387.5
+        },
+        {
+          "week": 12,
+          "rows": 3822,
+          "targetMean": 17328.94921875,
+          "targetMedian": 13482.0
+        },
+        {
+          "week": 13,
+          "rows": 3822,
+          "targetMean": 17269.234375,
+          "targetMedian": 13456.5
+        },
+        {
+          "week": 14,
+          "rows": 3822,
+          "targetMean": 17012.208984375,
+          "targetMedian": 13166.0
+        },
+        {
+          "week": 15,
+          "rows": 3822,
+          "targetMean": 17223.521484375,
+          "targetMedian": 13266.0
+        },
+        {
+          "week": 16,
+          "rows": 3822,
+          "targetMean": 16994.943359375,
+          "targetMedian": 13322.0
+        },
+        {
+          "week": 17,
+          "rows": 3822,
+          "targetMean": 17343.669921875,
+          "targetMedian": 13544.5
+        },
+        {
+          "week": 18,
+          "rows": 3822,
+          "targetMean": 16286.744140625,
+          "targetMedian": 12524.5
+        },
+        {
+          "week": 19,
+          "rows": 3822,
+          "targetMean": 14637.9873046875,
+          "targetMedian": 10984.5
+        },
+        {
+          "week": 20,
+          "rows": 3822,
+          "targetMean": 17481.296875,
+          "targetMedian": 13627.0
+        },
+        {
+          "week": 21,
+          "rows": 3822,
+          "targetMean": 17376.955078125,
+          "targetMedian": 13614.0
+        },
+        {
+          "week": 22,
+          "rows": 3822,
+          "targetMean": 17234.30078125,
+          "targetMedian": 13579.0
+        },
+        {
+          "week": 23,
+          "rows": 3822,
+          "targetMean": 14462.142578125,
+          "targetMedian": 10873.0
+        },
+        {
+          "week": 24,
+          "rows": 3822,
+          "targetMean": 16974.615234375,
+          "targetMedian": 13303.5
+        },
+        {
+          "week": 25,
+          "rows": 3822,
+          "targetMean": 16683.94921875,
+          "targetMedian": 12865.5
+        },
+        {
+          "week": 26,
+          "rows": 3822,
+          "targetMean": 16691.76171875,
+          "targetMedian": 12695.0
+        },
+        {
+          "week": 27,
+          "rows": 3822,
+          "targetMean": 16434.771484375,
+          "targetMedian": 12541.5
+        },
+        {
+          "week": 28,
+          "rows": 3822,
+          "targetMean": 16241.8505859375,
+          "targetMedian": 12325.0
+        },
+        {
+          "week": 29,
+          "rows": 3822,
+          "targetMean": 15987.6416015625,
+          "targetMedian": 12194.0
+        },
+        {
+          "week": 30,
+          "rows": 3822,
+          "targetMean": 16094.908203125,
+          "targetMedian": 12148.0
+        },
+        {
+          "week": 31,
+          "rows": 3822,
+          "targetMean": 15298.6474609375,
+          "targetMedian": 11509.5
+        },
+        {
+          "week": 32,
+          "rows": 3822,
+          "targetMean": 15485.6796875,
+          "targetMedian": 11766.0
+        },
+        {
+          "week": 33,
+          "rows": 3822,
+          "targetMean": 14675.73046875,
+          "targetMedian": 10956.0
+        },
+        {
+          "week": 34,
+          "rows": 3822,
+          "targetMean": 16077.6484375,
+          "targetMedian": 12259.5
+        },
+        {
+          "week": 35,
+          "rows": 3822,
+          "targetMean": 16197.0869140625,
+          "targetMedian": 12364.0
+        },
+        {
+          "week": 36,
+          "rows": 3822,
+          "targetMean": 16561.470703125,
+          "targetMedian": 12851.0
+        },
+        {
+          "week": 37,
+          "rows": 3822,
+          "targetMean": 17069.35546875,
+          "targetMedian": 13468.0
+        },
+        {
+          "week": 38,
+          "rows": 3822,
+          "targetMean": 17076.47265625,
+          "targetMedian": 13444.5
+        },
+        {
+          "week": 39,
+          "rows": 3822,
+          "targetMean": 17354.302734375,
+          "targetMedian": 13582.5
+        },
+        {
+          "week": 40,
+          "rows": 3822,
+          "targetMean": 15018.8720703125,
+          "targetMedian": 11264.5
+        },
+        {
+          "week": 41,
+          "rows": 3822,
+          "targetMean": 10109.818359375,
+          "targetMedian": 7209.5
+        },
+        {
+          "week": 42,
+          "rows": 3822,
+          "targetMean": 17072.498046875,
+          "targetMedian": 13481.5
+        },
+        {
+          "week": 43,
+          "rows": 3822,
+          "targetMean": 17524.6953125,
+          "targetMedian": 13679.0
+        },
+        {
+          "week": 44,
+          "rows": 3822,
+          "targetMean": 17652.134765625,
+          "targetMedian": 13801.5
+        },
+        {
+          "week": 45,
+          "rows": 3822,
+          "targetMean": 17353.94140625,
+          "targetMedian": 13554.5
+        },
+        {
+          "week": 46,
+          "rows": 3822,
+          "targetMean": 17448.671875,
+          "targetMedian": 13612.0
+        },
+        {
+          "week": 47,
+          "rows": 3822,
+          "targetMean": 17294.294921875,
+          "targetMedian": 13537.5
+        },
+        {
+          "week": 48,
+          "rows": 3822,
+          "targetMean": 17209.013671875,
+          "targetMedian": 13397.0
+        },
+        {
+          "week": 49,
+          "rows": 3822,
+          "targetMean": 17260.234375,
+          "targetMedian": 13364.0
+        },
+        {
+          "week": 50,
+          "rows": 3822,
+          "targetMean": 17468.08203125,
+          "targetMedian": 13558.5
+        },
+        {
+          "week": 51,
+          "rows": 3822,
+          "targetMean": 17846.736328125,
+          "targetMedian": 13577.0
+        },
+        {
+          "week": 52,
+          "rows": 3822,
+          "targetMean": 16077.134765625,
+          "targetMedian": 11817.5
+        }
+      ]
+    },
+    "history": {
+      "quantiles": [
+        {
+          "key": "lag_1",
+          "label": "하루 전 수요",
+          "count": 184002,
+          "mean": 16362.761056945033,
+          "std": 13890.651457925544,
+          "min": 325.0,
+          "max": 125998.0,
+          "quantiles": [
+            {
+              "label": "P05",
+              "value": 3107.0
+            },
+            {
+              "label": "P25",
+              "value": 7367.0
+            },
+            {
+              "label": "P50",
+              "value": 12509.0
+            },
+            {
+              "label": "P75",
+              "value": 20575.0
+            },
+            {
+              "label": "P95",
+              "value": 43988.0
+            }
+          ]
+        },
+        {
+          "key": "lag_7",
+          "label": "일주일 전 수요",
+          "count": 184002,
+          "mean": 16342.017222638884,
+          "std": 13871.208410110723,
+          "min": 325.0,
+          "max": 125998.0,
+          "quantiles": [
+            {
+              "label": "P05",
+              "value": 3098.0
+            },
+            {
+              "label": "P25",
+              "value": 7355.0
+            },
+            {
+              "label": "P50",
+              "value": 12492.0
+            },
+            {
+              "label": "P75",
+              "value": 20567.0
+            },
+            {
+              "label": "P95",
+              "value": 43938.0
+            }
+          ]
+        },
+        {
+          "key": "lag_14",
+          "label": "2주 전 수요",
+          "count": 184002,
+          "mean": 16301.747654916795,
+          "std": 13824.522644714018,
+          "min": 325.0,
+          "max": 125998.0,
+          "quantiles": [
+            {
+              "label": "P05",
+              "value": 3092.0
+            },
+            {
+              "label": "P25",
+              "value": 7340.0
+            },
+            {
+              "label": "P50",
+              "value": 12462.0
+            },
+            {
+              "label": "P75",
+              "value": 20535.0
+            },
+            {
+              "label": "P95",
+              "value": 43822.0
+            }
+          ]
+        },
+        {
+          "key": "lag_28",
+          "label": "4주 전 수요",
+          "count": 184002,
+          "mean": 16192.06286888186,
+          "std": 13754.630680889675,
+          "min": 325.0,
+          "max": 125998.0,
+          "quantiles": [
+            {
+              "label": "P05",
+              "value": 3066.050000000001
+            },
+            {
+              "label": "P25",
+              "value": 7278.0
+            },
+            {
+              "label": "P50",
+              "value": 12361.0
+            },
+            {
+              "label": "P75",
+              "value": 20403.0
+            },
+            {
+              "label": "P95",
+              "value": 43581.94999999998
+            }
+          ]
+        },
+        {
+          "key": "rolling_7",
+          "label": "직전 7일 평균",
+          "count": 184002,
+          "mean": 16328.97788999188,
+          "std": 13045.483503222438,
+          "min": 584.2857142857143,
+          "max": 101406.85714285714,
+          "quantiles": [
+            {
+              "label": "P05",
+              "value": 3497.4285714285716
+            },
+            {
+              "label": "P25",
+              "value": 7893.0
+            },
+            {
+              "label": "P50",
+              "value": 12838.42857142857
+            },
+            {
+              "label": "P75",
+              "value": 20321.0
+            },
+            {
+              "label": "P95",
+              "value": 43633.64999999997
+            }
+          ]
+        }
+      ],
+      "correlation": [
+        {
+          "key": "lag_1",
+          "label": "하루 전 수요",
+          "pearson": 0.914651402927716
+        },
+        {
+          "key": "lag_7",
+          "label": "일주일 전 수요",
+          "pearson": 0.9568843745666213
+        },
+        {
+          "key": "lag_14",
+          "label": "2주 전 수요",
+          "pearson": 0.9539746151080783
+        },
+        {
+          "key": "lag_28",
+          "label": "4주 전 수요",
+          "pearson": 0.9568745212855425
+        },
+        {
+          "key": "rolling_7",
+          "label": "직전 7일 평균",
+          "pearson": 0.9316807365517918
+        }
+      ],
+      "targetByLag7Decile": [
+        {
+          "label": "Q01",
+          "inputMedian": 3098.0,
+          "targetMean": 3639.859619140625,
+          "rows": 18407
+        },
+        {
+          "label": "Q02",
+          "inputMedian": 5461.0,
+          "targetMean": 6154.150390625,
+          "rows": 18394
+        },
+        {
+          "label": "Q03",
+          "inputMedian": 7356.0,
+          "targetMean": 7804.462890625,
+          "rows": 18410
+        },
+        {
+          "label": "Q04",
+          "inputMedian": 9225.0,
+          "targetMean": 9611.5205078125,
+          "rows": 18390
+        },
+        {
+          "label": "Q05",
+          "inputMedian": 11362.0,
+          "targetMean": 11598.6953125,
+          "rows": 18402
+        },
+        {
+          "label": "Q06",
+          "inputMedian": 13748.0,
+          "targetMean": 13887.724609375,
+          "rows": 18399
+        },
+        {
+          "label": "Q07",
+          "inputMedian": 16731.0,
+          "targetMean": 16620.001953125,
+          "rows": 18404
+        },
+        {
+          "label": "Q08",
+          "inputMedian": 20568.0,
+          "targetMean": 20239.943359375,
+          "rows": 18397
+        },
+        {
+          "label": "Q09",
+          "inputMedian": 26817.0,
+          "targetMean": 26424.5078125,
+          "rows": 18398
+        },
+        {
+          "label": "Q10",
+          "inputMedian": 43938.0,
+          "targetMean": 48013.6484375,
+          "rows": 18401
+        }
+      ]
+    },
+    "split": {
+      "train": {
+        "rows": 146874,
+        "target": {
+          "count": 146874,
+          "mean": 16190.673740757384,
+          "std": 13733.04904156249,
+          "min": 325.0,
+          "max": 125998.0,
+          "quantiles": [
+            {
+              "label": "P05",
+              "value": 3076.6500000000005
+            },
+            {
+              "label": "P25",
+              "value": 7278.0
+            },
+            {
+              "label": "P50",
+              "value": 12372.5
+            },
+            {
+              "label": "P75",
+              "value": 20403.0
+            },
+            {
+              "label": "P95",
+              "value": 43424.45000000004
+            }
+          ]
+        },
+        "lag7Median": 12260.0,
+        "rolling7Median": 12644.071428571428
+      },
+      "validation": {
+        "rows": 18564,
+        "target": {
+          "count": 18564,
+          "mean": 17356.252046972637,
+          "std": 14308.440773382215,
+          "min": 667.0,
+          "max": 115445.0,
+          "quantiles": [
+            {
+              "label": "P05",
+              "value": 3530.15
+            },
+            {
+              "label": "P25",
+              "value": 8000.75
+            },
+            {
+              "label": "P50",
+              "value": 13549.0
+            },
+            {
+              "label": "P75",
+              "value": 21510.25
+            },
+            {
+              "label": "P95",
+              "value": 46155.94999999999
+            }
+          ]
+        },
+        "lag7Median": 13579.0,
+        "rolling7Median": 13951.714285714286
+      },
+      "test": {
+        "rows": 18564,
+        "target": {
+          "count": 18564,
+          "mean": 17091.645442792502,
+          "std": 14731.529648913463,
+          "min": 580.0,
+          "max": 120489.0,
+          "quantiles": [
+            {
+              "label": "P05",
+              "value": 3351.15
+            },
+            {
+              "label": "P25",
+              "value": 7714.75
+            },
+            {
+              "label": "P50",
+              "value": 12991.0
+            },
+            {
+              "label": "P75",
+              "value": 21108.5
+            },
+            {
+              "label": "P95",
+              "value": 47470.09999999993
+            }
+          ]
+        },
+        "lag7Median": 13421.0,
+        "rolling7Median": 13375.142857142857
+      }
+    },
+    "ridgePermutationImportance": {
+      "baselineValidationMae": 1480.037180440396,
+      "rows": [
+        {
+          "key": "lag_28",
+          "label": "4주 전 수요",
+          "maeIncrease": 3718.012170664939,
+          "relativeIncrease": 2.5121072766284267
+        },
+        {
+          "key": "lag_1",
+          "label": "하루 전 수요",
+          "maeIncrease": 2522.016488530934,
+          "relativeIncrease": 1.7040223866406448
+        },
+        {
+          "key": "lag_14",
+          "label": "2주 전 수요",
+          "maeIncrease": 1540.733409376189,
+          "relativeIncrease": 1.0410099352488782
+        },
+        {
+          "key": "rolling_7",
+          "label": "직전 7일 평균",
+          "maeIncrease": 1311.062735741372,
+          "relativeIncrease": 0.8858309460518118
+        },
+        {
+          "key": "lag_7",
+          "label": "일주일 전 수요",
+          "maeIncrease": 1156.1344619373197,
+          "relativeIncrease": 0.7811523096962356
+        },
+        {
+          "key": "weekday",
+          "label": "요일",
+          "maeIncrease": 409.89891372049897,
+          "relativeIncrease": 0.2769517679268912
+        },
+        {
+          "key": "station_code",
+          "label": "역번호",
+          "maeIncrease": 400.65806448378385,
+          "relativeIncrease": 0.27070810772778364
+        },
+        {
+          "key": "line",
+          "label": "노선",
+          "maeIncrease": 209.89028941476454,
+          "relativeIncrease": 0.14181420047320037
+        },
+        {
+          "key": "week_of_year",
+          "label": "ISO 주차",
+          "maeIncrease": 6.701965723334752,
+          "relativeIncrease": 0.004528241460353403
+        },
+        {
+          "key": "direction",
+          "label": "승하차 방향",
+          "maeIncrease": 0.0005218683090788545,
+          "relativeIncrease": 3.526048642396732e-07
+        }
+      ],
+      "method": "validation rows에서 한 입력 열만 무작위로 섞은 뒤 MAE 증가를 측정"
+    },
+    "seasonalErrorSlices": {
+      "model": "Seasonal naive",
+      "weekday": [
+        {
+          "label": "월",
+          "rows": 2730,
+          "mae": 488.8897399902344,
+          "actualMean": 18574.962890625
+        },
+        {
+          "label": "화",
+          "rows": 2730,
+          "mae": 532.3974609375,
+          "actualMean": 18959.9453125
+        },
+        {
+          "label": "수",
+          "rows": 2730,
+          "mae": 1097.021240234375,
+          "actualMean": 19209.703125
+        },
+        {
+          "label": "목",
+          "rows": 2184,
+          "mae": 2559.327392578125,
+          "actualMean": 17816.912109375
+        },
+        {
+          "label": "금",
+          "rows": 2730,
+          "mae": 1203.291259765625,
+          "actualMean": 19663.306640625
+        },
+        {
+          "label": "토",
+          "rows": 2730,
+          "mae": 866.2681274414062,
+          "actualMean": 14733.0009765625
+        },
+        {
+          "label": "일",
+          "rows": 2730,
+          "mae": 621.3428344726562,
+          "actualMean": 10828.73828125
+        }
+      ],
+      "demand": [
+        {
+          "label": "하위 25%",
+          "rows": 4641,
+          "mae": 567.6431884765625,
+          "actualMean": 5013.37744140625
+        },
+        {
+          "label": "25–50%",
+          "rows": 4642,
+          "mae": 721.6488647460938,
+          "actualMean": 10223.2783203125
+        },
+        {
+          "label": "50–75%",
+          "rows": 4640,
+          "mae": 963.2049560546875,
+          "actualMean": 16537.87890625
+        },
+        {
+          "label": "상위 25%",
+          "rows": 4641,
+          "mae": 1780.891845703125,
+          "actualMean": 36593.41015625
+        }
+      ]
+    }
+  },
   "weatherAnalysis": {
     "weather": {
       "sourceName": "Meteostat daily / Seoul WMO 47108",

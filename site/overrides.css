@@ -431,3 +431,52 @@
   .reference-shelf { grid-template-columns: 1fr; }
   .reference-shelf a { min-height: 130px; }
 }
+
+/* Main-page input audit: a compact evidence layer before the full profile opens. */
+.input-overview {
+  padding-top: 76px;
+  padding-bottom: 110px;
+  border-top: 1px solid var(--line);
+}
+
+.input-overview-grid {
+  display: grid;
+  grid-template-columns: 1.05fr .95fr;
+  gap: 18px;
+}
+
+.input-contract-card,
+.input-importance-card {
+  border: 1px solid var(--line);
+  padding: 28px;
+  background: rgba(255,255,255,.44);
+}
+
+.input-contract-stats {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1px;
+  margin: 23px 0 18px;
+  border: 1px solid var(--line);
+  background: var(--line);
+}
+
+.input-contract-stats > div { min-height: 91px; padding: 13px; background: rgba(185,227,204,.22); }
+.input-contract-stats span { display: block; color: var(--muted); font-family: var(--mono); font-size: 8px; line-height: 1.35; letter-spacing: .05em; }
+.input-contract-stats strong { display: block; margin-top: 9px; color: var(--green); font-size: 21px; letter-spacing: -.06em; }
+.input-importance-chart { height: 240px; margin-top: 20px; }
+#inputProfileInsight { display: grid; gap: 3px; }
+#inputProfileInsight strong { color: var(--green); font-family: var(--sans); font-size: 13px; }
+#inputProfileInsight span { color: var(--muted); }
+
+@media (max-width: 850px) {
+  .input-overview-grid { grid-template-columns: 1fr; }
+}
+
+@media (max-width: 560px) {
+  .input-overview { padding-top: 54px; padding-bottom: 76px; }
+  .input-contract-card, .input-importance-card { padding: 22px; }
+  .input-contract-stats { grid-template-columns: repeat(2, 1fr); }
+  .input-contract-stats > div { min-height: 76px; }
+  .input-importance-chart { height: 220px; }
+}

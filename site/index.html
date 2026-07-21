@@ -16,7 +16,7 @@
   <header class="site-header">
     <a class="brand brand-wordmark" href="#top" aria-label="seoul-metro 홈"><span class="brand-mark">↗</span><span>seoul-metro</span></a>
     <nav class="main-nav" aria-label="주요 메뉴">
-      <a href="data-audit.html" target="_blank" rel="noopener">Data audit ↗</a><a href="daily-rhythm.html" target="_blank" rel="noopener">Daily rhythm ↗</a><a href="station-guide.html" target="_blank" rel="noopener">Stations ↗</a><a href="forecast-guide.html" target="_blank" rel="noopener">Forecast ↗</a><a href="methodology.html" target="_blank" rel="noopener">Method ↗</a>
+      <a href="data-audit.html" target="_blank" rel="noopener">Data audit ↗</a><a href="daily-rhythm.html" target="_blank" rel="noopener">Daily rhythm ↗</a><a href="station-guide.html" target="_blank" rel="noopener">Stations ↗</a><a href="forecast-guide.html" target="_blank" rel="noopener">Forecast ↗</a><a href="enrichment-guide.html" target="_blank" rel="noopener">External ↗</a><a href="methodology.html" target="_blank" rel="noopener">Method ↗</a>
     </nav>
     <span class="header-status"><span class="status-dot"></span>2025 snapshot</span>
   </header>
@@ -66,7 +66,7 @@
 
     <section class="site-architecture section-shell" id="guide" aria-labelledby="site-architecture-title">
       <div class="architecture-heading"><div><p class="eyebrow">HOW TO READ THIS SITE</p><h2 id="site-architecture-title">요약에서 근거로,<br><em>근거에서 재현으로.</em></h2></div><p>이 메인 페이지는 결과를 빠르게 조망하는 지도입니다. 아래 네 단계는 같은 내용을 반복하지 않고, 앞 단계의 산출물을 다음 단계의 입력으로 삼아 점차 구체화됩니다.</p></div>
-      <div class="architecture-flow"><article class="architecture-card"><span>01 / FOUNDATION</span><h3>데이터 계약</h3><p>원본 구조, 제거·보존 규칙, 결측·중복 검사와 행 수 변화를 검증합니다.</p><a href="data-audit.html" target="_blank" rel="noopener">데이터 점검 상세 ↗</a></article><article class="architecture-card"><span>02 / EVIDENCE</span><h3>시간과 공간의 패턴</h3><p>시간대·요일·노선·역을 집계해 ‘무엇이 반복되는가’를 관찰합니다.</p><div><a href="daily-rhythm.html" target="_blank" rel="noopener">하루의 리듬 ↗</a><a href="station-guide.html" target="_blank" rel="noopener">역의 역할 ↗</a></div></article><article class="architecture-card"><span>03 / DECISION</span><h3>예측 실험</h3><p>과거 패턴을 입력으로 다음 날짜의 일일 수요를 추정하고 기준선과 비교합니다.</p><a href="forecast-guide.html" target="_blank" rel="noopener">예측 설계·결과 ↗</a></article><article class="architecture-card"><span>04 / REPRODUCIBILITY</span><h3>방법과 경계</h3><p>코드 경로, 평가 원칙, 데이터가 말할 수 없는 범위를 기록합니다.</p><a href="methodology.html" target="_blank" rel="noopener">재현 방법·한계 ↗</a></article></div>
+      <div class="architecture-flow"><article class="architecture-card"><span>01 / FOUNDATION</span><h3>데이터 계약</h3><p>원본 구조, 제거·보존 규칙, 결측·중복 검사와 행 수 변화를 검증합니다.</p><a href="data-audit.html" target="_blank" rel="noopener">데이터 점검 상세 ↗</a></article><article class="architecture-card"><span>02 / EVIDENCE</span><h3>시간과 공간의 패턴</h3><p>시간대·요일·노선·역을 집계해 ‘무엇이 반복되는가’를 관찰합니다.</p><div><a href="daily-rhythm.html" target="_blank" rel="noopener">하루의 리듬 ↗</a><a href="station-guide.html" target="_blank" rel="noopener">역의 역할 ↗</a></div></article><article class="architecture-card"><span>03 / DECISION</span><h3>예측 실험</h3><p>과거 패턴을 입력으로 다음 날짜의 일일 수요를 추정하고 기준선과 비교합니다.</p><div><a href="forecast-guide.html" target="_blank" rel="noopener">예측 설계·결과 ↗</a><a href="enrichment-guide.html" target="_blank" rel="noopener">외부 변수 검증 ↗</a></div></article><article class="architecture-card"><span>04 / REPRODUCIBILITY</span><h3>방법과 경계</h3><p>코드 경로, 평가 원칙, 데이터가 말할 수 없는 범위를 기록합니다.</p><a href="methodology.html" target="_blank" rel="noopener">재현 방법·한계 ↗</a></article></div>
     </section>
 
     <section class="eda-lab section-shell" id="eda">
@@ -101,7 +101,7 @@
     </section>
 
     <section class="forecast-section section-shell" id="forecast">
-      <div class="section-heading"><div><p class="eyebrow">06 / FORECAST</p><h2>내일의 수요를<br><em>오늘의 패턴으로.</em></h2></div><p class="section-aside">과거의 같은 역과 최근 리듬만으로 다음 날의 일일 수요를 추정해 봅니다. 중요한 것은 가장 복잡한 모델이 아니라, 기준선보다 얼마나 나아졌는가입니다.<a class="section-detail-link" href="forecast-guide.html" target="_blank" rel="noopener">결과와 해석 상세 보기 ↗</a></p></div>
+      <div class="section-heading"><div><p class="eyebrow">06 / FORECAST</p><h2>내일의 수요를<br><em>오늘의 패턴으로.</em></h2></div><p class="section-aside">과거의 같은 역과 최근 리듬만으로 다음 날의 일일 수요를 추정해 봅니다. 중요한 것은 가장 복잡한 모델이 아니라, 기준선보다 얼마나 나아졌는가입니다.<a class="section-detail-link" href="forecast-guide.html" target="_blank" rel="noopener">결과와 해석 상세 보기 ↗</a><a class="section-detail-link" href="enrichment-guide.html" target="_blank" rel="noopener">날씨·주소 외부변수 실험 ↗</a></p></div>
       <div class="forecast-grid"><article class="model-card"><div class="model-card-head"><div><p class="card-kicker">MODEL BENCHMARK</p><h3>예측은 얼마나 가까웠을까?</h3></div><span class="model-badge">TEST PERIOD</span></div><div id="modelTable" class="model-table"></div><p class="chart-footnote">MAE는 평균적으로 몇 명을 빗나갔는지, WAPE는 전체 규모 대비 오차 비율을 뜻합니다.</p></article><article class="forecast-note"><p class="card-kicker">WHAT WE LEARNED</p><h3 data-value="forecastInsight">기준선을 넘는 순간, 패턴이 신호가 된다.</h3><p>모델은 특정 역의 수요를 ‘이유’까지 설명하지 않습니다. 대신 어떤 정보가 다음 날의 규모를 안정적으로 가늠하게 하는지, 그리고 어디에서 오차가 커지는지를 드러냅니다.</p><div class="mini-stat-row"><div><span>TRAIN / VALID / TEST</span><strong data-value="splitText">80 / 10 / 10</strong></div><div><span>FORECAST UNIT</span><strong>STATION × DAY</strong></div></div></article></div>
     </section>
 

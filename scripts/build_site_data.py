@@ -1,5 +1,7 @@
 from pathlib import Path
+from concurrent.futures import ThreadPoolExecutor
 import json
+import re
 
 import matplotlib
 matplotlib.use('Agg')
@@ -16,9 +18,31 @@ from sklearn.preprocessing import OneHotEncoder, OrdinalEncoder, StandardScaler
 
 ROOT = Path(__file__).resolve().parents[1]
 RAW_PATH = ROOT / 'data/raw/seoul_metro_ridership_2025.csv'
+WEATHER_PATH = ROOT / 'data/raw/seoul_weather_2025_meteostat.csv'
+STATION_METADATA_PATH = ROOT / 'data/raw/kric_subway_stations.json'
 SITE_DATA_PATH = ROOT / 'site/generated/site_data.json'
 REPORT_DIR = ROOT / 'reports'
 FIGURE_DIR = REPORT_DIR / 'figures'
+
+WEATHER_COLUMNS = ['temp', 'tmin', 'tmax', 'rhum', 'prcp', 'wspd', 'pres', 'cldc']
+WEATHER_FIELD_DETAILS = {
+    'temp': {'label': '평균 기온', 'unit': '°C'},
+    'tmin': {'label': '최저 기온', 'unit': '°C'},
+    'tmax': {'label': '최고 기온', 'unit': '°C'},
+    'rhum': {'label': '평균 상대습도', 'unit': '%'},
+    'prcp': {'label': '강수량', 'unit': 'mm'},
+    'wspd': {'label': '평균 풍속', 'unit': 'km/h'},
+    'pres': {'label': '평균 해면기압', 'unit': 'hPa'},
+    'cldc': {'label': '평균 운량', 'unit': 'okta'},
+}
+BASE_FEATURE_COLUMNS = [
+    'line', 'station', 'direction',
+    'weekday', 'month', 'week_of_year', 'day_of_month', 'day_of_year', 'is_weekend',
+    'lag_1', 'lag_7', 'lag_14', 'lag_28', 'rolling_7',
+]
+BASE_CATEGORICAL_COLUMNS = ['line', 'station', 'direction']
+KRIC_SOURCE_URL = 'https://www.arcgis.com/home/item.html?id=a3ca58b3ef864e61aab932c5c592e729'
+METEOSTAT_SOURCE_URL = 'https://data.meteostat.net/daily/2025/47108.csv.gz'
 
 # Representative centroids for the ten ranked station names. These were read from
 # the Korean national subway-station spatial feature service (2026.04 reference)
@@ -213,9 +237,218 @@ def make_figures(daily, band_totals, line_totals, station_totals, heatmap, time_
     figure.tight_layout(); figure.savefig(FIGURE_DIR / 'station_ranking.png', bbox_inches='tight'); plt.close(figure)
 
 
+def normalize_station_name(value):
+    """Make a conservative join key while preserving the raw station label."""
+    name = str(value).strip().replace('·', '').replace('ㆍ', '')
+    name = re.sub(r'\s+', '', name)
+    name = re.sub(r'역$', '', name)
+    return re.sub(r'\([^)]*\)', '', name)
+
+
+def load_weather():
+    if not WEATHER_PATH.exists():
+        raise FileNotFoundError(
+            f'{WEATHER_PATH} is required. Run scripts/fetch_enrichment_data.py first.'
+        )
+    weather = pd.read_csv(WEATHER_PATH)
+    weather['date'] = pd.to_datetime(weather[['year', 'month', 'day']])
+    missing_before = {column: int(weather[column].isna().sum()) for column in WEATHER_COLUMNS}
+    weather['prcp'] = weather['prcp'].fillna(0)
+    selected = weather[['date', *WEATHER_COLUMNS]].copy()
+    selected = selected.rename(columns={column: f'weather_{column}' for column in WEATHER_COLUMNS})
+    for column in WEATHER_COLUMNS:
+        selected[f'weather_{column}_lag1'] = selected[f'weather_{column}'].shift(1)
+    source_mix = {
+        column: weather[f'{column}_source'].dropna().value_counts().to_dict()
+        for column in WEATHER_COLUMNS
+        if f'{column}_source' in weather
+    }
+    audit = {
+        'sourceName': 'Meteostat daily / Seoul WMO 47108',
+        'sourceUrl': METEOSTAT_SOURCE_URL,
+        'stationId': '47108',
+        'rowCount': int(len(weather)),
+        'dateStart': weather['date'].min().strftime('%Y-%m-%d'),
+        'dateEnd': weather['date'].max().strftime('%Y-%m-%d'),
+        'fields': [
+            {
+                'name': f'weather_{column}',
+                **WEATHER_FIELD_DETAILS[column],
+                'missingBeforePolicy': missing_before[column],
+                'targetDayStatus': '사후 실현값 — 운영 입력 불가',
+                'strictFeature': f'weather_{column}_lag1',
+            }
+            for column in WEATHER_COLUMNS
+        ],
+        'imputation': {
+            'weather_prcp': '11개 결측을 0 mm로 대체; 결측은 강수 관측 부재이므로 보수적으로 무강수로 처리',
+        },
+        'sourceMix': source_mix,
+    }
+    return selected, audit
+
+
+def attach_station_metadata(model_frame):
+    if not STATION_METADATA_PATH.exists():
+        raise FileNotFoundError(
+            f'{STATION_METADATA_PATH} is required. Run scripts/fetch_enrichment_data.py first.'
+        )
+    feature_collection = json.loads(STATION_METADATA_PATH.read_text(encoding='utf-8'))
+    accepted_lines = {f'{number}호선' for number in range(1, 9)}
+    records = [feature['attributes'] for feature in feature_collection['features']]
+    metadata = pd.DataFrame([
+        {
+            'line': record.get('originallinename'),
+            'station_reference': record.get('stationname'),
+            'station_address': record.get('stationaddress'),
+            'station_lat': record.get('stationlatitude'),
+            'station_lng': record.get('stationlongitude'),
+        }
+        for record in records
+        if record.get('originallinename') in accepted_lines
+    ])
+    metadata['station_key'] = metadata['station_reference'].map(normalize_station_name)
+    metadata['address_district'] = metadata['station_address'].fillna('').str.extract(r'([가-힣]+구)')[0].fillna('비서울권')
+    metadata['address_region'] = metadata['station_address'].fillna('').str.extract(r'^(서울특별시|경기도|인천광역시)')[0].fillna('기타')
+
+    pairs = model_frame[['line', 'station']].drop_duplicates().copy()
+    pairs['station_key'] = pairs['station'].map(normalize_station_name)
+    renamed_pair = (pairs['line'] == '4호선') & (pairs['station'] == '당고개')
+    pairs.loc[renamed_pair, 'station_key'] = normalize_station_name('불암산')
+    joined_pairs = pairs.merge(
+        metadata[['line', 'station_key', 'station_address', 'address_district', 'address_region', 'station_lat', 'station_lng']],
+        on=['line', 'station_key'], how='left', validate='many_to_one',
+    )
+    enriched = model_frame.merge(
+        joined_pairs.drop(columns='station_key'), on=['line', 'station'], how='left', validate='many_to_one',
+    )
+    audit = {
+        'sourceName': 'KRIC national subway-station feature service',
+        'sourceUrl': KRIC_SOURCE_URL,
+        'cachedFeatureCount': int(len(records)),
+        'filteredLineRecordCount': int(len(metadata)),
+        'lineStationPairs': int(len(joined_pairs)),
+        'matchedPairs': int(joined_pairs['station_address'].notna().sum()),
+        'unmatchedPairs': int(joined_pairs['station_address'].isna().sum()),
+        'districtLevels': int(joined_pairs['address_district'].nunique()),
+        'regionLevels': int(joined_pairs['address_region'].nunique()),
+        'joinKey': 'line + normalized station name',
+        'normalization': ['공백·가운뎃점 제거', '말미 역 제거', '괄호 속 보조명 제거'],
+        'historicalAlias': '4호선 당고개 → 불암산 (KRIC 현재 명칭과 2025 원본의 명칭 차이)',
+        'featureColumns': ['address_district', 'address_region', 'station_lat', 'station_lng'],
+    }
+    return enriched, audit
+
+
+def split_time_series(model_frame, feature_columns):
+    ready = model_frame.dropna(subset=feature_columns).copy()
+    dates = sorted(ready['date'].unique())
+    train_end = dates[int(len(dates) * .8) - 1]
+    validation_end = dates[int(len(dates) * .9) - 1]
+    return (
+        ready[ready['date'] <= train_end].copy(),
+        ready[(ready['date'] > train_end) & (ready['date'] <= validation_end)].copy(),
+        ready[ready['date'] > validation_end].copy(),
+    )
+
+
+def run_hgb_experiment(name, model_frame, feature_columns, categorical_columns, eligibility, note):
+    train, validation, test = split_time_series(model_frame, feature_columns)
+    numeric_columns = [column for column in feature_columns if column not in categorical_columns]
+    sample = train.sample(n=min(250_000, len(train)), random_state=42)
+    preprocessor = ColumnTransformer([
+        ('categorical', OrdinalEncoder(handle_unknown='use_encoded_value', unknown_value=-1), categorical_columns),
+        ('numeric', 'passthrough', numeric_columns),
+    ])
+    model = Pipeline([
+        ('preprocess', preprocessor),
+        ('model', HistGradientBoostingRegressor(
+            max_iter=120, learning_rate=.08, max_leaf_nodes=31,
+            l2_regularization=10, random_state=42,
+        )),
+    ])
+    model.fit(sample[feature_columns], sample['passengers'])
+    validation_metrics = metric_row(name, validation['passengers'], model.predict(validation[feature_columns]))
+    test_metrics = metric_row(name, test['passengers'], model.predict(test[feature_columns]))
+    return {
+        'id': name,
+        'model': 'HistGradientBoosting',
+        'eligibility': eligibility,
+        'note': note,
+        'featureCount': len(feature_columns),
+        'categoricalFeatures': categorical_columns,
+        'numericFeatures': numeric_columns,
+        'rows': {'train': int(len(train)), 'validation': int(len(validation)), 'test': int(len(test))},
+        'validation': {key: value for key, value in validation_metrics.items() if key != 'name'},
+        'test': {key: value for key, value in test_metrics.items() if key != 'name'},
+    }
+
+
+def percent_mae_change(reference, candidate):
+    return float((reference - candidate) / reference) if reference else 0.0
+
+
+def run_enrichment_experiments(model_frame, models):
+    address_features = ['address_district', 'address_region', 'station_lat', 'station_lng']
+    lagged_weather_features = [f'weather_{column}_lag1' for column in WEATHER_COLUMNS]
+    observed_weather_features = [f'weather_{column}' for column in WEATHER_COLUMNS]
+    enrichment_categories = [*BASE_CATEGORICAL_COLUMNS, 'address_district', 'address_region']
+    specs = [
+        (
+            'address_only', [*BASE_FEATURE_COLUMNS, *address_features], '운영 사용 가능',
+            '주소에서 추출한 행정구·시도와 역 좌표는 고정 정보입니다. 역명 자체가 이미 입력에 있으므로, 추가 이득이 있는지 별도로 검증합니다.',
+        ),
+        (
+            'address_plus_lagged_weather', [*BASE_FEATURE_COLUMNS, *address_features, *lagged_weather_features], '운영 사용 가능',
+            '목표일 t에는 전날 t−1까지 확정된 일별 기상값만 사용합니다. 목표일의 사후 실현값은 보지 않습니다.',
+        ),
+        (
+            'address_plus_target_weather_oracle', [*BASE_FEATURE_COLUMNS, *address_features, *observed_weather_features], '운영 사용 불가 — 사후 상한선',
+            '목표일 t의 사후 실현 기상값을 넣은 민감도 분석입니다. 예보가 아니라 목표일 후에 확정되는 값이므로 미래 예측 성능으로 채택하지 않습니다.',
+        ),
+    ]
+    # The variants are independent and CPU-bound. Running the three shadow
+    # experiments together keeps the public-site build practical while each
+    # still uses the same fixed split and model settings.
+    with ThreadPoolExecutor(max_workers=len(specs)) as executor:
+        futures = [
+            executor.submit(run_hgb_experiment, name, model_frame, features, enrichment_categories, eligibility, note)
+            for name, features, eligibility, note in specs
+        ]
+        experiments = [future.result() for future in futures]
+    hgb = next(model for model in models if model['name'] == 'HistGradientBoosting')
+    seasonal = next(model for model in models if model['name'] == 'Seasonal naive')
+    for experiment in experiments:
+        experiment['comparison'] = {
+            'validationMaeChangeVsHgb': percent_mae_change(hgb['validation']['mae'], experiment['validation']['mae']),
+            'testMaeChangeVsHgb': percent_mae_change(hgb['mae'], experiment['test']['mae']),
+            'validationMaeChangeVsSeasonal': percent_mae_change(seasonal['validation']['mae'], experiment['validation']['mae']),
+            'testMaeChangeVsSeasonal': percent_mae_change(seasonal['mae'], experiment['test']['mae']),
+        }
+    strict_weather = next(item for item in experiments if item['id'] == 'address_plus_lagged_weather')
+    decision = (
+        '미채택 — 전날 날씨를 더한 트리 모델은 기존 트리보다 좋아졌지만, 검증 MAE에서 7일 계절 기준선을 넘지 못했습니다.'
+    )
+    return {
+        'experiments': experiments,
+        'baselines': {
+            'hgb': {'validation': hgb['validation'], 'test': {key: hgb[key] for key in ['mae', 'rmse', 'wape', 'smape']}},
+            'seasonal': {'validation': seasonal['validation'], 'test': {key: seasonal[key] for key in ['mae', 'rmse', 'wape', 'smape']}},
+        },
+        'summary': {
+            'externalDecision': decision,
+            'strictWeatherValidationGainVsHgb': percent_mae_change(hgb['validation']['mae'], strict_weather['validation']['mae']),
+            'strictWeatherTestGainVsHgb': percent_mae_change(hgb['mae'], strict_weather['test']['mae']),
+            'strictWeatherValidationGapVsSeasonal': percent_mae_change(seasonal['validation']['mae'], strict_weather['validation']['mae']),
+            'strictWeatherTestGapVsSeasonal': percent_mae_change(seasonal['mae'], strict_weather['test']['mae']),
+            'strictWeatherTestMae': strict_weather['test']['mae'],
+        },
+    }
+
+
 def run_models(model_frame):
-    feature_columns = ['line', 'station', 'direction', 'weekday', 'month', 'week_of_year', 'day_of_month', 'day_of_year', 'is_weekend', 'lag_1', 'lag_7', 'lag_14', 'lag_28', 'rolling_7']
-    categorical = ['line', 'station', 'direction']
+    feature_columns = BASE_FEATURE_COLUMNS
+    categorical = BASE_CATEGORICAL_COLUMNS
     numeric = [column for column in feature_columns if column not in categorical]
     source_model_rows = len(model_frame)
     series_count = int(model_frame[['line', 'station_code', 'direction']].drop_duplicates().shape[0])
@@ -346,9 +579,13 @@ def main():
     REPORT_DIR.mkdir(parents=True, exist_ok=True)
     source, time_columns, source_audit = load_source()
     model_frame = build_model_frame(source, time_columns)
+    weather_frame, weather_audit = load_weather()
+    enriched_model_frame, address_audit = attach_station_metadata(model_frame)
+    enriched_model_frame = enriched_model_frame.merge(weather_frame, on='date', how='left', validate='many_to_one')
     summary, daily, band_totals, line_totals, station_totals, heatmap, eda = build_summary(source, time_columns)
     make_figures(daily, band_totals, line_totals, station_totals, heatmap, time_columns)
     models, model_audit = run_models(model_frame)
+    enrichment = run_enrichment_experiments(enriched_model_frame, models)
     summary['selectedModel'] = model_audit['selectedByValidation']
     summary['testWindow'] = f"{model_audit['testStart']}–{model_audit['testEnd']}"
     selected_test = next(model for model in models if model['best'])
@@ -383,12 +620,30 @@ def main():
             'coordinatesMissing': int(len(top_stations) - len(spatial_stations)),
         },
         'models': models,
+        'enrichment': {
+            'weather': weather_audit,
+            'address': address_audit,
+            **enrichment,
+        },
         'eda': eda,
-        'audit': {**source_audit, 'stationCount': int(source['station'].nunique()), 'lineCount': int(source['line'].nunique()), 'model': model_audit},
+        'audit': {
+            **source_audit,
+            'stationCount': int(source['station'].nunique()),
+            'lineCount': int(source['line'].nunique()),
+            'model': model_audit,
+            'externalInputs': {
+                'weatherRows': weather_audit['rowCount'],
+                'addressPairsMatched': address_audit['matchedPairs'],
+                'addressPairsTotal': address_audit['lineStationPairs'],
+            },
+        },
     }
     SITE_DATA_PATH.parent.mkdir(parents=True, exist_ok=True)
     SITE_DATA_PATH.write_text(json.dumps(site_data, ensure_ascii=False, indent=2), encoding='utf-8')
     (REPORT_DIR / 'data_audit.json').write_text(json.dumps(site_data['audit'], ensure_ascii=False, indent=2), encoding='utf-8')
+    (REPORT_DIR / 'enrichment_experiment.json').write_text(
+        json.dumps(site_data['enrichment'], ensure_ascii=False, indent=2), encoding='utf-8'
+    )
     print(json.dumps({'site_data': str(SITE_DATA_PATH), 'summary': summary, 'models': models, 'model_audit': model_audit}, ensure_ascii=False, indent=2))
 
 

@@ -82,5 +82,10 @@
         "HistGradientBoosting": 6212
       }
     }
+  },
+  "externalInputs": {
+    "weatherRows": 365,
+    "addressPairsMatched": 276,
+    "addressPairsTotal": 276
   }
 }

@@ -8,7 +8,14 @@ async function loadData() {
 }
 
 function setText(data) {
-  const values = { ...data.summary, ...data.audit, ...data.audit.model, ...data.eda.daily, ...data.spatial };
+  const values = {
+    ...data.summary,
+    ...data.audit,
+    ...data.audit.model,
+    ...data.eda.daily,
+    ...data.spatial,
+    ...(data.enrichment?.summary || {}),
+  };
   document.querySelectorAll('[data-value]').forEach((element) => {
     const key = element.dataset.value;
     if (values[key] !== undefined) element.textContent = typeof values[key] === 'number' ? numberFormat.format(values[key]) : values[key];
@@ -171,6 +178,66 @@ function drawModels(data) {
   });
 }
 
+function formatMetric(value) {
+  return numberFormat.format(Math.round(value));
+}
+
+function formatChange(value) {
+  const sign = value > 0 ? '+' : '';
+  return `${sign}${(value * 100).toFixed(1)}%`;
+}
+
+function drawEnrichment(data) {
+  const enrichment = data.enrichment;
+  if (!enrichment) return;
+  const { weather, address, experiments, baselines, summary } = enrichment;
+  const decision = document.getElementById('enrichmentDecision');
+  if (decision) decision.textContent = summary.externalDecision;
+
+  const sourceFacts = document.getElementById('enrichmentSources');
+  if (sourceFacts) {
+    sourceFacts.innerHTML = `
+      <article><span>WEATHER COVERAGE</span><strong>${weather.dateStart}–${weather.dateEnd}</strong><p>${numberFormat.format(weather.rowCount)} daily rows · Seoul WMO ${weather.stationId}</p></article>
+      <article><span>ADDRESS JOIN</span><strong>${numberFormat.format(address.matchedPairs)} / ${numberFormat.format(address.lineStationPairs)}</strong><p>line × normalized station-name pairs matched</p></article>
+      <article><span>AREA LEVELS</span><strong>${numberFormat.format(address.districtLevels)} districts</strong><p>${numberFormat.format(address.regionLevels)} region labels · latitude / longitude included</p></article>`;
+  }
+
+  const weatherLedger = document.getElementById('weatherLedger');
+  if (weatherLedger) {
+    weatherLedger.innerHTML = weather.fields.map((field) => `<tr>
+      <td><code>${escapeHtml(field.name)}</code></td><td>${escapeHtml(field.label)}</td><td>${escapeHtml(field.unit)}</td>
+      <td>${numberFormat.format(field.missingBeforePolicy)}</td><td><code>${escapeHtml(field.strictFeature)}</code></td>
+    </tr>`).join('');
+  }
+
+  const addressLedger = document.getElementById('addressLedger');
+  if (addressLedger) {
+    addressLedger.innerHTML = `
+      <div><span>JOIN KEY</span><strong>${escapeHtml(address.joinKey)}</strong></div>
+      <div><span>NORMALIZE</span><strong>${address.normalization.map(escapeHtml).join(' → ')}</strong></div>
+      <div><span>HISTORICAL ALIAS</span><strong>${escapeHtml(address.historicalAlias)}</strong></div>
+      <div><span>MODEL FEATURES</span><strong>${address.featureColumns.map((item) => `<code>${escapeHtml(item)}</code>`).join(' · ')}</strong></div>`;
+  }
+
+  const resultTable = document.getElementById('enrichmentResults');
+  if (resultTable) {
+    const names = {
+      address_only: '주소·좌표만',
+      address_plus_lagged_weather: '주소·좌표 + t−1 날씨',
+      address_plus_target_weather_oracle: '주소·좌표 + 목표일 사후 날씨',
+    };
+    const baseRows = [
+      `<div class="enrichment-result-row baseline"><strong>기존 Seasonal naive</strong><span>운영 기준선</span><b>${formatMetric(baselines.seasonal.validation.mae)}</b><b>${formatMetric(baselines.seasonal.test.mae)}</b><i>비교 기준</i></div>`,
+      `<div class="enrichment-result-row baseline"><strong>기존 HGB</strong><span>외부변수 없음</span><b>${formatMetric(baselines.hgb.validation.mae)}</b><b>${formatMetric(baselines.hgb.test.mae)}</b><i>트리 기준</i></div>`,
+    ];
+    const rows = experiments.map((experiment) => `<div class="enrichment-result-row ${experiment.eligibility.includes('불가') ? 'oracle' : ''}">
+      <strong>${names[experiment.id] || escapeHtml(experiment.id)}</strong><span>${escapeHtml(experiment.eligibility)}</span>
+      <b>${formatMetric(experiment.validation.mae)}</b><b>${formatMetric(experiment.test.mae)}</b>
+      <i>HGB 대비 ${formatChange(experiment.comparison.testMaeChangeVsHgb)}</i></div>`);
+    resultTable.innerHTML = `<div class="enrichment-result-row enrichment-result-head"><span>VARIANT</span><span>ELIGIBILITY</span><span>VALID MAE</span><span>TEST MAE</span><span>TEST Δ vs HGB</span></div>${baseRows.join('')}${rows.join('')}`;
+  }
+}
+
 function drawModelComparison(data) {
   const container = document.getElementById('modelComparison');
   if (!container) return;
@@ -218,4 +285,4 @@ function drawEdaTables(data) {
   if (anomalyTable) anomalyTable.innerHTML = highRows.join('') + lowRows.join('');
 }
 
-loadData().then((data) => { setText(data); drawCharts(data); drawHeatmap(data); drawRanking(data); drawStationMap(data); drawPredictionExample(data); drawModels(data); drawModelComparison(data); drawBandBars(data); drawEdaTables(data); }).catch((error) => { console.error(error); });
+loadData().then((data) => { setText(data); drawCharts(data); drawHeatmap(data); drawRanking(data); drawStationMap(data); drawPredictionExample(data); drawModels(data); drawModelComparison(data); drawBandBars(data); drawEdaTables(data); drawEnrichment(data); }).catch((error) => { console.error(error); });

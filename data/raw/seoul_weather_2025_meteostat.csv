@@ -1,0 +1,366 @@
+year,month,day,temp,temp_source,tmin,tmin_source,tmax,tmax_source,rhum,rhum_source,prcp,prcp_source,snwd,snwd_source,wspd,wspd_source,pres,pres_source,cldc,cldc_source
+2025,1,1,2.5,ghcnd,-2.5,isd_lite,8.5,isd_lite,63,isd_lite,0.0,dwd_mosmix,,,7.8,isd_lite,1021.7,isd_lite,2,isd_lite
+2025,1,2,-0.1,ghcnd,-2.7,isd_lite,6.0,isd_lite,50,isd_lite,0.0,dwd_mosmix,,,7.2,isd_lite,1024.4,isd_lite,0,isd_lite
+2025,1,3,-1.0,ghcnd,-5.0,isd_lite,3.1,isd_lite,50,isd_lite,0.0,dwd_mosmix,,,8.2,isd_lite,1025.8,isd_lite,2,isd_lite
+2025,1,4,1.2,ghcnd,-5.4,ghcnd,5.5,isd_lite,49,isd_lite,0.3,ghcnd,,,6.5,isd_lite,1026.4,isd_lite,1,isd_lite
+2025,1,5,1.8,ghcnd,-0.7,ghcnd,2.5,isd_lite,82,isd_lite,9.4,ghcnd,4,ghcnd,8.7,isd_lite,1019.8,isd_lite,7,isd_lite
+2025,1,6,-1.1,ghcnd,-2.7,isd_lite,3.0,isd_lite,78,isd_lite,1.8,ghcnd,,,10.4,isd_lite,1016.2,isd_lite,5,isd_lite
+2025,1,7,-2.5,ghcnd,-5.7,ghcnd,1.0,isd_lite,54,isd_lite,0.0,ghcnd,,,10.3,isd_lite,1018.4,isd_lite,1,isd_lite
+2025,1,8,-4.7,ghcnd,-5.7,isd_lite,0.1,isd_lite,55,isd_lite,0.0,dwd_mosmix,,,9.3,isd_lite,1019.9,isd_lite,2,isd_lite
+2025,1,9,-10.4,ghcnd,-11.4,isd_lite,-6.0,isd_lite,40,isd_lite,0.0,dwd_mosmix,,,15.1,isd_lite,1025.8,isd_lite,1,isd_lite
+2025,1,10,-6.3,ghcnd,-12.2,ghcnd,-2.0,isd_lite,47,isd_lite,0.0,dwd_mosmix,,,5.5,isd_lite,1031.8,isd_lite,1,isd_lite
+2025,1,11,-4.8,ghcnd,-9.5,ghcnd,0.2,isd_lite,57,isd_lite,0.0,dwd_mosmix,,,6.2,isd_lite,1029.2,isd_lite,2,dwd_mosmix isd_lite
+2025,1,12,-2.6,ghcnd,-8.2,ghcnd,1.9,isd_lite,59,isd_lite,0.0,dwd_mosmix,,,6.1,isd_lite,1024.6,isd_lite,2,dwd_mosmix isd_lite
+2025,1,13,1.4,ghcnd,-5.6,ghcnd,4.0,isd_lite,75,isd_lite,1.2,dwd_mosmix isd_lite,,,6.7,isd_lite,1025.0,isd_lite,5,isd_lite dwd_mosmix
+2025,1,14,0.5,ghcnd,-1.1,isd_lite,5.0,isd_lite,74,isd_lite,1.2,dwd_mosmix isd_lite,,,7.9,isd_lite,1023.6,isd_lite,6,isd_lite dwd_mosmix
+2025,1,15,-3.2,ghcnd,-5.3,ghcnd,-0.9,isd_lite,41,isd_lite,0.0,dwd_mosmix,,,10.4,isd_lite,1028.4,isd_lite,1,dwd_mosmix isd_lite
+2025,1,16,-0.6,ghcnd,-4.9,ghcnd,2.8,ghcnd,62,isd_lite,0.0,dwd_mosmix,,,7.0,isd_lite,1024.8,isd_lite,6,isd_lite dwd_mosmix
+2025,1,17,-0.1,ghcnd,-4.9,ghcnd,5.1,isd_lite,63,isd_lite,0.0,dwd_mosmix,,,6.6,isd_lite,1026.6,isd_lite,1,dwd_mosmix isd_lite
+2025,1,18,1.9,ghcnd,-4.0,ghcnd,7.4,isd_lite,54,isd_lite,0.0,dwd_mosmix,,,5.8,isd_lite,1024.3,isd_lite,3,dwd_mosmix isd_lite
+2025,1,19,4.7,ghcnd,-1.2,ghcnd,8.8,isd_lite,63,isd_lite,0.0,dwd_mosmix,,,6.6,isd_lite,1017.4,isd_lite,5,isd_lite dwd_mosmix
+2025,1,20,2.8,ghcnd,1.4,isd_lite,7.2,isd_lite,73,isd_lite,0.1,dwd_mosmix,,,6.0,isd_lite,1015.9,isd_lite,5,isd_lite dwd_mosmix
+2025,1,21,3.3,ghcnd,-1.0,ghcnd,6.3,isd_lite,80,isd_lite,0.0,dwd_mosmix,,,5.2,isd_lite,1021.6,isd_lite,3,dwd_mosmix isd_lite
+2025,1,22,2.6,ghcnd,1.3,isd_lite,7.5,isd_lite,70,isd_lite,0.0,dwd_mosmix,,,6.9,isd_lite,1023.6,isd_lite,4,isd_lite dwd_mosmix
+2025,1,23,1.8,ghcnd,-2.3,isd_lite dwd_mosmix,7.7,ghcnd,57,isd_lite dwd_mosmix,0.0,dwd_mosmix,,,6.0,isd_lite dwd_mosmix,1024.9,isd_lite dwd_mosmix,2,dwd_mosmix isd_lite
+2025,1,24,4.3,ghcnd,-2.7,ghcnd,10.3,isd_lite dwd_mosmix,46,isd_lite dwd_mosmix,0.0,dwd_mosmix,,,5.0,isd_lite dwd_mosmix,1026.1,isd_lite dwd_mosmix,1,dwd_mosmix isd_lite
+2025,1,25,5.6,ghcnd,1.2,ghcnd,11.2,isd_lite,52,isd_lite,0.0,dwd_mosmix,,,11.2,isd_lite,1028.3,isd_lite,2,dwd_mosmix isd_lite
+2025,1,26,4.6,ghcnd,1.9,isd_lite,7.5,isd_lite,50,isd_lite,0.0,dwd_mosmix,,,10.8,isd_lite,1025.6,isd_lite,6,isd_lite dwd_mosmix
+2025,1,27,-1.7,ghcnd,-2.3,isd_lite,5.1,isd_lite,77,isd_lite,6.8,dwd_mosmix isd_lite,2,ghcnd,11.7,isd_lite,1014.8,isd_lite,7,isd_lite
+2025,1,28,-4.4,ghcnd,-5.2,isd_lite,-2.5,isd_lite,72,isd_lite,0.2,dwd_mosmix isd_lite,2,ghcnd,15.0,isd_lite,1015.2,isd_lite,7,isd_lite
+2025,1,29,-4.9,ghcnd,-6.4,isd_lite,-1.5,isd_lite,66,isd_lite,0.2,dwd_mosmix isd_lite,1,ghcnd,11.0,isd_lite,1024.0,isd_lite,5,isd_lite dwd_mosmix
+2025,1,30,-2.3,ghcnd,-7.5,ghcnd,-1.2,isd_lite,48,isd_lite,0.0,dwd_mosmix,,,5.8,isd_lite,1027.9,isd_lite,5,isd_lite dwd_mosmix
+2025,1,31,-0.5,ghcnd,-2.6,ghcnd,0.6,isd_lite,76,isd_lite,2.6,dwd_mosmix isd_lite,2,ghcnd,7.1,isd_lite,1026.6,isd_lite,7,isd_lite dwd_mosmix
+2025,2,1,1.4,ghcnd,-2.0,isd_lite dwd_mosmix,7.8,isd_lite dwd_mosmix,76,isd_lite dwd_mosmix,0.0,dwd_mosmix,1,ghcnd,5.8,isd_lite dwd_mosmix,1021.8,isd_lite dwd_mosmix,5,isd_lite dwd_mosmix
+2025,2,2,1.4,ghcnd,-2.4,isd_lite,6.6,isd_lite,68,isd_lite,0.0,dwd_mosmix,,,7.4,isd_lite,1018.7,isd_lite,4,isd_lite dwd_mosmix
+2025,2,3,-6.5,ghcnd,-8.1,isd_lite,0.6,isd_lite,51,isd_lite,0.0,dwd_mosmix,,,15.4,isd_lite,1019.6,isd_lite,2,dwd_mosmix isd_lite
+2025,2,4,-9.3,ghcnd,-11.4,isd_lite,-5.8,isd_lite,50,isd_lite,0.0,dwd_mosmix,,,13.3,isd_lite,1019.8,isd_lite,2,dwd_mosmix isd_lite
+2025,2,5,-8.6,ghcnd,-11.8,ghcnd,-3.9,isd_lite,49,isd_lite,0.0,dwd_mosmix,,,12.7,isd_lite,1018.8,isd_lite,3,dwd_mosmix isd_lite
+2025,2,6,-4.2,ghcnd,-11.5,ghcnd,-0.8,isd_lite,59,isd_lite,3.7,dwd_mosmix isd_lite,2,ghcnd,6.1,isd_lite,1020.8,isd_lite,3,isd_lite dwd_mosmix
+2025,2,7,-9.4,ghcnd,-10.6,isd_lite,-5.0,isd_lite,60,isd_lite,0.4,dwd_mosmix,1,ghcnd,13.6,isd_lite,1020.6,isd_lite,4,isd_lite dwd_mosmix
+2025,2,8,-7.3,ghcnd,-11.5,ghcnd,-3.7,isd_lite dwd_mosmix,54,isd_lite dwd_mosmix,0.0,dwd_mosmix,1,ghcnd,9.9,isd_lite dwd_mosmix,1028.2,isd_lite dwd_mosmix,2,dwd_mosmix isd_lite
+2025,2,9,-3.7,ghcnd,-9.6,ghcnd,1.5,isd_lite,62,isd_lite,0.0,dwd_mosmix,,,7.9,isd_lite,1027.2,isd_lite,2,dwd_mosmix isd_lite
+2025,2,10,-1.9,ghcnd,-7.5,ghcnd,2.4,isd_lite dwd_mosmix,60,isd_lite dwd_mosmix,0.0,dwd_mosmix,,,8.0,isd_lite dwd_mosmix,1026.6,isd_lite dwd_mosmix,2,isd_lite dwd_mosmix
+2025,2,11,2.5,ghcnd,-5.7,ghcnd,7.0,isd_lite dwd_mosmix,62,isd_lite dwd_mosmix,0.0,dwd_mosmix,1,ghcnd,7.1,isd_lite dwd_mosmix,1027.9,isd_lite dwd_mosmix,2,dwd_mosmix isd_lite
+2025,2,12,-1.2,ghcnd,-2.5,isd_lite dwd_mosmix,2.4,isd_lite dwd_mosmix,75,isd_lite dwd_mosmix,3.1,dwd_mosmix isd_lite,,,9.6,isd_lite dwd_mosmix,1017.1,isd_lite dwd_mosmix,7,isd_lite dwd_mosmix
+2025,2,13,1.6,ghcnd,-5.8,ghcnd,5.9,isd_lite dwd_mosmix,52,isd_lite dwd_mosmix,0.0,dwd_mosmix,,,8.4,isd_lite dwd_mosmix,1023.0,isd_lite dwd_mosmix,2,dwd_mosmix isd_lite
+2025,2,14,4.3,ghcnd,-1.6,ghcnd,9.7,isd_lite,66,isd_lite,0.0,dwd_mosmix,,,6.8,isd_lite,1021.4,isd_lite,2,dwd_mosmix isd_lite
+2025,2,15,4.3,ghcnd,0.4,ghcnd,7.7,isd_lite,77,isd_lite,0.0,dwd_mosmix,,,5.8,isd_lite,1017.8,isd_lite,5,isd_lite dwd_mosmix
+2025,2,16,3.2,ghcnd,1.2,isd_lite dwd_mosmix,9.4,isd_lite dwd_mosmix,78,isd_lite dwd_mosmix,0.0,dwd_mosmix,,,8.8,isd_lite dwd_mosmix,1015.7,isd_lite dwd_mosmix,4,isd_lite dwd_mosmix
+2025,2,17,-1.2,ghcnd,-3.0,isd_lite,3.3,isd_lite,39,isd_lite,0.0,dwd_mosmix,,,12.9,isd_lite,1023.1,isd_lite,1,dwd_mosmix isd_lite
+2025,2,18,-2.5,ghcnd,-5.1,isd_lite,2.1,isd_lite,41,isd_lite,0.0,dwd_mosmix,,,11.9,isd_lite,1025.9,isd_lite,1,dwd_mosmix isd_lite
+2025,2,19,-3.2,ghcnd,-5.8,isd_lite,1.0,isd_lite,45,isd_lite,0.0,dwd_mosmix,,,10.6,isd_lite,1028.1,isd_lite,1,dwd_mosmix isd_lite
+2025,2,20,-2.3,ghcnd,-6.5,ghcnd,1.8,isd_lite,43,isd_lite,0.0,dwd_mosmix,,,9.5,isd_lite,1029.7,isd_lite,1,dwd_mosmix isd_lite
+2025,2,21,-2.2,ghcnd,-6.4,ghcnd,2.2,isd_lite dwd_mosmix,45,isd_lite dwd_mosmix,0.0,dwd_mosmix,,,9.8,isd_lite dwd_mosmix,1030.5,isd_lite dwd_mosmix,1,dwd_mosmix isd_lite
+2025,2,22,-2.6,ghcnd,-5.4,isd_lite,2.5,isd_lite,50,isd_lite,0.0,dwd_mosmix,,,9.3,isd_lite,1031.8,isd_lite,1,dwd_mosmix isd_lite
+2025,2,23,-3.6,ghcnd,-6.5,ghcnd,0.2,isd_lite,45,isd_lite,0.0,dwd_mosmix,,,10.5,isd_lite,1030.8,isd_lite,1,dwd_mosmix isd_lite
+2025,2,24,-0.2,ghcnd,-6.3,ghcnd,4.5,isd_lite,48,isd_lite,0.0,dwd_mosmix,,,8.5,isd_lite,1031.0,isd_lite,1,dwd_mosmix isd_lite
+2025,2,25,3.6,ghcnd,-3.1,ghcnd,5.6,isd_lite dwd_mosmix,71,isd_lite dwd_mosmix,0.0,dwd_mosmix,,,10.1,isd_lite dwd_mosmix,1026.6,isd_lite dwd_mosmix,4,isd_lite dwd_mosmix
+2025,2,26,2.7,ghcnd,1.1,isd_lite,8.4,isd_lite,53,isd_lite,0.0,dwd_mosmix,,,9.1,isd_lite,1023.5,isd_lite,2,dwd_mosmix isd_lite
+2025,2,27,7.3,ghcnd,-2.0,ghcnd,14.0,isd_lite,30,isd_lite,0.0,dwd_mosmix,,,6.8,isd_lite,1021.8,isd_lite,2,dwd_mosmix isd_lite
+2025,2,28,8.7,ghcnd,3.8,isd_lite dwd_mosmix,13.2,isd_lite dwd_mosmix,49,isd_lite dwd_mosmix,0.0,dwd_mosmix,,,4.7,isd_lite dwd_mosmix,1019.9,isd_lite dwd_mosmix,4,isd_lite dwd_mosmix
+2025,3,1,9.8,ghcnd,3.4,ghcnd,12.8,isd_lite dwd_mosmix,70,isd_lite dwd_mosmix,0.2,dwd_mosmix isd_lite,,,7.3,isd_lite dwd_mosmix,1017.8,isd_lite dwd_mosmix,6,isd_lite dwd_mosmix
+2025,3,2,6.2,ghcnd,3.1,isd_lite,15.3,isd_lite,66,isd_lite,19.1,dwd_mosmix isd_lite,1,ghcnd,13.0,isd_lite,1015.3,isd_lite,8,isd_lite dwd_mosmix
+2025,3,3,3.2,ghcnd,1.0,ghcnd,6.9,isd_lite,67,isd_lite,12.0,dwd_mosmix isd_lite,1,ghcnd,22.6,isd_lite,1021.2,isd_lite,6,isd_lite dwd_mosmix
+2025,3,4,2.6,ghcnd,1.0,isd_lite,3.5,isd_lite,69,isd_lite,6.2,dwd_mosmix isd_lite,,,17.2,isd_lite,1021.7,isd_lite,7,isd_lite dwd_mosmix
+2025,3,5,4.3,ghcnd,2.4,isd_lite,8.9,isd_lite,63,isd_lite,0.0,dwd_mosmix,,,8.2,isd_lite,1021.9,isd_lite,6,isd_lite dwd_mosmix
+2025,3,6,4.8,ghcnd,-0.4,ghcnd,10.3,isd_lite,58,isd_lite,0.0,dwd_mosmix,,,8.5,isd_lite,1024.9,isd_lite,2,dwd_mosmix isd_lite
+2025,3,7,6.1,ghcnd,0.0,ghcnd,11.1,isd_lite,50,isd_lite,0.0,dwd_mosmix,,,6.6,isd_lite,1026.8,isd_lite,4,isd_lite dwd_mosmix
+2025,3,8,5.4,ghcnd,2.8,isd_lite,10.9,isd_lite,52,isd_lite,0.0,dwd_mosmix,,,8.0,isd_lite,1025.3,isd_lite,4,isd_lite dwd_mosmix
+2025,3,9,7.2,ghcnd,1.2,ghcnd,13.5,isd_lite,68,isd_lite,0.0,dwd_mosmix,,,6.2,isd_lite,1029.1,isd_lite,2,dwd_mosmix isd_lite
+2025,3,10,8.1,ghcnd,2.4,ghcnd,14.7,isd_lite,60,isd_lite,0.0,dwd_mosmix,,,7.8,isd_lite,1025.9,isd_lite,2,dwd_mosmix isd_lite
+2025,3,11,10.3,ghcnd,2.9,ghcnd,16.5,isd_lite,58,isd_lite,0.0,dwd_mosmix,,,6.2,isd_lite,1020.5,isd_lite,3,isd_lite dwd_mosmix
+2025,3,12,7.8,ghcnd,6.7,isd_lite,11.6,isd_lite,71,isd_lite,0.0,dwd_mosmix,,,7.3,isd_lite,1016.0,isd_lite,6,isd_lite dwd_mosmix
+2025,3,13,9.3,ghcnd,3.2,ghcnd,14.9,isd_lite dwd_mosmix,57,isd_lite dwd_mosmix,0.0,dwd_mosmix,,,8.5,isd_lite dwd_mosmix,1021.7,isd_lite dwd_mosmix,5,isd_lite dwd_mosmix
+2025,3,14,14.1,ghcnd,5.0,ghcnd,19.7,isd_lite,33,isd_lite,0.0,dwd_mosmix,,,6.9,isd_lite,1024.5,isd_lite,4,isd_lite dwd_mosmix
+2025,3,15,11.6,ghcnd,8.6,isd_lite dwd_mosmix,17.1,isd_lite dwd_mosmix,38,isd_lite dwd_mosmix,,,,,10.7,isd_lite dwd_mosmix,1020.9,isd_lite dwd_mosmix,6,isd_lite dwd_mosmix
+2025,3,16,2.5,ghcnd,1.6,isd_lite,10.1,isd_lite,58,isd_lite,,,,,12.6,isd_lite,1013.6,isd_lite,6,isd_lite dwd_mosmix
+2025,3,17,2.9,ghcnd,-1.3,ghcnd,6.6,isd_lite,41,isd_lite,,,8,ghcnd,10.2,isd_lite,1016.2,isd_lite,5,isd_lite dwd_mosmix
+2025,3,18,1.6,ghcnd,0.4,isd_lite,5.1,isd_lite,74,isd_lite,,,100,ghcnd,10.9,isd_lite,1014.3,isd_lite,7,isd_lite
+2025,3,19,3.7,ghcnd,-1.9,ghcnd,7.2,isd_lite,49,isd_lite,,,,,8.3,isd_lite,1023.2,isd_lite,2,dwd_mosmix isd_lite
+2025,3,20,9.6,ghcnd,2.2,ghcnd,14.7,isd_lite dwd_mosmix,61,isd_lite dwd_mosmix,,,,,9.8,isd_lite dwd_mosmix,1018.4,isd_lite dwd_mosmix,3,isd_lite dwd_mosmix
+2025,3,21,11.4,ghcnd,7.9,isd_lite,18.3,isd_lite,62,isd_lite,,,,,10.7,isd_lite,1011.5,isd_lite,4,isd_lite dwd_mosmix
+2025,3,22,13.1,ghcnd,6.1,ghcnd,19.6,isd_lite,54,isd_lite,0.0,dwd_mosmix,,,9.3,isd_lite,1009.2,isd_lite,1,dwd_mosmix isd_lite
+2025,3,23,16.7,ghcnd,7.1,ghcnd,23.7,isd_lite,50,isd_lite,0.0,dwd_mosmix,,,6.9,isd_lite,1009.1,isd_lite,3,dwd_mosmix isd_lite
+2025,3,24,14.7,ghcnd,11.9,isd_lite,21.3,isd_lite,53,isd_lite,0.6,dwd_mosmix,,,10.4,isd_lite,1002.7,isd_lite,5,isd_lite dwd_mosmix
+2025,3,25,11.5,ghcnd,8.8,isd_lite,21.4,isd_lite,64,isd_lite,0.0,dwd_mosmix,,,11.4,isd_lite,1000.0,isd_lite,5,isd_lite dwd_mosmix
+2025,3,26,18.2,ghcnd,6.0,ghcnd,23.6,isd_lite dwd_mosmix,48,isd_lite dwd_mosmix,0.0,dwd_mosmix,,,7.5,isd_lite dwd_mosmix,1003.4,isd_lite dwd_mosmix,3,isd_lite dwd_mosmix
+2025,3,27,11.9,ghcnd,7.4,isd_lite,18.5,isd_lite,64,isd_lite,2.7,dwd_mosmix,,,11.6,isd_lite,1000.8,isd_lite,7,isd_lite dwd_mosmix
+2025,3,28,5.2,ghcnd,3.4,isd_lite dwd_mosmix,11.5,isd_lite dwd_mosmix,42,isd_lite dwd_mosmix,0.1,dwd_mosmix isd_lite,,,13.7,isd_lite dwd_mosmix,1013.1,isd_lite dwd_mosmix,4,isd_lite dwd_mosmix
+2025,3,29,2.6,ghcnd,0.9,isd_lite,6.5,isd_lite,40,isd_lite,0.4,dwd_mosmix,,,12.2,isd_lite,1021.5,isd_lite,3,dwd_mosmix isd_lite
+2025,3,30,4.2,ghcnd,-1.8,ghcnd,7.4,isd_lite dwd_mosmix,51,isd_lite dwd_mosmix,0.3,dwd_mosmix,,,10.6,isd_lite dwd_mosmix,1027.4,isd_lite dwd_mosmix,3,isd_lite dwd_mosmix
+2025,3,31,8.4,ghcnd,1.2,ghcnd,13.7,isd_lite,49,isd_lite,0.0,dwd_mosmix,,,7.9,isd_lite,1025.0,isd_lite,3,isd_lite dwd_mosmix
+2025,4,1,10.3,ghcnd,3.9,ghcnd,16.8,isd_lite,55,isd_lite,0.0,dwd_mosmix,,,6.5,isd_lite,1022.1,isd_lite,2,dwd_mosmix isd_lite
+2025,4,2,8.5,ghcnd,5.2,isd_lite,14.4,isd_lite,54,isd_lite,2.2,dwd_mosmix,,,8.4,isd_lite,1018.7,isd_lite,5,isd_lite dwd_mosmix
+2025,4,3,10.2,ghcnd,3.6,ghcnd,16.7,isd_lite,59,isd_lite,0.0,dwd_mosmix,,,8.6,isd_lite,1019.5,isd_lite,3,dwd_mosmix isd_lite
+2025,4,4,11.2,ghcnd,6.0,ghcnd,16.1,isd_lite,56,isd_lite,0.0,dwd_mosmix,,,7.6,isd_lite,1019.0,isd_lite,3,dwd_mosmix isd_lite
+2025,4,5,7.7,ghcnd,7.6,isd_lite,9.5,isd_lite,82,isd_lite,24.1,dwd_mosmix isd_lite,,,6.7,isd_lite,1012.1,isd_lite,8,isd_lite
+2025,4,6,9.9,ghcnd,6.9,isd_lite,15.5,isd_lite,68,isd_lite,0.0,dwd_mosmix,,,9.6,isd_lite,1013.9,isd_lite,4,isd_lite dwd_mosmix
+2025,4,7,14.9,ghcnd,5.5,ghcnd,20.0,isd_lite,57,isd_lite,0.0,dwd_mosmix,,,9.8,isd_lite,1015.6,isd_lite,2,dwd_mosmix isd_lite
+2025,4,8,13.1,ghcnd,10.7,isd_lite,18.4,isd_lite,54,isd_lite,0.8,dwd_mosmix,,,11.2,isd_lite,1012.9,isd_lite,4,isd_lite dwd_mosmix
+2025,4,9,12.8,ghcnd,8.4,ghcnd,17.8,isd_lite dwd_mosmix,52,isd_lite dwd_mosmix,2.0,dwd_mosmix isd_lite,,,7.0,isd_lite dwd_mosmix,1010.8,isd_lite dwd_mosmix,6,isd_lite dwd_mosmix
+2025,4,10,12.9,ghcnd,8.9,isd_lite,18.7,isd_lite,60,isd_lite,0.0,dwd_mosmix,,,7.4,isd_lite,1006.4,isd_lite,3,isd_lite dwd_mosmix
+2025,4,11,17.4,ghcnd,8.1,ghcnd,24.2,isd_lite,53,isd_lite,0.0,dwd_mosmix,,,7.5,isd_lite,1009.4,isd_lite,2,dwd_mosmix isd_lite
+2025,4,12,9.8,ghcnd,1.7,isd_lite,22.1,isd_lite,62,isd_lite,13.9,dwd_mosmix isd_lite,1,ghcnd,11.0,isd_lite,1005.8,isd_lite,7,isd_lite
+2025,4,13,5.3,ghcnd,1.1,ghcnd,8.0,isd_lite,74,isd_lite,8.9,dwd_mosmix isd_lite,,,15.7,isd_lite,999.5,isd_lite,6,isd_lite dwd_mosmix
+2025,4,14,4.5,ghcnd,2.8,isd_lite,5.9,isd_lite,85,isd_lite,8.0,dwd_mosmix isd_lite,,,9.0,isd_lite,998.2,isd_lite,6,isd_lite dwd_mosmix
+2025,4,15,9.3,ghcnd,2.3,ghcnd,13.8,isd_lite,70,isd_lite,0.0,dwd_mosmix,,,9.6,isd_lite,1005.4,isd_lite,2,dwd_mosmix isd_lite
+2025,4,16,17.4,ghcnd,6.4,ghcnd,21.7,isd_lite,61,isd_lite,1.6,dwd_mosmix,,,9.1,isd_lite,1006.9,isd_lite,5,isd_lite dwd_mosmix
+2025,4,17,19.9,ghcnd,15.8,ghcnd,24.5,isd_lite,62,isd_lite,,,,,9.4,isd_lite,1004.2,isd_lite,6,isd_lite dwd_mosmix
+2025,4,18,18.3,ghcnd,15.4,ghcnd,23.5,isd_lite,68,isd_lite,,,,,9.2,isd_lite,1008.1,isd_lite,5,isd_lite dwd_mosmix
+2025,4,19,13.8,ghcnd,12.4,isd_lite,19.9,isd_lite,86,isd_lite,,,,,10.7,isd_lite,1007.7,isd_lite,8,isd_lite dwd_mosmix
+2025,4,20,18.1,ghcnd,9.5,ghcnd,24.0,isd_lite,72,isd_lite,,,,,6.1,isd_lite,1011.5,isd_lite,3,dwd_mosmix isd_lite
+2025,4,21,21.9,ghcnd,14.2,ghcnd,27.0,isd_lite,65,isd_lite,0.0,dwd_mosmix,,,8.0,isd_lite,1013.1,isd_lite,4,isd_lite dwd_mosmix
+2025,4,22,15.6,ghcnd,15.2,isd_lite,20.4,isd_lite,87,isd_lite,0.0,dwd_mosmix,,,5.0,isd_lite,1005.2,isd_lite,7,isd_lite dwd_mosmix
+2025,4,23,16.8,ghcnd,10.9,ghcnd,22.5,isd_lite,63,isd_lite,0.0,dwd_mosmix,,,9.1,isd_lite,1005.8,isd_lite,4,isd_lite dwd_mosmix
+2025,4,24,13.6,ghcnd,11.1,isd_lite,19.2,isd_lite,55,isd_lite,0.0,dwd_mosmix,,,10.9,isd_lite,1007.8,isd_lite,2,dwd_mosmix isd_lite
+2025,4,25,12.4,ghcnd,7.7,isd_lite,17.6,isd_lite,38,isd_lite,0.0,dwd_mosmix,,,10.7,isd_lite,1014.6,isd_lite,1,dwd_mosmix isd_lite
+2025,4,26,14.6,ghcnd,7.2,ghcnd,19.9,isd_lite,52,isd_lite,0.0,dwd_mosmix,,,9.7,isd_lite,1017.2,isd_lite,1,dwd_mosmix isd_lite
+2025,4,27,14.8,ghcnd,10.7,ghcnd,18.8,isd_lite,46,isd_lite,0.0,dwd_mosmix,,,9.9,isd_lite,1014.2,isd_lite,5,isd_lite dwd_mosmix
+2025,4,28,14.8,ghcnd,10.4,isd_lite,20.0,isd_lite,46,isd_lite,0.0,dwd_mosmix,,,10.4,isd_lite,1009.1,isd_lite,2,dwd_mosmix isd_lite
+2025,4,29,15.2,ghcnd,8.2,ghcnd,20.8,isd_lite dwd_mosmix,34,isd_lite dwd_mosmix,0.0,dwd_mosmix,,,8.0,isd_lite dwd_mosmix,1011.7,isd_lite dwd_mosmix,1,dwd_mosmix isd_lite
+2025,4,30,20.1,ghcnd,10.0,ghcnd,25.6,isd_lite,36,isd_lite,0.0,dwd_mosmix,,,9.3,isd_lite,1012.4,isd_lite,3,isd_lite dwd_mosmix
+2025,5,1,12.4,ghcnd,11.9,isd_lite,17.6,isd_lite,66,isd_lite,0.0,dwd_mosmix,,,7.3,isd_lite,1006.6,isd_lite,6,isd_lite dwd_mosmix
+2025,5,2,13.7,ghcnd,8.2,ghcnd,18.2,isd_lite dwd_mosmix,60,isd_lite dwd_mosmix,0.0,dwd_mosmix,,,10.6,isd_lite dwd_mosmix,1009.1,isd_lite dwd_mosmix,5,isd_lite dwd_mosmix
+2025,5,3,10.7,ghcnd,9.6,isd_lite,13.6,isd_lite,77,isd_lite,0.0,dwd_mosmix,,,8.4,isd_lite,1008.1,isd_lite,6,isd_lite dwd_mosmix
+2025,5,4,13.9,ghcnd,8.2,ghcnd,19.7,isd_lite,63,isd_lite,0.0,dwd_mosmix,,,10.4,isd_lite,1011.0,isd_lite,2,dwd_mosmix isd_lite
+2025,5,5,12.0,ghcnd,9.4,isd_lite dwd_mosmix,14.8,isd_lite dwd_mosmix,65,isd_lite dwd_mosmix,1.9,dwd_mosmix,,,8.4,isd_lite dwd_mosmix,1011.9,isd_lite dwd_mosmix,7,isd_lite dwd_mosmix
+2025,5,6,14.7,ghcnd,8.5,ghcnd,19.1,isd_lite,56,isd_lite,0.0,dwd_mosmix,,,8.0,isd_lite,1006.6,isd_lite,4,isd_lite dwd_mosmix
+2025,5,7,14.9,ghcnd,9.9,isd_lite,21.0,isd_lite,62,isd_lite,0.0,dwd_mosmix,,,8.0,isd_lite,1012.0,isd_lite,2,isd_lite dwd_mosmix
+2025,5,8,19.2,ghcnd,9.7,ghcnd,24.9,isd_lite,54,isd_lite,0.0,dwd_mosmix,,,6.6,isd_lite,1015.9,isd_lite,4,isd_lite dwd_mosmix
+2025,5,9,14.2,ghcnd,14.2,isd_lite dwd_mosmix,17.3,isd_lite dwd_mosmix,78,isd_lite dwd_mosmix,8.5,dwd_mosmix,,,11.1,isd_lite dwd_mosmix,1005.8,isd_lite dwd_mosmix,8,isd_lite dwd_mosmix
+2025,5,10,11.8,ghcnd,11.6,isd_lite,15.1,isd_lite,96,isd_lite,0.0,dwd_mosmix,,,12.6,isd_lite,998.5,isd_lite,8,isd_lite
+2025,5,11,14.5,ghcnd,11.5,isd_lite,20.0,isd_lite,78,isd_lite,0.0,dwd_mosmix,,,6.9,isd_lite,1005.1,isd_lite,6,isd_lite dwd_mosmix
+2025,5,12,18.2,ghcnd,9.8,ghcnd,23.2,isd_lite,64,isd_lite,0.0,dwd_mosmix,,,7.8,isd_lite,1008.9,isd_lite,2,dwd_mosmix isd_lite
+2025,5,13,20.2,ghcnd,13.3,ghcnd,25.6,isd_lite dwd_mosmix,48,isd_lite dwd_mosmix,0.0,dwd_mosmix,,,10.1,isd_lite dwd_mosmix,1013.4,isd_lite dwd_mosmix,5,isd_lite dwd_mosmix
+2025,5,14,22.1,ghcnd,14.1,ghcnd,26.5,isd_lite,51,isd_lite,0.2,dwd_mosmix,,,8.4,isd_lite,1014.7,isd_lite,3,isd_lite dwd_mosmix
+2025,5,15,19.2,ghcnd,16.9,ghcnd,22.1,isd_lite,80,isd_lite,0.5,dwd_mosmix,,,8.4,isd_lite,1013.2,isd_lite,7,isd_lite dwd_mosmix
+2025,5,16,18.9,ghcnd,17.9,isd_lite dwd_mosmix,21.7,isd_lite dwd_mosmix,92,isd_lite dwd_mosmix,0.2,dwd_mosmix,,,6.3,isd_lite dwd_mosmix,1011.7,isd_lite dwd_mosmix,8,isd_lite
+2025,5,17,16.9,ghcnd,14.9,isd_lite,24.1,isd_lite,86,isd_lite,0.1,dwd_mosmix,,,9.5,isd_lite,1004.8,isd_lite,6,isd_lite dwd_mosmix
+2025,5,18,15.3,ghcnd,11.4,isd_lite,21.0,isd_lite,62,isd_lite,0.0,dwd_mosmix,,,9.6,isd_lite,1010.1,isd_lite,4,isd_lite dwd_mosmix
+2025,5,19,17.9,ghcnd,10.5,ghcnd,20.5,isd_lite,66,isd_lite,0.0,dwd_mosmix,,,10.0,isd_lite,1005.8,isd_lite,6,isd_lite dwd_mosmix
+2025,5,20,23.8,ghcnd,17.4,ghcnd,27.0,isd_lite,86,isd_lite,0.3,dwd_mosmix,,,9.4,isd_lite,1006.4,isd_lite,7,isd_lite
+2025,5,21,24.8,ghcnd,22.7,isd_lite,30.3,isd_lite,75,isd_lite,0.0,dwd_mosmix,,,6.9,isd_lite,1006.0,isd_lite,6,isd_lite dwd_mosmix
+2025,5,22,23.4,ghcnd,20.0,ghcnd,28.4,isd_lite,69,isd_lite,0.0,dwd_mosmix,,,7.6,isd_lite,1005.7,isd_lite,4,isd_lite dwd_mosmix
+2025,5,23,17.7,ghcnd,15.7,isd_lite,22.3,isd_lite,53,isd_lite,0.0,dwd_mosmix,,,9.8,isd_lite,1010.1,isd_lite,7,isd_lite dwd_mosmix
+2025,5,24,15.3,ghcnd,13.1,isd_lite,18.9,isd_lite,70,isd_lite,5.3,dwd_mosmix,,,11.6,isd_lite,1009.7,isd_lite,7,isd_lite dwd_mosmix
+2025,5,25,17.8,ghcnd,11.7,ghcnd,22.3,isd_lite,61,isd_lite,0.0,dwd_mosmix,,,7.8,isd_lite,1013.2,isd_lite,2,dwd_mosmix isd_lite
+2025,5,26,20.2,ghcnd,13.0,ghcnd,26.2,ghcnd,60,isd_lite,0.0,dwd_mosmix,,,5.9,isd_lite,1016.0,isd_lite,4,isd_lite dwd_mosmix
+2025,5,27,21.1,ghcnd,14.7,ghcnd,27.0,ghcnd,58,isd_lite dwd_mosmix,0.0,dwd_mosmix,,,7.3,isd_lite dwd_mosmix,1016.8,isd_lite dwd_mosmix,2,dwd_mosmix isd_lite
+2025,5,28,20.6,ghcnd,16.3,isd_lite,26.8,isd_lite,62,isd_lite,0.0,dwd_mosmix,,,7.0,isd_lite,1016.7,isd_lite,4,isd_lite dwd_mosmix
+2025,5,29,21.6,ghcnd,15.3,ghcnd,27.2,isd_lite,59,isd_lite,0.3,dwd_mosmix,,,8.1,isd_lite,1014.3,isd_lite,3,dwd_mosmix isd_lite
+2025,5,30,22.2,ghcnd,16.8,isd_lite,27.9,isd_lite,55,isd_lite,0.0,dwd_mosmix,,,6.5,isd_lite,1011.6,isd_lite,1,dwd_mosmix isd_lite
+2025,5,31,21.7,ghcnd,16.4,ghcnd,26.7,isd_lite,54,isd_lite,0.0,dwd_mosmix,,,7.0,isd_lite,1010.3,isd_lite,5,isd_lite dwd_mosmix
+2025,6,1,23.2,ghcnd,17.0,ghcnd,29.1,isd_lite,59,isd_lite,0.0,dwd_mosmix,,,7.4,isd_lite,1008.7,isd_lite,4,isd_lite dwd_mosmix
+2025,6,2,21.0,ghcnd,18.7,isd_lite dwd_mosmix,23.0,isd_lite dwd_mosmix,64,isd_lite dwd_mosmix,0.0,dwd_mosmix,,,5.0,isd_lite dwd_mosmix,1003.5,isd_lite dwd_mosmix,8,isd_lite dwd_mosmix
+2025,6,3,19.9,ghcnd,17.5,isd_lite dwd_mosmix,24.7,isd_lite dwd_mosmix,58,isd_lite dwd_mosmix,0.1,dwd_mosmix,,,9.7,isd_lite dwd_mosmix,999.0,isd_lite dwd_mosmix,4,dwd_mosmix isd_lite
+2025,6,4,20.6,ghcnd,15.2,ghcnd,25.0,isd_lite,54,isd_lite,0.1,dwd_mosmix,,,12.3,isd_lite,1002.7,isd_lite,2,dwd_mosmix isd_lite
+2025,6,5,22.4,ghcnd,15.6,ghcnd,26.8,isd_lite,51,isd_lite,0.0,dwd_mosmix,,,8.4,isd_lite,1009.4,isd_lite,3,dwd_mosmix isd_lite
+2025,6,6,24.7,ghcnd,17.7,ghcnd,29.7,isd_lite,43,isd_lite,0.0,dwd_mosmix,,,11.3,isd_lite,1007.5,isd_lite,4,isd_lite dwd_mosmix
+2025,6,7,23.9,ghcnd,19.8,ghcnd,28.2,isd_lite,58,isd_lite,0.0,dwd_mosmix,,,9.6,isd_lite,1007.2,isd_lite,5,isd_lite dwd_mosmix
+2025,6,8,25.3,ghcnd,21.5,isd_lite dwd_mosmix,30.1,isd_lite dwd_mosmix,70,isd_lite dwd_mosmix,0.0,dwd_mosmix,,,6.7,isd_lite dwd_mosmix,1006.8,isd_lite dwd_mosmix,6,isd_lite dwd_mosmix
+2025,6,9,23.6,ghcnd,20.7,isd_lite dwd_mosmix,29.7,isd_lite dwd_mosmix,66,isd_lite dwd_mosmix,0.0,dwd_mosmix,,,9.1,isd_lite dwd_mosmix,1006.3,isd_lite dwd_mosmix,5,isd_lite dwd_mosmix
+2025,6,10,20.7,ghcnd,19.6,isd_lite dwd_mosmix,25.2,isd_lite dwd_mosmix,73,isd_lite dwd_mosmix,0.6,dwd_mosmix,,,9.0,isd_lite dwd_mosmix,1005.9,isd_lite dwd_mosmix,6,isd_lite dwd_mosmix
+2025,6,11,23.6,ghcnd,15.9,ghcnd,28.2,isd_lite,55,isd_lite,0.0,dwd_mosmix,,,8.7,isd_lite,1010.4,isd_lite,3,dwd_mosmix isd_lite
+2025,6,12,26.4,ghcnd,18.1,isd_lite dwd_mosmix,32.7,isd_lite dwd_mosmix,52,isd_lite dwd_mosmix,0.0,dwd_mosmix,,,6.4,isd_lite dwd_mosmix,1013.2,isd_lite dwd_mosmix,4,isd_lite dwd_mosmix
+2025,6,13,23.5,ghcnd,20.2,isd_lite dwd_mosmix,29.4,ghcnd,59,isd_lite dwd_mosmix,2.0,dwd_mosmix,,,6.6,isd_lite dwd_mosmix,1011.8,isd_lite dwd_mosmix,7,isd_lite dwd_mosmix
+2025,6,14,26.1,ghcnd,20.3,ghcnd,32.1,isd_lite,68,isd_lite,0.0,dwd_mosmix,,,6.8,isd_lite,1001.5,isd_lite,5,isd_lite dwd_mosmix
+2025,6,15,26.2,ghcnd,21.7,ghcnd,33.0,isd_lite,68,isd_lite,0.0,dwd_mosmix,,,8.9,isd_lite,998.0,isd_lite,5,isd_lite dwd_mosmix
+2025,6,16,22.8,ghcnd,22.0,isd_lite,25.1,isd_lite,88,isd_lite,0.0,dwd_mosmix,,,9.8,isd_lite,996.9,isd_lite,7,isd_lite
+2025,6,17,24.9,ghcnd,21.1,ghcnd,29.4,isd_lite dwd_mosmix,73,isd_lite dwd_mosmix,0.0,dwd_mosmix,,,9.0,isd_lite dwd_mosmix,1003.3,isd_lite dwd_mosmix,4,isd_lite dwd_mosmix
+2025,6,18,25.7,ghcnd,21.2,ghcnd,30.5,isd_lite,67,isd_lite,0.0,dwd_mosmix,,,7.4,isd_lite,1009.4,isd_lite,3,isd_lite dwd_mosmix
+2025,6,19,28.8,ghcnd,21.1,ghcnd,33.6,isd_lite,58,isd_lite,1.8,dwd_mosmix isd_lite,,,7.2,isd_lite,1010.9,isd_lite,4,isd_lite dwd_mosmix
+2025,6,20,22.9,ghcnd,22.3,isd_lite dwd_mosmix,28.3,isd_lite dwd_mosmix,91,isd_lite dwd_mosmix,15.1,dwd_mosmix,,,14.4,isd_lite dwd_mosmix,1003.8,isd_lite dwd_mosmix,8,isd_lite dwd_mosmix
+2025,6,21,21.5,ghcnd,20.8,isd_lite,24.0,isd_lite,89,isd_lite,1.3,dwd_mosmix,,,7.8,isd_lite,1003.0,isd_lite,8,isd_lite dwd_mosmix
+2025,6,22,23.7,ghcnd,18.1,ghcnd,28.4,isd_lite dwd_mosmix,70,isd_lite dwd_mosmix,0.0,dwd_mosmix,,,7.9,isd_lite dwd_mosmix,1005.5,isd_lite dwd_mosmix,2,dwd_mosmix isd_lite
+2025,6,23,27.2,ghcnd,19.4,ghcnd,31.4,isd_lite,66,isd_lite,0.0,dwd_mosmix,,,6.9,isd_lite,1006.4,isd_lite,2,isd_lite dwd_mosmix
+2025,6,24,23.8,ghcnd,20.7,isd_lite,27.8,isd_lite,62,isd_lite,0.0,dwd_mosmix,,,8.7,isd_lite,1006.9,isd_lite,7,isd_lite dwd_mosmix
+2025,6,25,20.9,ghcnd,19.5,ghcnd,22.0,isd_lite,88,isd_lite,2.4,dwd_mosmix,,,9.3,isd_lite,1005.8,isd_lite,8,isd_lite dwd_mosmix
+2025,6,26,22.4,ghcnd,19.9,ghcnd,24.2,isd_lite,86,isd_lite,0.0,dwd_mosmix,,,5.9,isd_lite,1008.0,isd_lite,7,isd_lite
+2025,6,27,25.9,ghcnd,21.1,ghcnd,29.1,isd_lite,79,isd_lite,0.0,dwd_mosmix,,,4.6,isd_lite,1007.8,isd_lite,7,isd_lite dwd_mosmix
+2025,6,28,26.3,ghcnd,24.5,ghcnd,27.9,isd_lite,84,isd_lite,0.0,dwd_mosmix,,,4.9,isd_lite,1006.6,isd_lite,7,isd_lite dwd_mosmix
+2025,6,29,27.3,ghcnd,24.9,ghcnd,30.2,ghcnd,78,isd_lite,0.0,dwd_mosmix,,,8.6,isd_lite,1006.9,isd_lite,6,isd_lite dwd_mosmix
+2025,6,30,28.4,ghcnd,25.6,ghcnd,31.2,isd_lite,75,isd_lite,0.6,dwd_mosmix,,,8.2,isd_lite,1009.5,isd_lite,6,isd_lite dwd_mosmix
+2025,7,1,28.8,ghcnd,26.2,ghcnd,31.6,isd_lite,78,isd_lite,0.0,dwd_mosmix,,,10.7,isd_lite,1011.2,isd_lite,5,isd_lite dwd_mosmix
+2025,7,2,28.6,ghcnd,26.8,ghcnd,30.6,isd_lite,76,isd_lite,0.4,dwd_mosmix,,,11.3,isd_lite,1011.5,isd_lite,6,isd_lite dwd_mosmix
+2025,7,3,27.8,ghcnd,26.8,isd_lite dwd_mosmix,31.5,isd_lite dwd_mosmix,76,isd_lite dwd_mosmix,0.0,dwd_mosmix,,,10.0,isd_lite dwd_mosmix,1009.4,isd_lite dwd_mosmix,6,isd_lite dwd_mosmix
+2025,7,4,27.3,ghcnd,25.7,ghcnd,29.5,isd_lite,77,isd_lite,0.0,dwd_mosmix,,,11.5,isd_lite,1006.3,isd_lite,6,isd_lite
+2025,7,5,28.4,ghcnd,26.0,ghcnd,32.2,isd_lite,74,isd_lite,0.5,dwd_mosmix,,,9.8,isd_lite,1004.9,isd_lite,6,isd_lite
+2025,7,6,29.2,ghcnd,26.3,ghcnd,32.7,isd_lite,74,isd_lite,0.0,dwd_mosmix,,,8.7,isd_lite,1003.9,isd_lite,7,isd_lite
+2025,7,7,29.3,ghcnd,26.7,ghcnd,33.0,isd_lite,78,isd_lite,0.5,dwd_mosmix,,,6.8,isd_lite,1004.9,isd_lite,6,isd_lite dwd_mosmix
+2025,7,8,31.0,ghcnd,26.9,ghcnd,37.5,isd_lite,73,isd_lite,0.0,dwd_mosmix,,,7.3,isd_lite,1006.5,isd_lite,4,isd_lite dwd_mosmix
+2025,7,9,31.9,ghcnd,27.5,isd_lite,35.5,isd_lite,63,isd_lite,0.0,dwd_mosmix,,,7.4,isd_lite,1008.0,isd_lite,3,isd_lite dwd_mosmix
+2025,7,10,30.6,ghcnd,27.3,isd_lite,36.1,isd_lite,48,isd_lite,0.0,dwd_mosmix,,,10.7,isd_lite,1009.6,isd_lite,1,dwd_mosmix isd_lite
+2025,7,11,30.2,ghcnd,24.6,isd_lite dwd_mosmix,36.0,isd_lite dwd_mosmix,46,isd_lite dwd_mosmix,0.0,dwd_mosmix,,,12.3,isd_lite dwd_mosmix,1011.0,isd_lite dwd_mosmix,0,dwd_mosmix isd_lite
+2025,7,12,30.6,ghcnd,24.4,ghcnd,36.2,isd_lite,46,isd_lite,0.0,dwd_mosmix,,,8.9,isd_lite,1008.3,isd_lite,2,isd_lite dwd_mosmix
+2025,7,13,27.1,ghcnd,25.7,isd_lite,30.8,isd_lite,65,isd_lite,0.0,dwd_mosmix,,,5.3,isd_lite,1001.6,isd_lite,7,isd_lite dwd_mosmix
+2025,7,14,23.0,ghcnd,21.9,isd_lite dwd_mosmix,27.9,isd_lite dwd_mosmix,77,isd_lite dwd_mosmix,3.0,dwd_mosmix,,,7.4,isd_lite dwd_mosmix,994.6,isd_lite dwd_mosmix,6,isd_lite dwd_mosmix
+2025,7,15,24.3,ghcnd,21.5,ghcnd,25.7,isd_lite,85,isd_lite,2.7,dwd_mosmix,,,8.3,isd_lite,994.6,isd_lite,7,isd_lite
+2025,7,16,22.9,ghcnd,22.2,isd_lite,24.6,isd_lite,88,isd_lite,0.0,dwd_mosmix,,,7.8,isd_lite,1000.3,isd_lite,8,isd_lite dwd_mosmix
+2025,7,17,23.4,ghcnd,22.0,isd_lite,24.3,isd_lite,94,isd_lite,13.3,dwd_mosmix isd_lite,,,7.3,isd_lite,1002.5,isd_lite,8,isd_lite
+2025,7,18,24.6,ghcnd,23.0,isd_lite,27.0,isd_lite,90,isd_lite,0.0,dwd_mosmix,,,6.2,isd_lite,1005.4,isd_lite,8,isd_lite dwd_mosmix
+2025,7,19,24.8,ghcnd,21.9,ghcnd,25.6,isd_lite,95,isd_lite,0.0,dwd_mosmix,,,6.7,isd_lite,1007.7,isd_lite,8,isd_lite
+2025,7,20,27.9,ghcnd,25.0,ghcnd,31.3,isd_lite,84,isd_lite,24.8,dwd_mosmix isd_lite,,,10.2,isd_lite,1010.6,isd_lite,6,isd_lite
+2025,7,21,28.6,ghcnd,25.6,ghcnd,31.6,isd_lite,78,isd_lite,0.0,dwd_mosmix,,,7.8,isd_lite,1012.6,isd_lite,5,isd_lite dwd_mosmix
+2025,7,22,28.5,ghcnd,26.7,isd_lite,32.0,isd_lite,77,isd_lite,0.0,dwd_mosmix,,,9.8,isd_lite,1013.2,isd_lite,5,isd_lite
+2025,7,23,29.1,ghcnd,25.5,ghcnd,33.1,isd_lite dwd_mosmix,72,isd_lite dwd_mosmix,0.0,dwd_mosmix,,,7.0,isd_lite dwd_mosmix,1012.2,isd_lite dwd_mosmix,5,isd_lite dwd_mosmix
+2025,7,24,29.9,ghcnd,25.8,isd_lite,33.9,isd_lite,68,isd_lite,0.0,dwd_mosmix,,,7.3,isd_lite,1009.8,isd_lite,5,isd_lite
+2025,7,25,31.6,ghcnd,25.6,ghcnd,36.0,isd_lite,66,isd_lite,0.0,dwd_mosmix,,,6.7,isd_lite,1007.6,isd_lite,1,dwd_mosmix isd_lite
+2025,7,26,32.5,ghcnd,27.6,ghcnd,37.0,isd_lite,61,isd_lite,0.0,dwd_mosmix,,,6.2,isd_lite,1006.2,isd_lite,3,isd_lite dwd_mosmix
+2025,7,27,32.9,ghcnd,28.3,ghcnd,37.6,isd_lite,61,isd_lite,0.0,dwd_mosmix,,,6.7,isd_lite,1004.3,isd_lite,1,dwd_mosmix isd_lite
+2025,7,28,32.1,ghcnd,28.9,isd_lite,36.3,isd_lite,67,isd_lite,0.0,dwd_mosmix,,,7.2,isd_lite,1002.1,isd_lite,2,isd_lite dwd_mosmix
+2025,7,29,31.9,ghcnd,27.6,ghcnd,36.3,isd_lite dwd_mosmix,64,isd_lite dwd_mosmix,0.2,dwd_mosmix,,,7.2,isd_lite dwd_mosmix,999.7,isd_lite dwd_mosmix,2,isd_lite dwd_mosmix
+2025,7,30,32.2,ghcnd,28.3,ghcnd,35.7,isd_lite,63,isd_lite,0.0,dwd_mosmix,,,6.2,isd_lite,999.5,isd_lite,6,isd_lite dwd_mosmix
+2025,7,31,30.6,ghcnd,29.4,isd_lite,34.0,isd_lite,62,isd_lite,0.0,dwd_mosmix,,,6.9,isd_lite,1001.6,isd_lite,7,isd_lite dwd_mosmix
+2025,8,1,30.9,ghcnd,27.8,isd_lite,34.6,isd_lite,66,isd_lite,0.0,dwd_mosmix,,,6.4,isd_lite,1001.7,isd_lite,6,isd_lite dwd_mosmix
+2025,8,2,31.1,ghcnd,27.3,ghcnd,36.2,isd_lite,64,isd_lite,0.0,dwd_mosmix,,,6.3,isd_lite,1001.5,isd_lite,5,isd_lite
+2025,8,3,27.6,ghcnd,25.4,isd_lite,32.4,isd_lite,66,isd_lite,0.0,dwd_mosmix,,,6.8,isd_lite,1000.3,isd_lite,7,isd_lite
+2025,8,4,28.7,ghcnd,23.7,ghcnd,33.6,isd_lite,77,isd_lite,0.0,dwd_mosmix,,,8.0,isd_lite,999.2,isd_lite,6,isd_lite
+2025,8,5,29.4,ghcnd,25.4,ghcnd,33.5,isd_lite dwd_mosmix,68,isd_lite dwd_mosmix,0.0,dwd_mosmix,,,8.2,isd_lite dwd_mosmix,1003.3,isd_lite dwd_mosmix,4,isd_lite dwd_mosmix
+2025,8,6,26.7,ghcnd,25.7,isd_lite,29.3,isd_lite,87,isd_lite,20.5,dwd_mosmix,,,11.4,isd_lite,1000.7,isd_lite,6,isd_lite dwd_mosmix
+2025,8,7,27.9,ghcnd,25.5,isd_lite,32.0,isd_lite,72,isd_lite,0.0,dwd_mosmix,,,10.2,isd_lite,1001.1,isd_lite,4,isd_lite
+2025,8,8,26.6,ghcnd,23.9,ghcnd,30.1,isd_lite,75,isd_lite,0.0,dwd_mosmix,,,6.0,isd_lite,1003.3,isd_lite,5,isd_lite dwd_mosmix
+2025,8,9,24.0,ghcnd,23.5,isd_lite,26.4,isd_lite,81,isd_lite,0.0,dwd_mosmix,,,5.2,isd_lite,1003.3,isd_lite,6,isd_lite dwd_mosmix
+2025,8,10,28.3,ghcnd,21.0,ghcnd,33.1,isd_lite,70,isd_lite,0.0,dwd_mosmix,,,6.1,isd_lite,1001.0,isd_lite,2,isd_lite dwd_mosmix
+2025,8,11,26.7,ghcnd,25.0,isd_lite,29.2,isd_lite,75,isd_lite,0.0,dwd_mosmix,,,6.7,isd_lite,1003.7,isd_lite,6,isd_lite dwd_mosmix
+2025,8,12,28.9,ghcnd,23.3,ghcnd,34.0,isd_lite,64,isd_lite,0.0,dwd_mosmix,,,8.0,isd_lite,1008.4,isd_lite,3,isd_lite dwd_mosmix
+2025,8,13,24.8,ghcnd,22.0,isd_lite,26.9,isd_lite,89,isd_lite,14.9,dwd_mosmix,,,9.4,isd_lite,1011.1,isd_lite,8,isd_lite
+2025,8,14,25.6,ghcnd,24.2,ghcnd,26.9,isd_lite,91,isd_lite,9.0,dwd_mosmix,,,7.6,isd_lite,1013.8,isd_lite,7,isd_lite dwd_mosmix
+2025,8,15,27.4,ghcnd,24.4,ghcnd,30.9,isd_lite,84,isd_lite,0.0,dwd_mosmix,,,6.7,isd_lite,1014.4,isd_lite,4,isd_lite
+2025,8,16,28.3,ghcnd,25.5,ghcnd,31.7,isd_lite,77,isd_lite,0.0,dwd_mosmix,,,8.2,isd_lite,1012.5,isd_lite,4,isd_lite dwd_mosmix
+2025,8,17,28.8,ghcnd,26.1,ghcnd,31.9,isd_lite,76,isd_lite,0.6,dwd_mosmix,,,8.1,isd_lite,1013.2,isd_lite,6,isd_lite dwd_mosmix
+2025,8,18,28.9,ghcnd,27.0,isd_lite,32.6,isd_lite,75,isd_lite,0.0,dwd_mosmix,,,10.6,isd_lite,1012.8,isd_lite,6,isd_lite dwd_mosmix
+2025,8,19,29.1,ghcnd,26.9,ghcnd,32.1,isd_lite,76,isd_lite,1.4,dwd_mosmix isd_lite,,,11.2,isd_lite,1010.4,isd_lite,5,isd_lite
+2025,8,20,29.4,ghcnd,26.9,ghcnd,32.7,isd_lite,74,isd_lite,0.0,dwd_mosmix,,,9.5,isd_lite,1008.6,isd_lite,6,isd_lite dwd_mosmix
+2025,8,21,29.6,ghcnd,27.4,isd_lite,34.3,ghcnd,71,isd_lite,1.4,dwd_mosmix,,,8.0,isd_lite,1009.1,isd_lite,5,isd_lite
+2025,8,22,29.7,ghcnd,26.1,ghcnd,33.5,isd_lite,70,isd_lite,0.0,dwd_mosmix,,,7.6,isd_lite,1008.2,isd_lite,2,isd_lite dwd_mosmix
+2025,8,23,29.2,ghcnd,27.4,isd_lite,31.8,isd_lite,76,isd_lite,0.1,dwd_mosmix,,,6.6,isd_lite,1009.4,isd_lite,3,isd_lite dwd_mosmix
+2025,8,24,30.4,ghcnd,26.9,ghcnd,34.5,isd_lite dwd_mosmix,70,isd_lite dwd_mosmix,0.4,dwd_mosmix,,,5.9,isd_lite dwd_mosmix,1010.5,isd_lite dwd_mosmix,3,isd_lite dwd_mosmix
+2025,8,25,29.1,dwd_mosmix isd_lite,27.4,dwd_mosmix isd_lite,31.4,dwd_mosmix isd_lite,78,dwd_mosmix isd_lite,12.9,dwd_mosmix,,,8.4,dwd_mosmix isd_lite,1009.3,dwd_mosmix isd_lite,5,dwd_mosmix isd_lite
+2025,8,26,27.4,dwd_mosmix,25.4,dwd_mosmix,29.7,dwd_mosmix,84,dwd_mosmix,34.0,dwd_mosmix,,,10.7,dwd_mosmix,1007.5,dwd_mosmix,6,dwd_mosmix
+2025,8,27,26.9,dwd_mosmix,23.6,dwd_mosmix,29.9,dwd_mosmix,72,dwd_mosmix,0.0,dwd_mosmix,,,5.3,dwd_mosmix,1010.5,dwd_mosmix,4,dwd_mosmix
+2025,8,28,27.7,dwd_mosmix,24.8,dwd_mosmix,30.8,dwd_mosmix,72,dwd_mosmix,1.1,dwd_mosmix,,,8.0,dwd_mosmix,1011.5,dwd_mosmix,7,dwd_mosmix
+2025,8,29,28.5,dwd_mosmix,26.8,dwd_mosmix,31.0,dwd_mosmix,81,dwd_mosmix,9.8,dwd_mosmix,,,12.7,dwd_mosmix,1012.4,dwd_mosmix,6,dwd_mosmix
+2025,8,30,28.5,dwd_mosmix,25.9,dwd_mosmix,31.4,dwd_mosmix,82,dwd_mosmix,8.3,dwd_mosmix,,,7.3,dwd_mosmix,1013.3,dwd_mosmix,5,dwd_mosmix
+2025,8,31,28.2,dwd_mosmix,25.1,dwd_mosmix,31.4,dwd_mosmix,77,dwd_mosmix,8.9,dwd_mosmix,,,7.7,dwd_mosmix,1009.5,dwd_mosmix,4,dwd_mosmix
+2025,9,1,26.1,dwd_mosmix,24.4,dwd_mosmix,27.4,dwd_mosmix,87,dwd_mosmix,25.1,dwd_mosmix,,,10.0,dwd_mosmix,1005.5,dwd_mosmix,7,dwd_mosmix
+2025,9,2,25.9,dwd_mosmix,22.2,dwd_mosmix,29.9,dwd_mosmix,76,dwd_mosmix,0.0,dwd_mosmix,,,5.5,dwd_mosmix,1008.7,dwd_mosmix,4,dwd_mosmix
+2025,9,3,27.3,dwd_mosmix,22.5,dwd_mosmix,31.8,dwd_mosmix,68,dwd_mosmix,0.0,dwd_mosmix,,,5.8,dwd_mosmix,1010.5,dwd_mosmix,4,dwd_mosmix
+2025,9,4,25.9,dwd_mosmix,22.9,dwd_mosmix,27.7,dwd_mosmix,80,dwd_mosmix,29.1,dwd_mosmix,,,9.4,dwd_mosmix,1009.9,dwd_mosmix,7,dwd_mosmix
+2025,9,5,27.7,dwd_mosmix,23.7,dwd_mosmix,32.0,dwd_mosmix,70,dwd_mosmix,0.0,dwd_mosmix,,,7.6,dwd_mosmix,1009.4,dwd_mosmix,4,dwd_mosmix
+2025,9,6,26.8,dwd_mosmix,25.1,dwd_mosmix,28.4,dwd_mosmix,86,dwd_mosmix,26.0,dwd_mosmix,,,9.4,dwd_mosmix,1007.7,dwd_mosmix,7,dwd_mosmix
+2025,9,7,25.5,dwd_mosmix,23.4,dwd_mosmix,27.5,dwd_mosmix,79,dwd_mosmix,0.6,dwd_mosmix,,,8.5,dwd_mosmix,1007.0,dwd_mosmix,7,dwd_mosmix
+2025,9,8,24.0,dwd_mosmix,20.8,dwd_mosmix,27.5,dwd_mosmix,73,dwd_mosmix,0.0,dwd_mosmix,,,4.4,dwd_mosmix,1010.5,dwd_mosmix,6,dwd_mosmix
+2025,9,9,23.9,dwd_mosmix,21.8,dwd_mosmix,26.8,dwd_mosmix,70,dwd_mosmix,0.5,dwd_mosmix,,,5.1,dwd_mosmix,1012.2,dwd_mosmix,6,dwd_mosmix
+2025,9,10,24.9,dwd_mosmix,18.9,dwd_mosmix,30.8,dwd_mosmix,60,dwd_mosmix,0.0,dwd_mosmix,,,7.2,dwd_mosmix,1012.6,dwd_mosmix,0,dwd_mosmix
+2025,9,11,25.8,dwd_mosmix,19.9,dwd_mosmix,31.3,dwd_mosmix,54,dwd_mosmix,0.0,dwd_mosmix,,,8.9,dwd_mosmix,1015.1,dwd_mosmix,1,dwd_mosmix
+2025,9,12,24.4,dwd_mosmix,22.3,dwd_mosmix,26.8,dwd_mosmix,64,dwd_mosmix,3.7,dwd_mosmix,,,10.7,dwd_mosmix,1013.4,dwd_mosmix,7,dwd_mosmix
+2025,9,13,22.9,dwd_mosmix,20.5,dwd_mosmix,26.1,dwd_mosmix,87,dwd_mosmix,45.2,dwd_mosmix,,,10.8,dwd_mosmix,1005.9,dwd_mosmix,7,dwd_mosmix
+2025,9,14,24.5,dwd_mosmix,21.0,dwd_mosmix,28.5,dwd_mosmix,72,dwd_mosmix,0.0,dwd_mosmix,,,5.8,dwd_mosmix,1010.9,dwd_mosmix,5,dwd_mosmix
+2025,9,15,25.5,dwd_mosmix,21.0,dwd_mosmix,30.2,dwd_mosmix,72,dwd_mosmix,0.0,dwd_mosmix,,,4.4,dwd_mosmix,1014.4,dwd_mosmix,4,dwd_mosmix
+2025,9,16,24.5,dwd_mosmix,22.6,dwd_mosmix,26.7,dwd_mosmix,86,dwd_mosmix,14.6,dwd_mosmix,,,6.3,dwd_mosmix,1012.1,dwd_mosmix,6,dwd_mosmix
+2025,9,17,22.6,dwd_mosmix,20.8,dwd_mosmix,23.8,dwd_mosmix,94,dwd_mosmix,13.1,dwd_mosmix,,,6.9,dwd_mosmix,1009.3,dwd_mosmix,7,dwd_mosmix
+2025,9,18,22.1,dwd_mosmix,19.4,dwd_mosmix,25.6,dwd_mosmix,76,dwd_mosmix,0.0,dwd_mosmix,,,9.3,dwd_mosmix,1014.6,dwd_mosmix,6,dwd_mosmix
+2025,9,19,19.8,dwd_mosmix,18.0,dwd_mosmix,21.6,dwd_mosmix,78,dwd_mosmix,16.0,dwd_mosmix,,,11.2,dwd_mosmix,1016.4,dwd_mosmix,8,dwd_mosmix
+2025,9,20,19.7,dwd_mosmix,17.4,dwd_mosmix,22.5,dwd_mosmix,87,dwd_mosmix,29.8,dwd_mosmix,,,7.9,dwd_mosmix,1009.6,dwd_mosmix,7,dwd_mosmix
+2025,9,21,21.5,dwd_mosmix,17.2,dwd_mosmix,26.3,dwd_mosmix,68,dwd_mosmix,0.0,dwd_mosmix,,,7.6,dwd_mosmix,1016.4,dwd_mosmix,4,dwd_mosmix
+2025,9,22,21.2,dwd_mosmix,18.0,dwd_mosmix,25.0,dwd_mosmix,59,dwd_mosmix,0.0,dwd_mosmix,,,10.3,dwd_mosmix,1020.2,dwd_mosmix,7,dwd_mosmix
+2025,9,23,22.3,dwd_mosmix,19.3,dwd_mosmix,25.6,dwd_mosmix,58,dwd_mosmix,0.0,dwd_mosmix,,,9.6,dwd_mosmix,1018.8,dwd_mosmix,7,dwd_mosmix
+2025,9,24,21.8,dwd_mosmix,20.3,dwd_mosmix,23.5,dwd_mosmix,81,dwd_mosmix,31.9,dwd_mosmix,,,9.3,dwd_mosmix,1013.0,dwd_mosmix,7,dwd_mosmix
+2025,9,25,22.7,dwd_mosmix,20.4,dwd_mosmix,25.8,dwd_mosmix,80,dwd_mosmix,0.1,dwd_mosmix,,,5.2,dwd_mosmix,1016.7,dwd_mosmix,5,dwd_mosmix
+2025,9,26,22.2,dwd_mosmix,17.7,dwd_mosmix,27.5,dwd_mosmix,76,dwd_mosmix,0.0,dwd_mosmix,,,4.4,dwd_mosmix,1019.0,dwd_mosmix,2,dwd_mosmix
+2025,9,27,22.5,dwd_mosmix,17.8,dwd_mosmix,27.4,dwd_mosmix,72,dwd_mosmix,0.0,dwd_mosmix,,,5.7,dwd_mosmix,1017.1,dwd_mosmix,4,dwd_mosmix
+2025,9,28,20.4,dwd_mosmix,19.0,dwd_mosmix,22.0,dwd_mosmix,86,dwd_mosmix,25.6,dwd_mosmix,,,4.8,dwd_mosmix,1011.1,dwd_mosmix,7,dwd_mosmix
+2025,9,29,20.0,dwd_mosmix,16.5,dwd_mosmix,23.9,dwd_mosmix,76,dwd_mosmix,0.0,dwd_mosmix,,,5.0,dwd_mosmix,1012.4,dwd_mosmix,5,dwd_mosmix
+2025,9,30,19.8,dwd_mosmix,16.8,dwd_mosmix,23.1,dwd_mosmix,79,dwd_mosmix,0.0,dwd_mosmix,,,4.4,dwd_mosmix,1012.7,dwd_mosmix,5,dwd_mosmix
+2025,10,1,20.6,dwd_mosmix,16.3,dwd_mosmix,25.1,dwd_mosmix,78,dwd_mosmix,0.0,dwd_mosmix,,,5.8,dwd_mosmix,1013.3,dwd_mosmix,3,dwd_mosmix
+2025,10,2,21.3,dwd_mosmix,17.4,dwd_mosmix,25.9,dwd_mosmix,74,dwd_mosmix,0.0,dwd_mosmix,,,4.3,dwd_mosmix,1016.7,dwd_mosmix,6,dwd_mosmix
+2025,10,3,21.5,dwd_mosmix,19.7,dwd_mosmix,23.4,dwd_mosmix,75,dwd_mosmix,0.3,dwd_mosmix,,,11.9,dwd_mosmix,1015.6,dwd_mosmix,7,dwd_mosmix
+2025,10,4,22.3,dwd_mosmix,20.1,dwd_mosmix,25.3,dwd_mosmix,76,dwd_mosmix,0.0,dwd_mosmix,,,7.3,dwd_mosmix,1013.3,dwd_mosmix,7,dwd_mosmix
+2025,10,5,21.5,dwd_mosmix,20.6,dwd_mosmix,22.3,dwd_mosmix,91,dwd_mosmix,2.4,dwd_mosmix,,,4.7,dwd_mosmix,1013.8,dwd_mosmix,8,dwd_mosmix
+2025,10,6,18.9,dwd_mosmix,15.8,dwd_mosmix,20.7,dwd_mosmix,96,dwd_mosmix,31.5,dwd_mosmix,,,16.0,dwd_mosmix,1014.9,dwd_mosmix,8,dwd_mosmix
+2025,10,7,18.4,dwd_mosmix,15.5,dwd_mosmix,20.6,dwd_mosmix,95,dwd_mosmix,15.1,dwd_mosmix,,,14.7,dwd_mosmix,1014.9,dwd_mosmix,8,dwd_mosmix
+2025,10,8,21.3,dwd_mosmix,17.2,dwd_mosmix,26.5,dwd_mosmix,77,dwd_mosmix,0.0,dwd_mosmix,,,6.2,dwd_mosmix,1016.5,dwd_mosmix,4,dwd_mosmix
+2025,10,9,20.3,dwd_mosmix,18.4,dwd_mosmix,22.6,dwd_mosmix,72,dwd_mosmix,0.0,dwd_mosmix,,,18.1,dwd_mosmix,1018.8,dwd_mosmix,6,dwd_mosmix
+2025,10,10,18.4,dwd_mosmix,17.7,dwd_mosmix,19.5,dwd_mosmix,88,dwd_mosmix,4.7,dwd_mosmix,,,15.0,dwd_mosmix,1018.4,dwd_mosmix,7,dwd_mosmix
+2025,10,11,20.2,dwd_mosmix,17.9,dwd_mosmix,22.2,dwd_mosmix,92,dwd_mosmix,26.9,dwd_mosmix,,,9.1,dwd_mosmix,1013.2,dwd_mosmix,8,dwd_mosmix
+2025,10,12,19.4,dwd_mosmix,17.6,dwd_mosmix,21.3,dwd_mosmix,87,dwd_mosmix,0.2,dwd_mosmix,,,6.9,dwd_mosmix,1012.5,dwd_mosmix,7,dwd_mosmix
+2025,10,13,17.0,dwd_mosmix,14.4,dwd_mosmix,18.6,dwd_mosmix,94,dwd_mosmix,23.8,dwd_mosmix,,,12.2,dwd_mosmix,1014.3,dwd_mosmix,8,dwd_mosmix
+2025,10,14,17.5,dwd_mosmix,14.5,dwd_mosmix,20.7,dwd_mosmix,81,dwd_mosmix,3.7,dwd_mosmix,,,12.8,dwd_mosmix,1016.7,dwd_mosmix,7,dwd_mosmix
+2025,10,15,20.0,dwd_mosmix,16.3,dwd_mosmix,23.9,dwd_mosmix,74,dwd_mosmix,6.0,dwd_mosmix,,,11.7,dwd_mosmix,1018.6,dwd_mosmix,6,dwd_mosmix
+2025,10,16,20.3,dwd_mosmix,17.1,dwd_mosmix,24.8,dwd_mosmix,79,dwd_mosmix,11.2,dwd_mosmix,,,9.2,dwd_mosmix,1017.7,dwd_mosmix,5,dwd_mosmix
+2025,10,17,19.9,dwd_mosmix,15.5,dwd_mosmix,24.5,dwd_mosmix,72,dwd_mosmix,7.0,dwd_mosmix,,,9.6,dwd_mosmix,1020.6,dwd_mosmix,4,dwd_mosmix
+2025,10,18,16.7,dwd_mosmix,14.2,dwd_mosmix,19.1,dwd_mosmix,86,dwd_mosmix,15.7,dwd_mosmix,,,8.6,dwd_mosmix,1018.8,dwd_mosmix,7,dwd_mosmix
+2025,10,19,14.9,dwd_mosmix,10.2,dwd_mosmix,19.1,dwd_mosmix,73,dwd_mosmix,0.0,dwd_mosmix,,,9.2,dwd_mosmix,1023.2,dwd_mosmix,4,dwd_mosmix
+2025,10,20,10.1,dwd_mosmix,5.2,dwd_mosmix,14.7,dwd_mosmix,64,dwd_mosmix,0.0,dwd_mosmix,,,10.0,dwd_mosmix,1027.2,dwd_mosmix,3,dwd_mosmix
+2025,10,21,9.8,dwd_mosmix,4.8,dwd_mosmix,14.9,dwd_mosmix,61,dwd_mosmix,0.0,dwd_mosmix,,,6.6,dwd_mosmix,1028.9,dwd_mosmix,4,dwd_mosmix
+2025,10,22,12.5,dwd_mosmix,6.7,dwd_mosmix,18.3,dwd_mosmix,70,dwd_mosmix,0.4,dwd_mosmix,,,5.8,dwd_mosmix,1028.1,dwd_mosmix,2,dwd_mosmix
+2025,10,23,15.0,dwd_mosmix,11.7,dwd_mosmix,19.8,dwd_mosmix,69,dwd_mosmix,0.4,dwd_mosmix,,,7.1,dwd_mosmix,1026.5,dwd_mosmix,4,dwd_mosmix
+2025,10,24,14.9,dwd_mosmix,10.5,dwd_mosmix,19.8,dwd_mosmix,69,dwd_mosmix,0.3,dwd_mosmix,,,7.5,dwd_mosmix,1025.4,dwd_mosmix,4,dwd_mosmix
+2025,10,25,15.0,dwd_mosmix,12.6,dwd_mosmix,18.5,dwd_mosmix,70,dwd_mosmix,0.2,dwd_mosmix,,,6.6,dwd_mosmix,1021.2,dwd_mosmix,6,dwd_mosmix
+2025,10,26,12.4,dwd_mosmix,10.7,dwd_mosmix,14.4,dwd_mosmix,67,dwd_mosmix,0.2,dwd_mosmix,,,6.7,dwd_mosmix,1018.1,dwd_mosmix,7,dwd_mosmix
+2025,10,27,8.2,dwd_mosmix,4.2,dwd_mosmix,11.0,dwd_mosmix,48,dwd_mosmix,0.0,dwd_mosmix,,,12.2,dwd_mosmix,1021.8,dwd_mosmix,1,dwd_mosmix
+2025,10,28,8.0,dwd_mosmix,2.9,dwd_mosmix,13.4,dwd_mosmix,45,dwd_mosmix,0.0,dwd_mosmix,,,4.8,dwd_mosmix,1027.4,dwd_mosmix,0,dwd_mosmix
+2025,10,29,11.1,dwd_mosmix,6.0,dwd_mosmix,16.9,dwd_mosmix,63,dwd_mosmix,0.0,dwd_mosmix,,,6.0,dwd_mosmix,1028.5,dwd_mosmix,2,dwd_mosmix
+2025,10,30,12.8,dwd_mosmix,7.8,dwd_mosmix,18.0,dwd_mosmix,66,dwd_mosmix,0.0,dwd_mosmix,,,5.6,dwd_mosmix,1025.3,dwd_mosmix,4,dwd_mosmix
+2025,10,31,14.4,dwd_mosmix,11.0,dwd_mosmix,18.7,dwd_mosmix,70,dwd_mosmix,5.3,dwd_mosmix,,,6.2,dwd_mosmix,1017.7,dwd_mosmix,6,dwd_mosmix
+2025,11,1,13.0,dwd_mosmix,10.7,dwd_mosmix,16.6,dwd_mosmix,67,dwd_mosmix,3.5,dwd_mosmix,,,11.3,dwd_mosmix,1012.6,dwd_mosmix,3,dwd_mosmix
+2025,11,2,8.7,dwd_mosmix,3.5,dwd_mosmix,11.1,dwd_mosmix,58,dwd_mosmix,0.0,dwd_mosmix,,,13.5,dwd_mosmix,1018.7,dwd_mosmix,2,dwd_mosmix
+2025,11,3,6.7,dwd_mosmix,0.7,dwd_mosmix,13.8,dwd_mosmix,54,dwd_mosmix,0.0,dwd_mosmix,,,5.4,dwd_mosmix,1028.1,dwd_mosmix,0,dwd_mosmix
+2025,11,4,9.8,dwd_mosmix,5.2,dwd_mosmix,16.1,dwd_mosmix,65,dwd_mosmix,0.0,dwd_mosmix,,,5.2,dwd_mosmix,1026.6,dwd_mosmix,1,dwd_mosmix
+2025,11,5,11.7,dwd_mosmix,6.0,dwd_mosmix,18.8,dwd_mosmix,62,dwd_mosmix,0.0,dwd_mosmix,,,4.8,dwd_mosmix,1024.4,dwd_mosmix,1,dwd_mosmix
+2025,11,6,12.8,dwd_mosmix,7.7,dwd_mosmix,18.8,dwd_mosmix,66,dwd_mosmix,0.0,dwd_mosmix,,,4.7,dwd_mosmix,1024.0,dwd_mosmix,2,dwd_mosmix
+2025,11,7,13.7,dwd_mosmix,9.0,dwd_mosmix,19.4,dwd_mosmix,68,dwd_mosmix,0.0,dwd_mosmix,,,6.5,dwd_mosmix,1024.2,dwd_mosmix,4,dwd_mosmix
+2025,11,8,14.2,dwd_mosmix,12.3,dwd_mosmix,16.3,dwd_mosmix,69,dwd_mosmix,0.3,dwd_mosmix,,,9.7,dwd_mosmix,1022.8,dwd_mosmix,7,dwd_mosmix
+2025,11,9,13.3,dwd_mosmix,10.2,dwd_mosmix,17.0,dwd_mosmix,68,dwd_mosmix,0.0,dwd_mosmix,,,10.3,dwd_mosmix,1016.8,dwd_mosmix,3,dwd_mosmix
+2025,11,10,8.4,dwd_mosmix,5.3,dwd_mosmix,12.4,dwd_mosmix,42,dwd_mosmix,0.0,dwd_mosmix,,,11.0,dwd_mosmix,1020.2,dwd_mosmix,1,dwd_mosmix
+2025,11,11,8.9,dwd_mosmix,4.2,dwd_mosmix,14.8,dwd_mosmix,53,dwd_mosmix,0.0,dwd_mosmix,,,5.2,dwd_mosmix,1022.4,dwd_mosmix,3,dwd_mosmix
+2025,11,12,10.4,dwd_mosmix,5.7,dwd_mosmix,16.4,dwd_mosmix,66,dwd_mosmix,0.0,dwd_mosmix,,,5.4,dwd_mosmix,1023.0,dwd_mosmix,1,dwd_mosmix
+2025,11,13,11.1,dwd_mosmix,7.3,dwd_mosmix,16.7,dwd_mosmix,66,dwd_mosmix,0.0,dwd_mosmix,,,6.4,dwd_mosmix,1019.5,dwd_mosmix,3,dwd_mosmix
+2025,11,14,8.9,dwd_mosmix,4.7,dwd_mosmix,14.2,dwd_mosmix,54,dwd_mosmix,0.0,dwd_mosmix,,,6.2,dwd_mosmix,1020.9,dwd_mosmix,0,dwd_mosmix
+2025,11,15,9.6,dwd_mosmix,4.1,dwd_mosmix,16.4,dwd_mosmix,50,dwd_mosmix,0.0,dwd_mosmix,,,4.1,dwd_mosmix,1026.0,dwd_mosmix,2,dwd_mosmix
+2025,11,16,11.5,dwd_mosmix,5.7,dwd_mosmix,17.9,dwd_mosmix,55,dwd_mosmix,0.6,dwd_mosmix,,,8.7,dwd_mosmix,1025.1,dwd_mosmix,3,dwd_mosmix
+2025,11,17,4.1,dwd_mosmix,-0.2,dwd_mosmix,9.9,dwd_mosmix,40,dwd_mosmix,0.0,dwd_mosmix,,,16.1,dwd_mosmix,1028.6,dwd_mosmix,4,dwd_mosmix
+2025,11,18,1.2,dwd_mosmix,-2.4,dwd_mosmix,5.2,dwd_mosmix,50,dwd_mosmix,0.0,dwd_mosmix,,,8.0,dwd_mosmix,1027.1,dwd_mosmix,2,dwd_mosmix
+2025,11,19,2.9,dwd_mosmix,-1.4,dwd_mosmix,8.3,dwd_mosmix,53,dwd_mosmix,0.0,dwd_mosmix,,,4.8,dwd_mosmix,1026.0,dwd_mosmix,0,dwd_mosmix
+2025,11,20,6.9,dwd_mosmix,1.9,dwd_mosmix,13.5,dwd_mosmix,64,dwd_mosmix,0.0,dwd_mosmix,,,8.6,dwd_mosmix,1023.5,dwd_mosmix,3,dwd_mosmix
+2025,11,21,6.4,dwd_mosmix,1.1,dwd_mosmix,11.6,dwd_mosmix,58,dwd_mosmix,0.0,dwd_mosmix,,,6.9,dwd_mosmix,1025.1,dwd_mosmix,2,dwd_mosmix
+2025,11,22,9.8,dwd_mosmix,5.9,dwd_mosmix,14.6,dwd_mosmix,67,dwd_mosmix,0.0,dwd_mosmix,,,5.4,dwd_mosmix,1024.7,dwd_mosmix,3,dwd_mosmix
+2025,11,23,10.6,dwd_mosmix,7.1,dwd_mosmix,14.1,dwd_mosmix,71,dwd_mosmix,0.0,dwd_mosmix,,,6.1,dwd_mosmix,1021.2,dwd_mosmix,7,dwd_mosmix
+2025,11,24,12.1,dwd_mosmix,9.6,dwd_mosmix,15.7,dwd_mosmix,77,dwd_mosmix,1.6,dwd_mosmix,,,7.2,dwd_mosmix,1016.4,dwd_mosmix,4,dwd_mosmix
+2025,11,25,7.6,dwd_mosmix,4.1,dwd_mosmix,9.7,dwd_mosmix,84,dwd_mosmix,7.2,dwd_mosmix,,,12.7,dwd_mosmix,1013.7,dwd_mosmix,5,dwd_mosmix
+2025,11,26,5.2,dwd_mosmix,1.7,dwd_mosmix,10.0,dwd_mosmix,63,dwd_mosmix,0.0,dwd_mosmix,,,5.9,dwd_mosmix,1022.8,dwd_mosmix,2,dwd_mosmix
+2025,11,27,4.7,dwd_mosmix,1.4,dwd_mosmix,6.8,dwd_mosmix,79,dwd_mosmix,2.8,dwd_mosmix,,,11.6,dwd_mosmix,1015.2,dwd_mosmix,6,dwd_mosmix
+2025,11,28,2.6,dwd_mosmix,-1.3,dwd_mosmix,6.9,dwd_mosmix,64,dwd_mosmix,0.0,dwd_mosmix,,,8.0,dwd_mosmix,1020.2,dwd_mosmix,2,dwd_mosmix
+2025,11,29,5.1,dwd_mosmix,2.1,dwd_mosmix,8.9,dwd_mosmix,68,dwd_mosmix,0.0,dwd_mosmix,,,9.3,dwd_mosmix,1016.4,dwd_mosmix,5,dwd_mosmix
+2025,11,30,3.8,dwd_mosmix,2.0,dwd_mosmix,6.3,dwd_mosmix,66,dwd_mosmix,0.0,dwd_mosmix,,,9.9,dwd_mosmix,1018.6,dwd_mosmix,3,dwd_mosmix
+2025,12,1,3.7,dwd_mosmix,0.9,dwd_mosmix,7.7,dwd_mosmix,60,dwd_mosmix,0.0,dwd_mosmix,,,8.6,dwd_mosmix,1020.6,dwd_mosmix,3,dwd_mosmix
+2025,12,2,4.3,dwd_mosmix,1.6,dwd_mosmix,8.1,dwd_mosmix,63,dwd_mosmix,0.0,dwd_mosmix,,,8.7,dwd_mosmix,1019.7,dwd_mosmix,4,dwd_mosmix
+2025,12,3,-0.1,dwd_mosmix,-8.4,dwd_mosmix,6.5,dwd_mosmix,58,dwd_mosmix,0.0,dwd_mosmix,,,11.6,dwd_mosmix,1023.0,dwd_mosmix,3,dwd_mosmix
+2025,12,4,-4.0,dwd_mosmix,-8.8,dwd_mosmix,1.0,dwd_mosmix,55,dwd_mosmix,0.0,dwd_mosmix,,,6.9,dwd_mosmix,1026.1,dwd_mosmix,2,dwd_mosmix
+2025,12,5,-1.6,dwd_mosmix,-5.0,dwd_mosmix,2.7,dwd_mosmix,53,dwd_mosmix,0.0,dwd_mosmix,,,6.9,dwd_mosmix,1027.2,dwd_mosmix,1,dwd_mosmix
+2025,12,6,2.3,dwd_mosmix,-1.6,dwd_mosmix,6.0,dwd_mosmix,74,dwd_mosmix,0.0,dwd_mosmix,,,9.0,dwd_mosmix,1020.7,dwd_mosmix,6,dwd_mosmix
+2025,12,7,8.1,dwd_mosmix,4.6,dwd_mosmix,13.1,dwd_mosmix,82,dwd_mosmix,0.0,dwd_mosmix,,,7.8,dwd_mosmix,1019.2,dwd_mosmix,4,dwd_mosmix
+2025,12,8,3.6,dwd_mosmix,0.1,dwd_mosmix,6.5,dwd_mosmix,54,dwd_mosmix,0.0,dwd_mosmix,,,8.7,dwd_mosmix,1026.3,dwd_mosmix,0,dwd_mosmix
+2025,12,9,2.4,dwd_mosmix,-1.8,dwd_mosmix,7.6,dwd_mosmix,59,dwd_mosmix,0.0,dwd_mosmix,,,5.2,dwd_mosmix,1027.9,dwd_mosmix,2,dwd_mosmix
+2025,12,10,5.6,dwd_mosmix,0.8,dwd_mosmix,9.5,dwd_mosmix,74,dwd_mosmix,0.0,dwd_mosmix,,,6.2,dwd_mosmix,1024.7,dwd_mosmix,5,dwd_mosmix
+2025,12,11,4.6,dwd_mosmix,-2.5,dwd_mosmix,7.4,dwd_mosmix,71,dwd_mosmix,1.0,dwd_mosmix,,,11.3,dwd_mosmix,1021.5,dwd_mosmix,4,dwd_mosmix
+2025,12,12,1.1,dwd_mosmix,-3.2,dwd_mosmix,6.2,dwd_mosmix,54,dwd_mosmix,0.0,dwd_mosmix,,,6.9,dwd_mosmix,1030.8,dwd_mosmix,3,dwd_mosmix
+2025,12,13,2.7,dwd_mosmix,0.0,dwd_mosmix,4.1,dwd_mosmix,83,dwd_mosmix,8.2,dwd_mosmix,,,10.7,dwd_mosmix,1023.1,dwd_mosmix,7,dwd_mosmix
+2025,12,14,-0.7,dwd_mosmix,-2.2,dwd_mosmix,1.2,dwd_mosmix,75,dwd_mosmix,1.4,dwd_mosmix,,,9.7,dwd_mosmix,1020.2,dwd_mosmix,3,dwd_mosmix
+2025,12,15,1.0,dwd_mosmix,-2.4,dwd_mosmix,5.2,dwd_mosmix,69,dwd_mosmix,0.0,dwd_mosmix,,,5.8,dwd_mosmix,1024.4,dwd_mosmix,4,dwd_mosmix
+2025,12,16,4.4,dwd_mosmix,2.7,dwd_mosmix,6.1,dwd_mosmix,90,dwd_mosmix,0.0,dwd_mosmix,,,6.4,dwd_mosmix,1021.8,dwd_mosmix,8,dwd_mosmix
+2025,12,17,4.1,dwd_mosmix,1.3,dwd_mosmix,6.7,dwd_mosmix,78,dwd_mosmix,0.0,dwd_mosmix,,,7.8,dwd_mosmix,1023.0,dwd_mosmix,4,dwd_mosmix
+2025,12,18,2.6,dwd_mosmix,-1.4,dwd_mosmix,7.7,dwd_mosmix,55,dwd_mosmix,0.0,dwd_mosmix,,,4.7,dwd_mosmix,1026.5,dwd_mosmix,1,dwd_mosmix
+2025,12,19,5.4,dwd_mosmix,0.8,dwd_mosmix,10.4,dwd_mosmix,60,dwd_mosmix,0.0,dwd_mosmix,,,9.1,dwd_mosmix,1021.4,dwd_mosmix,4,dwd_mosmix
+2025,12,20,7.7,dwd_mosmix,2.7,dwd_mosmix,9.8,dwd_mosmix,80,dwd_mosmix,0.0,dwd_mosmix,,,8.2,dwd_mosmix,1018.7,dwd_mosmix,7,dwd_mosmix
+2025,12,21,-1.3,dwd_mosmix,-4.4,dwd_mosmix,1.9,dwd_mosmix,43,dwd_mosmix,0.0,dwd_mosmix,,,11.7,dwd_mosmix,1028.5,dwd_mosmix,1,dwd_mosmix
+2025,12,22,-1.0,dwd_mosmix,-6.0,dwd_mosmix,4.6,dwd_mosmix,46,dwd_mosmix,0.0,dwd_mosmix,,,5.7,dwd_mosmix,1030.6,dwd_mosmix,1,dwd_mosmix
+2025,12,23,1.7,dwd_mosmix,-0.4,dwd_mosmix,3.3,dwd_mosmix,71,dwd_mosmix,5.9,dwd_mosmix,,,12.0,dwd_mosmix,1023.0,dwd_mosmix,6,dwd_mosmix
+2025,12,24,2.3,dwd_mosmix,-0.4,dwd_mosmix,4.3,dwd_mosmix,85,dwd_mosmix,1.1,dwd_mosmix,,,7.9,dwd_mosmix,1018.4,dwd_mosmix,4,dwd_mosmix
+2025,12,25,-3.2,dwd_mosmix,-8.7,dwd_mosmix,-0.8,dwd_mosmix,59,dwd_mosmix,0.0,dwd_mosmix,,,17.3,dwd_mosmix,1020.4,dwd_mosmix,1,dwd_mosmix
+2025,12,26,-8.9,dwd_mosmix,-12.1,dwd_mosmix,-5.6,dwd_mosmix,41,dwd_mosmix,0.0,dwd_mosmix,,,12.0,dwd_mosmix,1027.4,dwd_mosmix,0,dwd_mosmix
+2025,12,27,-4.1,dwd_mosmix,-8.6,dwd_mosmix,0.9,dwd_mosmix,63,dwd_mosmix,0.0,dwd_mosmix,,,5.4,dwd_mosmix,1026.0,dwd_mosmix,4,dwd_mosmix
+2025,12,28,1.6,dwd_mosmix,-2.2,dwd_mosmix,5.3,dwd_mosmix,82,dwd_mosmix,0.0,dwd_mosmix,,,6.7,dwd_mosmix,1021.9,dwd_mosmix,6,dwd_mosmix
+2025,12,29,5.0,dwd_mosmix,1.2,dwd_mosmix,8.8,dwd_mosmix,82,dwd_mosmix,3.8,dwd_mosmix,,,7.2,dwd_mosmix,1018.0,dwd_mosmix,5,dwd_mosmix
+2025,12,30,-0.9,dwd_mosmix,-3.6,dwd_mosmix,2.5,dwd_mosmix,50,dwd_mosmix,0.0,dwd_mosmix,,,8.8,dwd_mosmix,1025.4,dwd_mosmix,0,dwd_mosmix
+2025,12,31,-5.9,dwd_mosmix,-9.0,dwd_mosmix,-3.5,dwd_mosmix,40,dwd_mosmix,0.0,dwd_mosmix,,,11.0,dwd_mosmix,1028.8,dwd_mosmix,0,dwd_mosmix

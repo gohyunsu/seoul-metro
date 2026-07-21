@@ -52,6 +52,9 @@
   text-transform: lowercase;
 }
 
+/* Six top-level destinations remain readable before the compact mobile nav takes over. */
+.site-header .main-nav { gap: 18px; }
+
 .section-detail-link {
   display: block;
   width: fit-content;

@@ -1687,22 +1687,18 @@
   "experiments": [
     {
       "id": "lagged_thermal_humidity",
-      "model": "HistGradientBoosting",
+      "model": "Ridge",
       "eligibility": "운영 사용 가능",
       "note": "전날의 평균·최저·최고 기온과 상대습도만 넣어, 날씨의 가장 기본적인 열·습도 신호를 분리합니다.",
-      "featureCount": 18,
+      "featureCount": 14,
       "categoricalFeatures": [
         "line",
-        "station",
+        "station_code",
         "direction"
       ],
       "numericFeatures": [
         "weekday",
-        "month",
         "week_of_year",
-        "day_of_month",
-        "day_of_year",
-        "is_weekend",
         "lag_1",
         "lag_7",
         "lag_14",
@@ -1719,42 +1715,38 @@
         "test": 18564
       },
       "validation": {
-        "mae": 1280.2366634418097,
-        "rmse": 2256.0543300511863,
-        "wape": 0.07376227655469632,
-        "smape": 0.08874050567571522
+        "mae": 1502.290120559691,
+        "rmse": 2482.1890517876873,
+        "wape": 0.08655613645699091,
+        "smape": 0.11181118246629743
       },
       "test": {
-        "mae": 1453.39553586252,
-        "rmse": 2948.4626731965263,
-        "wape": 0.08503543680022996,
-        "smape": 0.09407405616091484
+        "mae": 1552.6986667878928,
+        "rmse": 2701.0647205806918,
+        "wape": 0.09084547605348678,
+        "smape": 0.11988264455756371
       },
       "comparison": {
-        "validationMaeChangeVsHgb": 0.09908232421730992,
-        "testMaeChangeVsHgb": 0.19551458683198147,
-        "validationMaeChangeVsSeasonal": -1.6961734626714633,
-        "testMaeChangeVsSeasonal": -0.4413827704716403
+        "validationMaeChangeVsRidge": -0.015035392632956399,
+        "testMaeChangeVsRidge": -0.17172471949187254,
+        "validationMaeChangeVsSeasonal": -2.1638171847049716,
+        "testMaeChangeVsSeasonal": -0.5398651301857691
       }
     },
     {
       "id": "lagged_weather_full",
-      "model": "HistGradientBoosting",
+      "model": "Ridge",
       "eligibility": "운영 사용 가능",
       "note": "목표일 t에는 전날 t−1까지 확정된 일별 기상값만 사용합니다. 목표일의 사후 실현값은 보지 않습니다.",
-      "featureCount": 22,
+      "featureCount": 18,
       "categoricalFeatures": [
         "line",
-        "station",
+        "station_code",
         "direction"
       ],
       "numericFeatures": [
         "weekday",
-        "month",
         "week_of_year",
-        "day_of_month",
-        "day_of_year",
-        "is_weekend",
         "lag_1",
         "lag_7",
         "lag_14",
@@ -1775,42 +1767,38 @@
         "test": 18564
       },
       "validation": {
-        "mae": 1241.9630631530704,
-        "rmse": 2074.1392420647057,
-        "wape": 0.07155709998862916,
-        "smape": 0.08519384536038517
+        "mae": 1492.2837192592297,
+        "rmse": 2488.7904067915138,
+        "wape": 0.08597960638163937,
+        "smape": 0.11414366736285175
       },
       "test": {
-        "mae": 1349.723285569139,
-        "rmse": 2712.2797345906797,
-        "wape": 0.07896976859757605,
-        "smape": 0.08725101545679442
+        "mae": 1500.6711958340807,
+        "rmse": 2652.6301598891946,
+        "wape": 0.08780144666919179,
+        "smape": 0.12592312245177315
       },
       "comparison": {
-        "validationMaeChangeVsHgb": 0.12601590923374464,
-        "testMaeChangeVsHgb": 0.25289938749592,
-        "validationMaeChangeVsSeasonal": -1.6155694084632592,
-        "testMaeChangeVsSeasonal": -0.33856740351771436
+        "validationMaeChangeVsRidge": -0.008274480520272872,
+        "testMaeChangeVsRidge": -0.1324628362216689,
+        "validationMaeChangeVsSeasonal": -2.1427437422598734,
+        "testMaeChangeVsSeasonal": -0.48826768243419433
       }
     },
     {
       "id": "target_weather_oracle",
-      "model": "HistGradientBoosting",
-      "eligibility": "운영 사용 불가 — 사후 상한선",
-      "note": "목표일 t의 사후 실현 기상값을 넣은 민감도 분석입니다. 예보가 아니라 목표일 후에 확정되는 값이므로 미래 예측 성능으로 채택하지 않습니다.",
-      "featureCount": 22,
+      "model": "Ridge",
+      "eligibility": "운영 사용 불가 — 사후 대조군",
+      "note": "목표일 t의 사후 실현 기상값을 넣은 비운영 대조군입니다. 예보가 아니라 목표일 후에 확정되는 값이므로 누수 가드를 확인하는 용도 외에는 채택하지 않습니다.",
+      "featureCount": 18,
       "categoricalFeatures": [
         "line",
-        "station",
+        "station_code",
         "direction"
       ],
       "numericFeatures": [
         "weekday",
-        "month",
         "week_of_year",
-        "day_of_month",
-        "day_of_year",
-        "is_weekend",
         "lag_1",
         "lag_7",
         "lag_14",
@@ -1831,38 +1819,38 @@
         "test": 18564
       },
       "validation": {
-        "mae": 1216.5697725653708,
-        "rmse": 1985.670874155998,
-        "wape": 0.07009403696563458,
-        "smape": 0.08343321768350286
+        "mae": 1590.6908991804996,
+        "rmse": 2487.188859561285,
+        "wape": 0.09164944683192452,
+        "smape": 0.13045313840911194
       },
       "test": {
-        "mae": 1377.2155662281637,
-        "rmse": 2745.586784431175,
-        "wape": 0.08057829018498226,
-        "smape": 0.08650412114032165
+        "mae": 1367.1380761112391,
+        "rmse": 2486.1615189435684,
+        "wape": 0.07998867520901899,
+        "smape": 0.11520780454685707
       },
       "comparison": {
-        "validationMaeChangeVsHgb": 0.14388546803488156,
-        "testMaeChangeVsHgb": 0.23768182405970026,
-        "validationMaeChangeVsSeasonal": -1.5620912366786779,
-        "testMaeChangeVsSeasonal": -0.36583245194059405
+        "validationMaeChangeVsRidge": -0.07476414795686266,
+        "testMaeChangeVsRidge": -0.03169372976406996,
+        "validationMaeChangeVsSeasonal": -2.349988882644125,
+        "testMaeChangeVsSeasonal": -0.3558382554085997
       }
     }
   ],
   "baselines": {
-    "hgb": {
+    "ridge": {
       "validation": {
-        "mae": 1421.036236556885,
-        "rmse": 2406.4443057355616,
-        "wape": 0.08187460246088954,
-        "smape": 0.10702413884061807
+        "mae": 1480.037180440396,
+        "rmse": 2666.3923719519826,
+        "wape": 0.08527400826139486,
+        "smape": 0.1313661302747163
       },
       "test": {
-        "mae": 1806.615150595621,
-        "rmse": 3298.9471507148837,
-        "wape": 0.10570165152574384,
-        "smape": 0.12099097112198602
+        "mae": 1325.1394640383046,
+        "rmse": 2486.597754239008,
+        "wape": 0.07753141547861397,
+        "smape": 0.12575333545503023
       }
     },
     "seasonal": {
@@ -1881,11 +1869,11 @@
     }
   },
   "summary": {
-    "weatherDecision": "미채택 — 전날 날씨를 더한 트리 모델은 기존 트리보다 좋아졌지만, 검증 MAE에서 7일 계절 기준선을 넘지 못했습니다.",
-    "fullWeatherValidationGainVsHgb": 0.12601590923374464,
-    "fullWeatherTestGainVsHgb": 0.25289938749592,
-    "fullWeatherValidationGapVsSeasonal": -1.6155694084632592,
-    "fullWeatherTestGapVsSeasonal": -0.33856740351771436,
-    "fullWeatherTestMae": 1349.723285569139
+    "weatherDecision": "미채택 — 전날 전체 날씨는 Ridge validation MAE를 0.8%, test MAE를 13.2% 높였습니다. 7일 계절 기준선도 넘지 못했습니다.",
+    "fullWeatherValidationGainVsRidge": -0.008274480520272872,
+    "fullWeatherTestGainVsRidge": -0.1324628362216689,
+    "fullWeatherValidationGapVsSeasonal": -2.1427437422598734,
+    "fullWeatherTestGapVsSeasonal": -0.48826768243419433,
+    "fullWeatherTestMae": 1500.6711958340807
   }
 }

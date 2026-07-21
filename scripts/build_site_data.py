@@ -1,5 +1,4 @@
 from pathlib import Path
-from concurrent.futures import ThreadPoolExecutor
 import json
 
 import matplotlib
@@ -12,7 +11,7 @@ from sklearn.ensemble import HistGradientBoostingRegressor
 from sklearn.linear_model import Ridge
 from sklearn.metrics import mean_absolute_error, mean_squared_error
 from sklearn.pipeline import Pipeline
-from sklearn.preprocessing import OneHotEncoder, OrdinalEncoder, StandardScaler
+from sklearn.preprocessing import OneHotEncoder, StandardScaler
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -33,12 +32,17 @@ WEATHER_FIELD_DETAILS = {
     'pres': {'label': '평균 해면기압', 'unit': 'hPa'},
     'cldc': {'label': '평균 운량', 'unit': 'okta'},
 }
+# The core model deliberately uses a small, predeclared input contract.  Each
+# field has a distinct role and is available by the prediction cutoff: fixed
+# series identity (3), target-date calendar (2), and past demand history (5).
+# Month/day/day-of-year/weekend were omitted because they duplicate weekday or
+# ISO-week information without adding a separately defensible input source.
 BASE_FEATURE_COLUMNS = [
-    'line', 'station', 'direction',
-    'weekday', 'month', 'week_of_year', 'day_of_month', 'day_of_year', 'is_weekend',
+    'line', 'station_code', 'direction',
+    'weekday', 'week_of_year',
     'lag_1', 'lag_7', 'lag_14', 'lag_28', 'rolling_7',
 ]
-BASE_CATEGORICAL_COLUMNS = ['line', 'station', 'direction']
+BASE_CATEGORICAL_COLUMNS = ['line', 'station_code', 'direction']
 METEOSTAT_SOURCE_URL = 'https://data.meteostat.net/daily/2025/47108.csv.gz'
 
 # Representative centroids for the ten ranked station names. These were read from
@@ -124,11 +128,7 @@ def build_model_frame(source, time_columns):
     model['lag_28'] = grouped.shift(28)
     model['rolling_7'] = grouped.transform(lambda values: values.shift(1).rolling(7, min_periods=7).mean())
     model['weekday'] = model['date'].dt.dayofweek.astype('int8')
-    model['month'] = model['date'].dt.month.astype('int8')
     model['week_of_year'] = model['date'].dt.isocalendar().week.astype('int16')
-    model['day_of_month'] = model['date'].dt.day.astype('int8')
-    model['day_of_year'] = model['date'].dt.dayofyear.astype('int16')
-    model['is_weekend'] = (model['weekday'] >= 5).astype('int8')
     return model
 
 
@@ -308,27 +308,28 @@ def split_time_series(model_frame, feature_columns):
     )
 
 
-def run_hgb_experiment(name, model_frame, feature_columns, categorical_columns, eligibility, note):
-    train, validation, test = split_time_series(model_frame, feature_columns)
+def run_ridge_experiment(name, model_frame, feature_columns, categorical_columns, eligibility, note):
+    # Keep only the fields used by this variant before splitting. The merged
+    # weather frame otherwise carries unused observed/lagged columns into every
+    # train, validation, and test copy.
+    experiment_frame = model_frame[['date', 'passengers', *feature_columns]].copy()
+    train, validation, test = split_time_series(experiment_frame, feature_columns)
     numeric_columns = [column for column in feature_columns if column not in categorical_columns]
     sample = train.sample(n=min(250_000, len(train)), random_state=42)
     preprocessor = ColumnTransformer([
-        ('categorical', OrdinalEncoder(handle_unknown='use_encoded_value', unknown_value=-1), categorical_columns),
-        ('numeric', 'passthrough', numeric_columns),
+        ('categorical', OneHotEncoder(handle_unknown='ignore'), categorical_columns),
+        ('numeric', StandardScaler(), numeric_columns),
     ])
     model = Pipeline([
         ('preprocess', preprocessor),
-        ('model', HistGradientBoostingRegressor(
-            max_iter=120, learning_rate=.08, max_leaf_nodes=31,
-            l2_regularization=10, random_state=42,
-        )),
+        ('model', Ridge(alpha=10.0)),
     ])
     model.fit(sample[feature_columns], sample['passengers'])
     validation_metrics = metric_row(name, validation['passengers'], model.predict(validation[feature_columns]))
     test_metrics = metric_row(name, test['passengers'], model.predict(test[feature_columns]))
     return {
         'id': name,
-        'model': 'HistGradientBoosting',
+        'model': 'Ridge',
         'eligibility': eligibility,
         'note': note,
         'featureCount': len(feature_columns),
@@ -360,42 +361,49 @@ def run_weather_ablation(model_frame, models):
             '목표일 t에는 전날 t−1까지 확정된 일별 기상값만 사용합니다. 목표일의 사후 실현값은 보지 않습니다.',
         ),
         (
-            'target_weather_oracle', [*BASE_FEATURE_COLUMNS, *observed_weather_features], '운영 사용 불가 — 사후 상한선',
-            '목표일 t의 사후 실현 기상값을 넣은 민감도 분석입니다. 예보가 아니라 목표일 후에 확정되는 값이므로 미래 예측 성능으로 채택하지 않습니다.',
+            'target_weather_oracle', [*BASE_FEATURE_COLUMNS, *observed_weather_features], '운영 사용 불가 — 사후 대조군',
+            '목표일 t의 사후 실현 기상값을 넣은 비운영 대조군입니다. 예보가 아니라 목표일 후에 확정되는 값이므로 누수 가드를 확인하는 용도 외에는 채택하지 않습니다.',
         ),
     ]
-    # The variants are independent and CPU-bound. Running the three shadow
-    # experiments together keeps the public-site build practical while each
-    # still uses the same fixed split and model settings.
-    with ThreadPoolExecutor(max_workers=len(specs)) as executor:
-        futures = [
-            executor.submit(run_hgb_experiment, name, model_frame, features, BASE_CATEGORICAL_COLUMNS, eligibility, note)
-            for name, features, eligibility, note in specs
-        ]
-        experiments = [future.result() for future in futures]
-    hgb = next(model for model in models if model['name'] == 'HistGradientBoosting')
+    # The same one-hot + L2 Ridge specification is refit for every variant.
+    # Consequently the only treatment difference is the 0 / 4 / 8 added
+    # weather columns, not an arbitrary model or split change.
+    experiments = [
+        run_ridge_experiment(name, model_frame, features, BASE_CATEGORICAL_COLUMNS, eligibility, note)
+        for name, features, eligibility, note in specs
+    ]
+    ridge = next(model for model in models if model['name'] == 'Ridge')
     seasonal = next(model for model in models if model['name'] == 'Seasonal naive')
     for experiment in experiments:
         experiment['comparison'] = {
-            'validationMaeChangeVsHgb': percent_mae_change(hgb['validation']['mae'], experiment['validation']['mae']),
-            'testMaeChangeVsHgb': percent_mae_change(hgb['mae'], experiment['test']['mae']),
+            'validationMaeChangeVsRidge': percent_mae_change(ridge['validation']['mae'], experiment['validation']['mae']),
+            'testMaeChangeVsRidge': percent_mae_change(ridge['mae'], experiment['test']['mae']),
             'validationMaeChangeVsSeasonal': percent_mae_change(seasonal['validation']['mae'], experiment['validation']['mae']),
             'testMaeChangeVsSeasonal': percent_mae_change(seasonal['mae'], experiment['test']['mae']),
         }
     full_weather = next(item for item in experiments if item['id'] == 'lagged_weather_full')
-    decision = (
-        '미채택 — 전날 날씨를 더한 트리 모델은 기존 트리보다 좋아졌지만, 검증 MAE에서 7일 계절 기준선을 넘지 못했습니다.'
-    )
+    validation_delta = percent_mae_change(ridge['validation']['mae'], full_weather['validation']['mae'])
+    test_delta = percent_mae_change(ridge['mae'], full_weather['test']['mae'])
+    if validation_delta > 0:
+        decision = (
+            f'미채택 — 전날 전체 날씨는 Ridge validation MAE를 {validation_delta * 100:.1f}% 낮췄지만, '
+            '7일 계절 기준선을 넘지 못했습니다.'
+        )
+    else:
+        decision = (
+            f'미채택 — 전날 전체 날씨는 Ridge validation MAE를 {abs(validation_delta) * 100:.1f}%, '
+            f'test MAE를 {abs(test_delta) * 100:.1f}% 높였습니다. 7일 계절 기준선도 넘지 못했습니다.'
+        )
     return {
         'experiments': experiments,
         'baselines': {
-            'hgb': {'validation': hgb['validation'], 'test': {key: hgb[key] for key in ['mae', 'rmse', 'wape', 'smape']}},
+            'ridge': {'validation': ridge['validation'], 'test': {key: ridge[key] for key in ['mae', 'rmse', 'wape', 'smape']}},
             'seasonal': {'validation': seasonal['validation'], 'test': {key: seasonal[key] for key in ['mae', 'rmse', 'wape', 'smape']}},
         },
         'summary': {
             'weatherDecision': decision,
-            'fullWeatherValidationGainVsHgb': percent_mae_change(hgb['validation']['mae'], full_weather['validation']['mae']),
-            'fullWeatherTestGainVsHgb': percent_mae_change(hgb['mae'], full_weather['test']['mae']),
+            'fullWeatherValidationGainVsRidge': validation_delta,
+            'fullWeatherTestGainVsRidge': test_delta,
             'fullWeatherValidationGapVsSeasonal': percent_mae_change(seasonal['validation']['mae'], full_weather['validation']['mae']),
             'fullWeatherTestGapVsSeasonal': percent_mae_change(seasonal['mae'], full_weather['test']['mae']),
             'fullWeatherTestMae': full_weather['test']['mae'],
@@ -441,7 +449,7 @@ def run_models(model_frame):
     results.extend([ridge_validation, ridge_test])
 
     tree_preprocessor = ColumnTransformer([
-        ('categorical', OrdinalEncoder(handle_unknown='use_encoded_value', unknown_value=-1), categorical),
+        ('categorical', OneHotEncoder(handle_unknown='ignore', sparse_output=False), categorical),
         ('numeric', 'passthrough', numeric),
     ])
     tree = Pipeline([('preprocess', tree_preprocessor), ('model', HistGradientBoostingRegressor(max_iter=120, learning_rate=.08, max_leaf_nodes=31, l2_regularization=10, random_state=42))])
@@ -480,7 +488,7 @@ def run_models(model_frame):
         },
         'calendar': {
             key: int(example[key])
-            for key in ['weekday', 'month', 'week_of_year', 'day_of_month', 'day_of_year', 'is_weekend']
+            for key in ['weekday', 'week_of_year']
         },
         'history': {
             key: int(round(example[key]))
@@ -519,11 +527,11 @@ def run_models(model_frame):
         'numericFeatureCount': len(numeric),
         'categoricalLevels': categorical_levels,
         'lineLevels': categorical_levels['line'],
-        'stationLevels': categorical_levels['station'],
+        'stationLevels': categorical_levels['station_code'],
         'directionLevels': categorical_levels['direction'],
         'ridgeDesignColumns': sum(categorical_levels.values()) + len(numeric),
-        'treeInputColumns': len(feature_columns),
-        'calendarFeatureCount': 6,
+        'treeInputColumns': sum(categorical_levels.values()) + len(numeric),
+        'calendarFeatureCount': 2,
         'historyFeatureCount': 5,
         'predictionRows': len(test),
         'selectedByValidation': best_name,

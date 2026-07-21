@@ -30,20 +30,20 @@
     "historyWarmupRows": 15288,
     "seriesCount": 546,
     "modelDateCount": 337,
-    "featureCount": 14,
+    "featureCount": 10,
     "categoricalFeatureCount": 3,
-    "numericFeatureCount": 11,
+    "numericFeatureCount": 7,
     "categoricalLevels": {
       "line": 8,
-      "station": 242,
+      "station_code": 273,
       "direction": 2
     },
     "lineLevels": 8,
-    "stationLevels": 242,
+    "stationLevels": 273,
     "directionLevels": 2,
-    "ridgeDesignColumns": 263,
-    "treeInputColumns": 14,
-    "calendarFeatureCount": 6,
+    "ridgeDesignColumns": 290,
+    "treeInputColumns": 290,
+    "calendarFeatureCount": 2,
     "historyFeatureCount": 5,
     "predictionRows": 18564,
     "selectedByValidation": "Seasonal naive",
@@ -57,11 +57,7 @@
       },
       "calendar": {
         "weekday": 4,
-        "month": 11,
-        "week_of_year": 48,
-        "day_of_month": 28,
-        "day_of_year": 332,
-        "is_weekend": 0
+        "week_of_year": 48
       },
       "history": {
         "lag_1": 90913,
@@ -73,13 +69,13 @@
       "actual": 99239,
       "predictions": {
         "Seasonal naive": 96558,
-        "Ridge": 93751,
-        "HistGradientBoosting": 93027
+        "Ridge": 93608,
+        "HistGradientBoosting": 89957
       },
       "absoluteErrors": {
         "Seasonal naive": 2681,
-        "Ridge": 5488,
-        "HistGradientBoosting": 6212
+        "Ridge": 5631,
+        "HistGradientBoosting": 9282
       }
     }
   },

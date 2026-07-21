@@ -47,23 +47,26 @@ function drawMainWeatherSummary(data) {
   if (!analysis || (!container && !chart)) return;
 
   const seasonal = analysis.baselines.seasonal.test.mae;
-  const hgb = analysis.baselines.hgb.test.mae;
+  const ridge = analysis.baselines.ridge.test.mae;
   const fullWeather = analysis.experiments.find((item) => item.id === 'lagged_weather_full');
   if (!fullWeather) return;
-  const gain = fullWeather.comparison.testMaeChangeVsHgb * 100;
+  const gain = fullWeather.comparison.testMaeChangeVsRidge * 100;
+  const gainLabel = gain >= 0
+    ? `Ridge 대비 테스트 MAE ${gain.toFixed(1)}% 감소`
+    : `Ridge 대비 테스트 MAE ${Math.abs(gain).toFixed(1)}% 증가`;
 
   if (container) {
-    container.innerHTML = `<div><span>전날 전체 날씨 8개</span><strong>${numberFormat.format(fullWeather.test.mae)}명</strong><small>HGB 대비 테스트 MAE ${gain.toFixed(1)}% 개선</small></div><div><span>최종 운영 기준선</span><strong>${numberFormat.format(seasonal)}명</strong><small>7일 전 같은 시리즈를 쓰는 seasonal-naive</small></div><div><span>결정</span><strong>미채택</strong><small>검증 구간에서 기준선을 넘지 못함</small></div>`;
+    container.innerHTML = `<div><span>전날 전체 날씨 8개</span><strong>${numberFormat.format(fullWeather.test.mae)}명</strong><small>${gainLabel}</small></div><div><span>최종 운영 기준선</span><strong>${numberFormat.format(seasonal)}명</strong><small>7일 전 같은 시리즈를 쓰는 seasonal-naive</small></div><div><span>결정</span><strong>미채택</strong><small>검증 구간에서 기준선을 넘지 못함</small></div>`;
   }
 
   if (chart && window.Chart) {
     new Chart(chart, {
       type: 'bar',
       data: {
-        labels: ['7일 반복 기준선', 'HGB / 날씨 없음', 'HGB / 전날 전체 날씨'],
+        labels: ['7일 반복 기준선', 'Ridge / 날씨 없음', 'Ridge / 전날 전체 날씨'],
         datasets: [{
           label: '테스트 MAE (명, 낮을수록 좋음)',
-          data: [seasonal, hgb, fullWeather.test.mae],
+          data: [seasonal, ridge, fullWeather.test.mae],
           backgroundColor: ['#1c5b43', '#9aaea1', '#ff8b4a'],
           borderWidth: 0,
           borderRadius: 3,
@@ -180,11 +183,7 @@ function drawPredictionExample(data) {
   const weekdayLabels = ['월', '화', '수', '목', '금', '토', '일'];
   const calendarRows = [
     ['weekday', `요일 ${weekdayLabels[example.calendar.weekday] ?? example.calendar.weekday}`],
-    ['month', `${example.calendar.month}월`],
     ['week_of_year', `ISO ${example.calendar.week_of_year}주`],
-    ['day_of_month', `${example.calendar.day_of_month}일`],
-    ['day_of_year', `${example.calendar.day_of_year}일째`],
-    ['is_weekend', example.calendar.is_weekend ? '주말 = 1' : '평일 = 0'],
   ];
   const historyRows = Object.entries(example.history).map(([key, value]) => `<div><span>${escapeHtml(key)}</span><strong>${numberFormat.format(value)}명</strong></div>`).join('');
   const predictionRows = ['Seasonal naive', 'Ridge', 'HistGradientBoosting'].map((name) => `
@@ -196,12 +195,12 @@ function drawPredictionExample(data) {
   container.innerHTML = `
     <div class="prediction-example-head">
       <div><span>TEST DATE</span><strong>${escapeHtml(example.date)}</strong></div>
-      <div><span>SERIES KEY</span><strong>${escapeHtml(example.series.line)} · ${escapeHtml(example.series.station)} · ${escapeHtml(example.series.direction)}</strong></div>
-      <div><span>STATION CODE</span><strong>${escapeHtml(example.series.stationCode)}</strong></div>
+      <div><span>SERIES KEY</span><strong>${escapeHtml(example.series.line)} · ${escapeHtml(example.series.stationCode)} · ${escapeHtml(example.series.direction)}</strong></div>
+      <div><span>DISPLAY NAME</span><strong>${escapeHtml(example.series.station)}</strong></div>
       <div><span>ACTUAL TARGET</span><strong>${numberFormat.format(example.actual)}명</strong></div>
     </div>
     <div class="prediction-example-grid">
-      <article><p>01 / IDENTITY INPUTS</p><h3>시리즈가 무엇인가</h3><dl><div><dt>line</dt><dd>${escapeHtml(example.series.line)}</dd></div><div><dt>station</dt><dd>${escapeHtml(example.series.station)}</dd></div><div><dt>direction</dt><dd>${escapeHtml(example.series.direction)}</dd></div></dl></article>
+      <article><p>01 / IDENTITY INPUTS</p><h3>시리즈가 무엇인가</h3><dl><div><dt>line</dt><dd>${escapeHtml(example.series.line)}</dd></div><div><dt>station_code</dt><dd>${escapeHtml(example.series.stationCode)} · ${escapeHtml(example.series.station)}</dd></div><div><dt>direction</dt><dd>${escapeHtml(example.series.direction)}</dd></div></dl></article>
       <article><p>02 / CALENDAR INPUTS</p><h3>목표일 t에서 이미 아는 값</h3><dl>${calendarRows.map(([key, value]) => `<div><dt>${escapeHtml(key)}</dt><dd>${escapeHtml(value)}</dd></div>`).join('')}</dl></article>
       <article><p>03 / HISTORY INPUTS</p><h3>t 이전의 같은 시리즈</h3><div class="example-history">${historyRows}</div></article>
     </div>
@@ -260,13 +259,13 @@ function drawWeatherAnalysis(data) {
   if (resultTable) {
     const baseRows = [
       `<div class="weather-result-row baseline"><strong>Seasonal naive</strong><span>운영 기준선</span><b>${formatMetric(baselines.seasonal.validation.mae)}</b><b>${formatMetric(baselines.seasonal.test.mae)}</b><i>최종 비교 기준</i></div>`,
-      `<div class="weather-result-row baseline"><strong>HGB / 날씨 없음</strong><span>14개 기본 변수</span><b>${formatMetric(baselines.hgb.validation.mae)}</b><b>${formatMetric(baselines.hgb.test.mae)}</b><i>날씨 ablation 기준</i></div>`,
+      `<div class="weather-result-row baseline"><strong>Ridge / 날씨 없음</strong><span>10개 핵심 변수</span><b>${formatMetric(baselines.ridge.validation.mae)}</b><b>${formatMetric(baselines.ridge.test.mae)}</b><i>날씨 ablation 기준</i></div>`,
     ];
     const rows = experiments.map((experiment) => `<div class="weather-result-row ${experiment.eligibility.includes('불가') ? 'oracle' : ''}">
       <strong>${names[experiment.id] || escapeHtml(experiment.id)}</strong><span>${escapeHtml(experiment.eligibility)} · ${experiment.featureCount} inputs</span>
       <b>${formatMetric(experiment.validation.mae)}</b><b>${formatMetric(experiment.test.mae)}</b>
-      <i>HGB 대비 ${formatChange(experiment.comparison.testMaeChangeVsHgb)}</i></div>`);
-    resultTable.innerHTML = `<div class="weather-result-row weather-result-head"><span>VARIANT</span><span>AVAILABILITY / INPUTS</span><span>VALID MAE</span><span>TEST MAE</span><span>TEST Δ vs HGB</span></div>${baseRows.join('')}${rows.join('')}`;
+      <i>Ridge 대비 ${formatChange(experiment.comparison.testMaeChangeVsRidge)}</i></div>`);
+    resultTable.innerHTML = `<div class="weather-result-row weather-result-head"><span>VARIANT</span><span>AVAILABILITY / INPUTS</span><span>VALID MAE</span><span>TEST MAE</span><span>TEST Δ vs Ridge</span></div>${baseRows.join('')}${rows.join('')}`;
   }
 
   if (!window.Chart) return;
@@ -293,7 +292,7 @@ function drawWeatherAnalysis(data) {
   const ablationChart = document.getElementById('weatherAblationChart');
   if (ablationChart) new Chart(ablationChart, {
     type: 'bar',
-    data: { labels: ['Seasonal', 'HGB / no weather', 't−1 thermal + humidity', 't−1 full weather', 't oracle'], datasets: [{ label: 'Test MAE (lower is better)', data: [baselines.seasonal.test.mae, baselines.hgb.test.mae, ...experiments.map((item) => item.test.mae)], backgroundColor: ['#1c5b43', '#9aaea1', '#d5b73b', '#ff8b4a', '#c75238'], borderWidth: 0 }] },
+    data: { labels: ['Seasonal', 'Ridge / no weather', 't−1 thermal + humidity', 't−1 full weather', 't oracle'], datasets: [{ label: 'Test MAE (lower is better)', data: [baselines.seasonal.test.mae, baselines.ridge.test.mae, ...experiments.map((item) => item.test.mae)], backgroundColor: ['#1c5b43', '#9aaea1', '#d5b73b', '#ff8b4a', '#c75238'], borderWidth: 0 }] },
     options: { ...chartDefaults(), plugins: { ...chartDefaults().plugins, legend: { display: false }, tooltip: { backgroundColor: '#18241e', displayColors: false } }, scales: { x: { ...chartDefaults().scales.x, ticks: { color: '#526159', font: { family: 'DM Mono', size: 8 }, maxRotation: 0, autoSkip: false } }, y: { ...chartDefaults().scales.y, beginAtZero: false } } },
   });
 }
@@ -306,18 +305,6 @@ function drawModelComparison(data) {
     '<div class="comparison-row comparison-header"><span>MODEL</span><span>VALIDATION<br>MAE</span><span>TEST<br>MAE</span><span>TEST<br>WAPE</span></div>',
     ...data.models.map((model) => `<div class="comparison-row ${model.best ? 'comparison-best' : ''}"><strong>${model.name}</strong><span>${metric(model.validation?.mae ?? model.mae)}</span><span>${metric(model.mae)}</span><span>${(model.wape * 100).toFixed(1)}%</span></div>`),
   ].join('');
-}
-
-function drawBandBars(data) {
-  const container = document.getElementById('bandBars');
-  if (!container) return;
-  const values = data.heatmap.values.map((row) => row.reduce((sum, value) => sum + value, 0));
-  const max = Math.max(...values);
-  container.innerHTML = data.heatmap.labels.map((label, index) => {
-    const compactLabel = label.replace('시간대', '').replace('시이전', '시 이전').replace('시이후', '시 이후');
-    const height = Math.max(5, values[index] / max * 100);
-    return `<span class="pulse-bar" title="${label} · 평균 ${numberFormat.format(values[index])}명"><i style="height:${height.toFixed(2)}%"></i><b>${compactLabel}</b></span>`;
-  }).join('');
 }
 
 function renderTableRow(cells, className = '') {
@@ -345,4 +332,4 @@ function drawEdaTables(data) {
   if (anomalyTable) anomalyTable.innerHTML = highRows.join('') + lowRows.join('');
 }
 
-loadData().then((data) => { setText(data); drawCharts(data); drawHeatmap(data); drawRanking(data); drawStationMap(data); drawPredictionExample(data); drawModels(data); drawModelComparison(data); drawBandBars(data); drawEdaTables(data); drawMainWeatherSummary(data); drawWeatherAnalysis(data); }).catch((error) => { console.error(error); });
+loadData().then((data) => { setText(data); drawCharts(data); drawHeatmap(data); drawRanking(data); drawStationMap(data); drawPredictionExample(data); drawModels(data); drawModelComparison(data); drawEdaTables(data); drawMainWeatherSummary(data); drawWeatherAnalysis(data); }).catch((error) => { console.error(error); });

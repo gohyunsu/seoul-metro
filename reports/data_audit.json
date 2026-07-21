@@ -6,6 +6,8 @@
   "timeBandCount": 20,
   "missingCells": 0,
   "negativeCells": 0,
+  "numericCellsChecked": 3985800,
+  "zeroValueCells": 22341,
   "duplicateRows": 0,
   "duplicateKeys": 0,
   "dateStart": "2025-01-01",
@@ -23,6 +25,16 @@
     "validationRows": 18564,
     "testRows": 18564,
     "trainingSampleRows": 146874,
+    "modelSourceRows": 199290,
+    "featureReadyRows": 184002,
+    "historyWarmupRows": 15288,
+    "seriesCount": 546,
+    "modelDateCount": 337,
+    "featureCount": 14,
+    "categoricalFeatureCount": 3,
+    "calendarFeatureCount": 6,
+    "historyFeatureCount": 5,
+    "predictionRows": 18564,
     "selectedByValidation": "Seasonal naive"
   }
 }

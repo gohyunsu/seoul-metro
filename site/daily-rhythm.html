@@ -1,0 +1,25 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="seoul-metro의 요일과 시간대별 서울 지하철 수요 리듬을 전체 화면으로 살펴봅니다.">
+  <title>서울의 하루 | seoul-metro</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Manrope:wght@400;500;600;700;800&family=Noto+Sans+KR:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css"><link rel="stylesheet" href="overrides.css"><link rel="stylesheet" href="detail.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.umd.min.js"></script>
+</head>
+<body class="detail-page">
+  <header class="site-header detail-header"><a class="brand brand-wordmark" href="index.html" aria-label="seoul-metro 홈"><span class="brand-mark">↗</span><span>seoul-metro</span></a><nav class="main-nav" aria-label="상세 메뉴"><a href="data-audit.html">Data audit</a><a href="daily-rhythm.html" aria-current="page">Daily rhythm</a><a href="station-guide.html">Stations</a><a href="forecast-guide.html">Forecast</a><a href="methodology.html">Method</a></nav><span class="header-status"><span class="status-dot"></span>2025 snapshot</span></header>
+  <main class="detail-main">
+    <section class="detail-hero section-shell"><a class="back-link" href="index.html#patterns">← 한눈에 보기로 돌아가기</a><div class="detail-hero-grid"><div><p class="eyebrow">DAILY RHYTHM / 02</p><h1 class="detail-title">서울의 하루는<br><em>한 장의 시간표가 아니다.</em></h1></div><p class="detail-intro">20개 시간대와 7개 요일을 한 화면에 펼쳤습니다. 색이 진할수록 그 요일·시간대의 네트워크 승하차량이 많습니다. 좁은 카드에서 잘리지 않도록 축과 셀의 높이를 충분히 확보했습니다.</p></div></section>
+    <section class="detail-section section-shell"><div class="detail-meta"><div><span>PERIOD</span><strong><span data-value="dateStart">—</span>–<br><span data-value="dateEnd">—</span></strong></div><div><span>TIME BANDS</span><strong><span data-value="timeBandCount">—</span>개 구간<br>06시 이전–24시 이후</strong></div><div><span>PEAK BAND</span><strong data-value="peakTime">—</strong></div></div></section>
+    <section class="detail-section section-shell"><div class="detail-section-heading"><div><p class="eyebrow">TIME × WEEKDAY</p><h2>요일과 시간대의 교차</h2></div><p>마우스를 각 셀 위에 올리면 해당 시간대·요일의 정확한 승하차량을 확인할 수 있습니다. 이 표는 하루 총량을 평균으로만 말할 때 사라지는 출퇴근과 주말의 차이를 보존합니다.</p></div><article class="chart-card detail-rhythm-card"><div class="chart-card-head"><div><p class="card-kicker">FULL RHYTHM MAP</p><h3>서울의 하루</h3></div><span class="chart-caption">명 / weekday average</span></div><div class="chart-wrap heatmap-wrap" id="heatmap" aria-label="요일과 시간대별 승하차 히트맵"></div><p class="chart-footnote">세로축은 20개 시간대, 가로축은 월요일부터 일요일입니다. 색의 농도는 이 화면 안에서만 상대적으로 비교합니다.</p></article></section>
+    <section class="detail-section section-shell"><div class="detail-section-heading"><div><p class="eyebrow">TWO LENSES</p><h2>규모와 방향을 나누어 읽기</h2></div><p>하루의 총량은 계절성과 휴일을, 승차·하차 곡선은 생활권과 업무권 사이의 방향성을 확인하게 합니다.</p></div><div class="detail-chart-grid"><article class="chart-card"><div class="chart-card-head"><div><p class="card-kicker">NETWORK / DAILY</p><h3>날마다 달라지는 총량</h3></div><span class="chart-caption">명 / day</span></div><div class="chart-wrap"><canvas id="dailyChart" aria-label="일별 전체 승하차 추이"></canvas></div><p class="chart-footnote" data-value="dailyInsight">주중의 높은 흐름과 공휴일의 저점을 함께 확인합니다.</p></article><article class="chart-card"><div class="chart-card-head"><div><p class="card-kicker">BOARDING / ALIGHTING</p><h3>같은 시간, 다른 방향</h3></div><span class="chart-caption">명 / time band</span></div><div class="chart-wrap"><canvas id="directionChart" aria-label="승차와 하차의 시간대별 비교"></canvas></div><p class="chart-footnote" data-value="directionInsight">출근과 퇴근의 방향이 시간대에 따라 교차합니다.</p></article></div></section>
+    <section class="detail-section section-shell"><div class="detail-grid"><article class="detail-card"><p class="detail-card-label">HOW TO READ</p><h3>진한 색 하나만으로 혼잡을 단정하지 않습니다.</h3><ul><li>이 값은 역별 체류 인원이 아니라 네트워크 전체의 승하차 합계입니다.</li><li>요일별 평균이므로 특정 공휴일·행사·운행 장애의 원인을 설명하지 않습니다.</li><li>시간대의 절대 크기와 전후 구간의 변화율을 함께 비교해야 합니다.</li></ul></article><article class="detail-card"><p class="detail-card-label">MODELING HANDOFF</p><h3>주간 반복성은 기준선의 근거가 됩니다.</h3><p>요일·시간대 패턴이 반복되는지 확인했기 때문에 다음 날 예측에서 같은 시리즈의 7일 전 값을 seasonal-naive 기준선으로 사용합니다. 기준선은 단순하지만, 이 리듬을 무시한 모델보다 더 정직한 비교 대상입니다.</p></article></div></section>
+  </main>
+  <footer class="site-footer detail-footer section-shell"><div class="brand brand-wordmark"><span class="brand-mark">↗</span><span>seoul-metro</span></div><p>2025 Seoul Metro demand snapshot</p><a href="index.html#patterns">Overview ←</a></footer>
+  <script src="app.js"></script>
+</body>
+</html>

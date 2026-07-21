@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="description" content="서울 지하철의 시간과 장소별 이동 리듬을 데이터로 읽고 다음 날 수요를 추정합니다.">
-  <title>서울의 이동 리듬 | Seoul Metro Demand</title>
+  <title>seoul-metro | 서울 지하철 이동 데이터</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Manrope:wght@400;500;600;700;800&family=Noto+Sans+KR:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -14,9 +14,9 @@
 </head>
 <body>
   <header class="site-header">
-    <a class="brand" href="#top" aria-label="서울의 이동 리듬 홈"><span class="brand-mark">↗</span><span>SEOUL<br>METRO DEMAND</span></a>
+    <a class="brand brand-wordmark" href="#top" aria-label="seoul-metro 홈"><span class="brand-mark">↗</span><span>seoul-metro</span></a>
     <nav class="main-nav" aria-label="주요 메뉴">
-      <a href="#signals">Signals</a><a href="#eda">EDA</a><a href="#task">Task</a><a href="#forecast">Forecast</a><a href="#method">Method</a>
+      <a href="data-audit.html" target="_blank" rel="noopener">Data audit ↗</a><a href="daily-rhythm.html" target="_blank" rel="noopener">Daily rhythm ↗</a><a href="station-guide.html" target="_blank" rel="noopener">Stations ↗</a><a href="forecast-guide.html" target="_blank" rel="noopener">Forecast ↗</a><a href="methodology.html" target="_blank" rel="noopener">Method ↗</a>
     </nav>
     <span class="header-status"><span class="status-dot"></span>2025 snapshot</span>
   </header>
@@ -39,7 +39,7 @@
     </section>
 
     <section class="metric-strip section-shell" id="signals">
-      <div class="section-intro"><p class="eyebrow">01 / THE SIGNAL</p><h2>먼저, 숫자가 말하는 것.</h2><p>기록을 한 해의 흐름으로 펼치면 서울의 중심과 주변, 평일과 주말, 오르고 내리는 움직임이 서로 다른 표정을 보입니다.</p></div>
+      <div class="section-intro"><p class="eyebrow">01 / THE SIGNAL</p><h2>먼저, 숫자가 말하는 것.</h2><p>기록을 한 해의 흐름으로 펼치면 서울의 중심과 주변, 평일과 주말, 오르고 내리는 움직임이 서로 다른 표정을 보입니다.<a class="section-detail-link" href="data-audit.html" target="_blank" rel="noopener">데이터 점검 상세 보기 ↗</a></p></div>
       <div class="metric-grid">
         <article class="metric-card"><p class="metric-label">TOTAL RIDERSHIP</p><strong data-value="totalPassengers">—</strong><span>2025년 전체 승하차 기록</span></article>
         <article class="metric-card metric-card-accent"><p class="metric-label">STATIONS</p><strong data-value="stationCount">—</strong><span>서울교통공사 관할 역</span></article>
@@ -48,8 +48,24 @@
       </div>
     </section>
 
+    <section class="photo-rhythm section-shell" aria-labelledby="city-rhythm-title">
+      <figure class="metro-photo-frame">
+        <img src="https://images.unsplash.com/photo-1716977277781-ef4aad8338d0?auto=format&amp;fit=crop&amp;fm=jpg&amp;ixlib=rb-4.1.0&amp;q=85&amp;w=1800" alt="서울 지하철 승강장의 스크린도어와 열차" width="1800" height="1200">
+        <figcaption>서울의 이동은 역과 승강장에서 시작됩니다. <a href="https://unsplash.com/photos/a-train-station-with-a-train-parked-next-to-it-HI1j6aMLofg" target="_blank" rel="noreferrer">Photo: Jason Oh / Unsplash ↗</a></figcaption>
+      </figure>
+      <div class="pulse-panel">
+        <p class="eyebrow">A DAY, AT A GLANCE</p>
+        <h2 id="city-rhythm-title">한 시간의 차이가<br><em>도시의 표정을 바꾼다.</em></h2>
+        <p>아래 막대는 20개 시간대의 평균 네트워크 승하차량을 순서대로 압축한 것입니다. 가장 높은 구간은 <strong data-value="peakTime">—</strong>입니다.</p>
+        <div class="pulse-chart-head"><span>06:00</span><span>12:00</span><span>18:00</span><span>24:00+</span></div>
+        <div class="pulse-bars" id="bandBars" aria-label="시간대별 평균 승하차량 막대 그래프"></div>
+        <div class="pulse-note"><span>20 TIME BANDS</span><span>높이 = 시간대 평균 승하차량</span></div>
+        <a class="text-link" href="daily-rhythm.html" target="_blank" rel="noopener">하루의 리듬 전체 보기 <span>↗</span></a>
+      </div>
+    </section>
+
     <section class="eda-lab section-shell" id="eda">
-      <div class="section-heading"><div><p class="eyebrow">02 / EDA LAB</p><h2>숫자를 보기 전에,<br><em>데이터를 점검한다.</em></h2></div><p class="section-aside">모든 해석은 원본의 구조와 집계 규칙을 통과해야 합니다. 아래 결과는 2025년 원본을 그대로 읽어 자동 생성한 감사표와 요약 통계입니다.</p></div>
+      <div class="section-heading"><div><p class="eyebrow">02 / EDA LAB</p><h2>숫자를 보기 전에,<br><em>데이터를 점검한다.</em></h2></div><p class="section-aside">모든 해석은 원본의 구조와 집계 규칙을 통과해야 합니다. 아래 결과는 2025년 원본을 그대로 읽어 자동 생성한 감사표와 요약 통계입니다.<a class="section-detail-link" href="data-audit.html" target="_blank" rel="noopener">검증 기준과 표 전체 보기 ↗</a></p></div>
       <div class="eda-overview">
         <article class="eda-card audit-card"><div class="chart-card-head"><div><p class="card-kicker">SOURCE AUDIT</p><h3>분석 가능한 데이터인가?</h3></div><span class="chart-caption" data-value="dateStart">2025-01-01</span></div><div class="audit-grid"><div><span>PHYSICAL ROWS</span><strong data-value="physicalRows">—</strong></div><div><span>BLANK REMOVED</span><strong data-value="blankRowsRemoved">—</strong></div><div><span>VALID ROWS</span><strong data-value="validRows">—</strong></div><div><span>SOURCE COLUMNS</span><strong data-value="sourceColumns">—</strong></div><div><span>TIME BANDS</span><strong data-value="timeBandCount">—</strong></div><div><span>MISSING CELLS</span><strong data-value="missingCells">—</strong></div><div><span>DUPLICATE KEYS</span><strong data-value="duplicateKeys">—</strong></div><div><span>NEGATIVE CELLS</span><strong data-value="negativeCells">—</strong></div></div><p class="chart-footnote">완전 빈 행만 제거했으며, 유효한 0명 기록은 보존했습니다. 기간 <span data-value="dateStart">—</span>–<span data-value="dateEnd">—</span>.</p></article>
         <article class="eda-card distribution-card"><div class="chart-card-head"><div><p class="card-kicker">DAILY DISTRIBUTION</p><h3>전형적인 하루의 크기</h3></div><span class="chart-caption">명 / day</span></div><div class="stat-line"><span>MEAN</span><strong data-value="weekdayMean">—</strong><small>평일 평균</small></div><div class="stat-line"><span>WEEKEND</span><strong data-value="weekendMean">—</strong><small>주말 평균 · 평일보다 <b data-value="weekdayLift">—</b></small></div><div class="stat-line"><span>MEDIAN</span><strong data-value="dailyMedian">—</strong><small>중앙값 · 표준편차 <b data-value="dailyStd">—</b></small></div><p class="chart-footnote" data-value="edaLead">요일과 시간대가 수요의 기본 리듬을 만듭니다.</p></article>
@@ -58,37 +74,36 @@
     </section>
 
     <section class="chart-section section-shell" id="patterns">
-      <div class="section-heading"><div><p class="eyebrow">03 / PATTERNS</p><h2>한 해를 쪼개어 보면<br><em>리듬이 드러난다.</em></h2></div><p class="section-aside">네 개의 렌즈로 같은 기록을 다르게 봅니다. 전체량은 규모를, 시간대는 생활의 속도를, 승하차 차이는 역의 역할을 보여줍니다.</p></div>
+      <div class="section-heading"><div><p class="eyebrow">03 / PATTERNS</p><h2>한 해를 쪼개어 보면<br><em>리듬이 드러난다.</em></h2></div><p class="section-aside">네 개의 렌즈로 같은 기록을 다르게 봅니다. 전체량은 규모를, 시간대는 생활의 속도를, 승하차 차이는 역의 역할을 보여줍니다.<a class="section-detail-link" href="daily-rhythm.html" target="_blank" rel="noopener">서울의 하루 상세 보기 ↗</a></p></div>
       <div class="chart-grid">
         <article class="chart-card chart-wide"><div class="chart-card-head"><div><p class="card-kicker">NETWORK / DAILY</p><h3>매일의 총량</h3></div><span class="chart-caption">명 / day</span></div><div class="chart-wrap"><canvas id="dailyChart" aria-label="일별 전체 승하차 추이"></canvas></div><p class="chart-footnote" data-value="dailyInsight">주중의 높은 흐름과 공휴일의 저점을 함께 확인합니다.</p></article>
-        <article class="chart-card"><div class="chart-card-head"><div><p class="card-kicker">TIME × WEEKDAY</p><h3>서울의 하루</h3></div><span class="chart-caption">명</span></div><div class="chart-wrap heatmap-wrap" id="heatmap" aria-label="요일과 시간대별 승하차 히트맵"></div><p class="chart-footnote">색이 진할수록 해당 요일·시간대의 승하차량이 많습니다.</p></article>
+        <article class="chart-card heatmap-card"><div class="chart-card-head"><div><p class="card-kicker">TIME × WEEKDAY</p><h3>서울의 하루</h3></div><span class="chart-caption">명</span></div><div class="chart-wrap heatmap-wrap" id="heatmap" data-compact-labels="true" aria-label="요일과 시간대별 승하차 히트맵"></div><p class="chart-footnote">색이 진할수록 해당 요일·시간대의 승하차량이 많습니다. <a href="daily-rhythm.html" target="_blank" rel="noopener">전체 화면에서 보기 ↗</a></p></article>
         <article class="chart-card"><div class="chart-card-head"><div><p class="card-kicker">LINES / SHARE</p><h3>노선의 무게</h3></div><span class="chart-caption">share</span></div><div class="chart-wrap"><canvas id="lineChart" aria-label="호선별 승하차 비중"></canvas></div><p class="chart-footnote" data-value="lineInsight">노선별 전체 승하차량의 비중입니다.</p></article>
         <article class="chart-card chart-wide"><div class="chart-card-head"><div><p class="card-kicker">BOARDING / ALIGHTING</p><h3>같은 역, 다른 방향</h3></div><span class="chart-caption">명 / time band</span></div><div class="chart-wrap"><canvas id="directionChart" aria-label="승차와 하차의 시간대별 비교"></canvas></div><p class="chart-footnote" data-value="directionInsight">출근과 퇴근의 방향이 시간대에 따라 교차합니다.</p></article>
       </div>
     </section>
 
-    <section class="ranking-section section-shell">
-      <div class="section-heading"><div><p class="eyebrow">04 / PLACE MATTERS</p><h2>많이 지나가는 곳과<br><em>다르게 움직이는 곳.</em></h2></div><p class="section-aside">역의 연간 규모만으로는 충분하지 않습니다. 일주일의 리듬이 얼마나 다른지, 승차와 하차가 얼마나 비대칭적인지를 함께 봅니다.</p></div>
+    <section class="ranking-section section-shell" id="places">
+      <div class="section-heading"><div><p class="eyebrow">04 / PLACE MATTERS</p><h2>많이 지나가는 곳과<br><em>다르게 움직이는 곳.</em></h2></div><p class="section-aside">역의 연간 규모만으로는 충분하지 않습니다. 일주일의 리듬이 얼마나 다른지, 승차와 하차가 얼마나 비대칭적인지를 함께 봅니다.<a class="section-detail-link" href="station-guide.html" target="_blank" rel="noopener">역 읽기 상세 보기 ↗</a></p></div>
       <div class="ranking-layout"><article class="ranking-card"><div class="chart-card-head"><div><p class="card-kicker">TOP 10 / STATIONS</p><h3>연간 승하차량</h3></div><span class="chart-caption">million</span></div><div id="stationRanking" class="ranking-list"></div></article><article class="insight-panel"><p class="card-kicker">READING THE CITY</p><blockquote>“역은 단순한 점이 아니라, 시간에 따라 역할이 바뀌는 공간이다.”</blockquote><div class="insight-rule"></div><p data-value="placeInsight">상위 역은 업무·상업·환승 기능이 겹쳐 있는 중심지에 모입니다. 하지만 같은 규모의 역이라도 승하차 방향과 시간대 곡선은 서로 다르게 나타납니다.</p><a class="text-link" href="#method">해석의 경계 보기 <span>↗</span></a></article></div>
     </section>
 
     <section class="task-section section-shell" id="task">
-      <div class="section-heading"><div><p class="eyebrow">05 / TASK LOCK</p><h2>무엇을 예측할지<br><em>먼저 고정한다.</em></h2></div><p class="section-aside">EDA에서 확인한 주간 반복성을 이용해, 다음 캘린더 날짜의 역별 수요 watchlist를 만드는 구체적인 task로 좁혔습니다.</p></div>
+      <div class="section-heading"><div><p class="eyebrow">05 / TASK LOCK</p><h2>무엇을 예측할지<br><em>먼저 고정한다.</em></h2></div><p class="section-aside">EDA에서 확인한 주간 반복성을 이용해, 다음 캘린더 날짜의 역별 수요 watchlist를 만드는 구체적인 task로 좁혔습니다.<a class="section-detail-link" href="forecast-guide.html" target="_blank" rel="noopener">예측 설계 상세 보기 ↗</a></p></div>
       <article class="task-lock"><div class="task-lock-label">CONFIRMED PREDICTION TASK</div><h3>다음 날짜의 <em>역 × 노선 × 승하차 방향</em>별 일일 승객 수를 예측한다.</h3><p>한 원본 행의 20개 시간대 값을 합친 `daily_total`을 target으로 사용합니다. 결과는 내일 수요가 평소와 다를 가능성이 있는 series를 우선 점검하기 위한 예측값입니다.</p></article>
-      <div class="task-spec-grid"><div class="task-spec"><span>INPUT</span><strong>요일·월·역·노선·방향<br>lag 1 / 7 / 14 / 28<br>최근 7일 평균</strong></div><div class="task-spec"><span>TARGET</span><strong>다음 캘린더 날짜의<br>`daily_total`</strong></div><div class="task-spec"><span>VALIDATION</span><strong>Train 80%<br>Validation 10%<br>Test 10%</strong></div><div class="task-spec"><span>SUCCESS</span><strong>Validation MAE<br>seasonal-naive 대비<br>5% 이상 개선</strong></div></div>
       <div class="task-spec-grid"><div class="task-spec"><span>INPUT</span><strong>요일·월·역·노선·방향<br>lag 1 / 7 / 14 / 28<br>최근 7일 평균</strong></div><div class="task-spec"><span>TARGET</span><strong>다음 캘린더 날짜의<br>`daily_total`</strong></div><div class="task-spec"><span>VALIDATION</span><strong>Train 80%<br>Validation 10%<br>Test 10%</strong></div><div class="task-spec"><span>SUCCESS</span><strong>Validation MAE<br>seasonal-naive 대비<br>5% 이상 개선</strong></div></div><div class="task-outcome"><span>CURRENT VALIDATION DECISION</span><strong data-value="selectedModel">—</strong><p>현재 데이터에서는 복잡한 모델이 7일 반복 기준선을 넘지 못했습니다. 이 결과를 실패로 숨기지 않고, 주간 패턴이 강하다는 EDA의 결론으로 함께 기록합니다. 테스트 기간 <b data-value="testWindow">—</b>.</p></div>
       <div class="implementation-plan"><div class="plan-step"><span>01</span><div><h3>Audit</h3><p>원본 행·빈 행·키·결측·음수·기간을 검증하고 데이터 계약을 고정합니다.</p></div></div><div class="plan-step"><span>02</span><div><h3>Explore</h3><p>요일·시간대·노선·역·방향·이상일을 비교해 task와 baseline의 근거를 만듭니다.</p></div></div><div class="plan-step"><span>03</span><div><h3>Feature</h3><p>미래 정보를 보지 않도록 날짜순으로 lag와 rolling feature를 생성합니다.</p></div></div><div class="plan-step"><span>04</span><div><h3>Benchmark</h3><p>7일 기준선, Ridge, HistGradientBoosting을 같은 기간과 같은 지표로 비교합니다.</p></div></div><div class="plan-step"><span>05</span><div><h3>Explain</h3><p>전체·노선·방향·평일/주말·수요 규모별 오차를 나누어 결과를 해석합니다.</p></div></div><div class="plan-step"><span>06</span><div><h3>Publish</h3><p>데이터 출처, 전처리, EDA, task, 평가, 한계를 재현 가능한 사이트와 문서로 공개합니다.</p></div></div></div>
     </section>
 
     <section class="forecast-section section-shell" id="forecast">
-      <div class="section-heading"><div><p class="eyebrow">06 / FORECAST</p><h2>내일의 수요를<br><em>오늘의 패턴으로.</em></h2></div><p class="section-aside">과거의 같은 역과 최근 리듬만으로 다음 날의 일일 수요를 추정해 봅니다. 중요한 것은 가장 복잡한 모델이 아니라, 기준선보다 얼마나 나아졌는가입니다.</p></div>
+      <div class="section-heading"><div><p class="eyebrow">06 / FORECAST</p><h2>내일의 수요를<br><em>오늘의 패턴으로.</em></h2></div><p class="section-aside">과거의 같은 역과 최근 리듬만으로 다음 날의 일일 수요를 추정해 봅니다. 중요한 것은 가장 복잡한 모델이 아니라, 기준선보다 얼마나 나아졌는가입니다.<a class="section-detail-link" href="forecast-guide.html" target="_blank" rel="noopener">결과와 해석 상세 보기 ↗</a></p></div>
       <div class="forecast-grid"><article class="model-card"><div class="model-card-head"><div><p class="card-kicker">MODEL BENCHMARK</p><h3>예측은 얼마나 가까웠을까?</h3></div><span class="model-badge">TEST PERIOD</span></div><div id="modelTable" class="model-table"></div><p class="chart-footnote">MAE는 평균적으로 몇 명을 빗나갔는지, WAPE는 전체 규모 대비 오차 비율을 뜻합니다.</p></article><article class="forecast-note"><p class="card-kicker">WHAT WE LEARNED</p><h3 data-value="forecastInsight">기준선을 넘는 순간, 패턴이 신호가 된다.</h3><p>모델은 특정 역의 수요를 ‘이유’까지 설명하지 않습니다. 대신 어떤 정보가 다음 날의 규모를 안정적으로 가늠하게 하는지, 그리고 어디에서 오차가 커지는지를 드러냅니다.</p><div class="mini-stat-row"><div><span>TRAIN / VALID / TEST</span><strong data-value="splitText">80 / 10 / 10</strong></div><div><span>FORECAST UNIT</span><strong>STATION × DAY</strong></div></div></article></div>
     </section>
 
-    <section class="method-section section-shell" id="method"><div class="method-intro"><p class="eyebrow">07 / METHOD & LIMITS</p><h2>좋은 분석은<br><em>경계를 함께 그린다.</em></h2><p>이 기록은 서울의 이동을 선명하게 보여주지만, 모든 원인을 설명하지는 않습니다. 그래서 데이터의 출처와 처리, 모델의 평가, 해석의 한계를 같은 화면에 둡니다.</p></div><div class="method-grid"><div class="method-item"><span>01</span><h3>Source</h3><p>서울 열린데이터광장 OA-12921. 서울교통공사 관할 1–8호선의 2025년 일별·시간대별 승하차 기록입니다.</p></div><div class="method-item"><span>02</span><h3>Transform</h3><p>완전 빈 행을 제거하고, `daily_total`을 만들었습니다. 20개 시간대는 EDA용 long view로 보존합니다.</p></div><div class="method-item"><span>03</span><h3>Evaluate</h3><p>시간 순서대로 학습·검증·테스트를 분리합니다. MAE, RMSE, WAPE, sMAPE를 전체와 세그먼트별로 확인합니다.</p></div><div class="method-item"><span>04</span><h3>Boundary</h3><p>날씨·행사·운행 장애·역세권 변화가 없어 인과관계를 말할 수 없습니다. 수치는 계획을 돕는 추정치입니다.</p></div></div><div class="source-line"><span>DATA SOURCE</span><a href="https://data.seoul.go.kr/dataList/OA-12921/F/1/datasetView.do" target="_blank" rel="noreferrer">Seoul Open Data Plaza ↗</a><span class="source-date">SNAPSHOT / 2025</span></div></section>
+    <section class="method-section section-shell" id="method"><div class="method-intro"><p class="eyebrow">07 / METHOD & LIMITS</p><h2>좋은 분석은<br><em>경계를 함께 그린다.</em></h2><p>이 기록은 서울의 이동을 선명하게 보여주지만, 모든 원인을 설명하지는 않습니다. 그래서 데이터의 출처와 처리, 모델의 평가, 해석의 한계를 같은 화면에 둡니다.<a class="section-detail-link" href="methodology.html" target="_blank" rel="noopener">방법과 한계 상세 보기 ↗</a></p></div><div class="method-grid"><div class="method-item"><span>01</span><h3>Source</h3><p>서울 열린데이터광장 OA-12921. 서울교통공사 관할 1–8호선의 2025년 일별·시간대별 승하차 기록입니다.</p></div><div class="method-item"><span>02</span><h3>Transform</h3><p>완전 빈 행을 제거하고, `daily_total`을 만들었습니다. 20개 시간대는 EDA용 long view로 보존합니다.</p></div><div class="method-item"><span>03</span><h3>Evaluate</h3><p>시간 순서대로 학습·검증·테스트를 분리합니다. MAE, RMSE, WAPE, sMAPE를 전체와 세그먼트별로 확인합니다.</p></div><div class="method-item"><span>04</span><h3>Boundary</h3><p>날씨·행사·운행 장애·역세권 변화가 없어 인과관계를 말할 수 없습니다. 수치는 계획을 돕는 추정치입니다.</p></div></div><div class="source-line"><span>DATA SOURCE</span><a href="https://data.seoul.go.kr/dataList/OA-12921/F/1/datasetView.do" target="_blank" rel="noreferrer">Seoul Open Data Plaza ↗</a><span class="source-date">SNAPSHOT / 2025</span></div></section>
   </main>
 
-  <footer class="site-footer section-shell"><div class="brand"><span class="brand-mark">↗</span><span>SEOUL<br>METRO DEMAND</span></div><p>서울의 이동 리듬을 데이터로 읽습니다.</p><a href="#top">Back to top ↑</a></footer>
+  <footer class="site-footer section-shell"><div class="brand brand-wordmark"><span class="brand-mark">↗</span><span>seoul-metro</span></div><p>서울의 이동 리듬을 데이터로 읽습니다.</p><a href="#top">Back to top ↑</a></footer>
   <script src="app.js"></script>
 </body>
 </html>

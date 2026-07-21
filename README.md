@@ -1,4 +1,4 @@
-# Seoul Metro Demand
+# seoul-metro
 
 An evidence-led view of how Seoul Metro demand changes across stations, lines, days, and time bands.
 

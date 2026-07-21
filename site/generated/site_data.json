@@ -23,7 +23,9 @@
     "top10Share": "15.4%",
     "edaLead": "평일 평균은 주말보다 49.6% 높고, 18–19시가 전체 시간대 중 가장 큽니다.",
     "selectedModel": "Seasonal naive",
-    "testWindow": "2025-11-28–2025-12-31"
+    "testWindow": "2025-11-28–2025-12-31",
+    "selectedTestMae": 1008,
+    "selectedTestWape": "5.9%"
   },
   "daily": {
     "labels": [
@@ -1111,7 +1113,13 @@
       "wape": 0.05899573558271769,
       "smape": 0.06294056507941673,
       "split": "test",
-      "best": true
+      "best": true,
+      "validation": {
+        "mae": 474.83468002585647,
+        "rmse": 1095.8132263146722,
+        "wape": 0.027358134621505426,
+        "smape": 0.03216341501905767
+      }
     },
     {
       "name": "Ridge",
@@ -1120,7 +1128,13 @@
       "wape": 0.2182039687376105,
       "smape": 0.2783792143570976,
       "split": "test",
-      "best": false
+      "best": false,
+      "validation": {
+        "mae": 1567.799458280328,
+        "rmse": 2759.572510463869,
+        "wape": 0.09033053069506394,
+        "smape": 0.1423517653037574
+      }
     },
     {
       "name": "HistGradientBoosting",
@@ -1129,7 +1143,13 @@
       "wape": 0.10570165152574384,
       "smape": 0.12099097112198602,
       "split": "test",
-      "best": false
+      "best": false,
+      "validation": {
+        "mae": 1421.036236556885,
+        "rmse": 2406.4443057355616,
+        "wape": 0.08187460246088954,
+        "smape": 0.10702413884061807
+      }
     }
   ],
   "eda": {
@@ -1434,6 +1454,8 @@
     "timeBandCount": 20,
     "missingCells": 0,
     "negativeCells": 0,
+    "numericCellsChecked": 3985800,
+    "zeroValueCells": 22341,
     "duplicateRows": 0,
     "duplicateKeys": 0,
     "dateStart": "2025-01-01",
@@ -1451,6 +1473,16 @@
       "validationRows": 18564,
       "testRows": 18564,
       "trainingSampleRows": 146874,
+      "modelSourceRows": 199290,
+      "featureReadyRows": 184002,
+      "historyWarmupRows": 15288,
+      "seriesCount": 546,
+      "modelDateCount": 337,
+      "featureCount": 14,
+      "categoricalFeatureCount": 3,
+      "calendarFeatureCount": 6,
+      "historyFeatureCount": 5,
+      "predictionRows": 18564,
       "selectedByValidation": "Seasonal naive"
     }
   }

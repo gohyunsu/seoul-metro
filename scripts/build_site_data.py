@@ -45,6 +45,7 @@ def load_source():
     numeric_values = source[time_columns].apply(pd.to_numeric, errors='coerce')
     missing_cells = int(numeric_values.isna().sum().sum())
     negative_cells = int((numeric_values < 0).sum().sum())
+    zero_value_cells = int((numeric_values == 0).sum().sum())
     duplicate_rows = int(source.duplicated().sum())
     duplicate_keys = int(source.duplicated(subset=['수송일자', '호선', '역번호', '역명', '승하차구분']).sum())
     source['date'] = pd.to_datetime(source['수송일자'])
@@ -61,6 +62,8 @@ def load_source():
         'timeBandCount': len(time_columns),
         'missingCells': missing_cells,
         'negativeCells': negative_cells,
+        'numericCellsChecked': int(numeric_values.size),
+        'zeroValueCells': zero_value_cells,
         'duplicateRows': duplicate_rows,
         'duplicateKeys': duplicate_keys,
         'dateStart': source['date'].min().strftime('%Y-%m-%d'),
@@ -196,7 +199,10 @@ def run_models(model_frame):
     feature_columns = ['line', 'station', 'direction', 'weekday', 'month', 'week_of_year', 'day_of_month', 'day_of_year', 'is_weekend', 'lag_1', 'lag_7', 'lag_14', 'lag_28', 'rolling_7']
     categorical = ['line', 'station', 'direction']
     numeric = [column for column in feature_columns if column not in categorical]
+    source_model_rows = len(model_frame)
+    series_count = int(model_frame[['line', 'station_code', 'direction']].drop_duplicates().shape[0])
     model_frame = model_frame.dropna(subset=['lag_1', 'lag_7', 'lag_14', 'lag_28', 'rolling_7']).copy()
+    history_warmup_rows = source_model_rows - len(model_frame)
     dates = sorted(model_frame['date'].unique())
     train_end = dates[int(len(dates) * .8) - 1]
     validation_end = dates[int(len(dates) * .9) - 1]
@@ -236,9 +242,14 @@ def run_models(model_frame):
     best_name = min(validation_results, key=lambda row: row['mae'])['name']
     public_models = []
     for name in ['Seasonal naive', 'Ridge', 'HistGradientBoosting']:
-        row = next(item for item in results if item['name'] == name and item['split'] == 'test')
-        row['best'] = name == best_name
-        public_models.append(row)
+        test_row = next(item for item in results if item['name'] == name and item['split'] == 'test').copy()
+        validation_row = next(item for item in results if item['name'] == name and item['split'] == 'validation')
+        test_row['best'] = name == best_name
+        test_row['validation'] = {
+            key: validation_row[key]
+            for key in ['mae', 'rmse', 'wape', 'smape']
+        }
+        public_models.append(test_row)
     pd.DataFrame(results).to_csv(REPORT_DIR / 'model_metrics.csv', index=False)
     audit = {
         'trainStart': str(train['date'].min())[:10],
@@ -251,6 +262,16 @@ def run_models(model_frame):
         'validationRows': len(validation),
         'testRows': len(test),
         'trainingSampleRows': len(sample),
+        'modelSourceRows': source_model_rows,
+        'featureReadyRows': len(model_frame),
+        'historyWarmupRows': history_warmup_rows,
+        'seriesCount': series_count,
+        'modelDateCount': len(dates),
+        'featureCount': len(feature_columns),
+        'categoricalFeatureCount': len(categorical),
+        'calendarFeatureCount': 6,
+        'historyFeatureCount': 5,
+        'predictionRows': len(test),
         'selectedByValidation': best_name,
     }
     return public_models, audit
@@ -265,6 +286,9 @@ def main():
     models, model_audit = run_models(model_frame)
     summary['selectedModel'] = model_audit['selectedByValidation']
     summary['testWindow'] = f"{model_audit['testStart']}–{model_audit['testEnd']}"
+    selected_test = next(model for model in models if model['best'])
+    summary['selectedTestMae'] = int(round(selected_test['mae']))
+    summary['selectedTestWape'] = f"{selected_test['wape'] * 100:.1f}%"
     direction = source.groupby('direction')[time_columns].sum().reindex(['승차', '하차']).fillna(0)
     site_data = {
         'summary': summary,

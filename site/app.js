@@ -40,6 +40,47 @@ function drawCharts(data) {
   if (directionChart) new Chart(directionChart, { type: 'line', data: { labels: direction.labels, datasets: [{ label: '승차', data: direction.boarding, borderColor: '#ff8b4a', borderWidth: 2, pointRadius: 2, tension: .3 }, { label: '하차', data: direction.alighting, borderColor: '#1c5b43', borderWidth: 2, pointRadius: 2, tension: .3 }] }, options: { ...chartDefaults(), plugins: { ...chartDefaults().plugins, legend: { display: true, labels: { color: '#526159', boxWidth: 10, font: { family: 'DM Mono', size: 9 } } } } } });
 }
 
+function drawMainWeatherSummary(data) {
+  const analysis = data.weatherAnalysis;
+  const container = document.getElementById('mainWeatherSummary');
+  const chart = document.getElementById('mainWeatherChart');
+  if (!analysis || (!container && !chart)) return;
+
+  const seasonal = analysis.baselines.seasonal.test.mae;
+  const hgb = analysis.baselines.hgb.test.mae;
+  const fullWeather = analysis.experiments.find((item) => item.id === 'lagged_weather_full');
+  if (!fullWeather) return;
+  const gain = fullWeather.comparison.testMaeChangeVsHgb * 100;
+
+  if (container) {
+    container.innerHTML = `<div><span>전날 전체 날씨 8개</span><strong>${numberFormat.format(fullWeather.test.mae)}명</strong><small>HGB 대비 테스트 MAE ${gain.toFixed(1)}% 개선</small></div><div><span>최종 운영 기준선</span><strong>${numberFormat.format(seasonal)}명</strong><small>7일 전 같은 시리즈를 쓰는 seasonal-naive</small></div><div><span>결정</span><strong>미채택</strong><small>검증 구간에서 기준선을 넘지 못함</small></div>`;
+  }
+
+  if (chart && window.Chart) {
+    new Chart(chart, {
+      type: 'bar',
+      data: {
+        labels: ['7일 반복 기준선', 'HGB / 날씨 없음', 'HGB / 전날 전체 날씨'],
+        datasets: [{
+          label: '테스트 MAE (명, 낮을수록 좋음)',
+          data: [seasonal, hgb, fullWeather.test.mae],
+          backgroundColor: ['#1c5b43', '#9aaea1', '#ff8b4a'],
+          borderWidth: 0,
+          borderRadius: 3,
+        }],
+      },
+      options: {
+        indexAxis: 'y', responsive: true, maintainAspectRatio: false,
+        plugins: { legend: { display: false }, tooltip: { backgroundColor: '#18241e', padding: 12, displayColors: false, callbacks: { label: (context) => `${numberFormat.format(context.raw)}명` } } },
+        scales: {
+          x: { grid: { color: '#d8e1db' }, ticks: { color: '#708078', font: { family: 'DM Mono', size: 9 }, callback: (value) => `${compactFormat.format(value)}명` } },
+          y: { grid: { display: false }, ticks: { color: '#526159', font: { family: 'Noto Sans KR', size: 11 } } },
+        },
+      },
+    });
+  }
+}
+
 function drawHeatmap(data) {
   const container = document.getElementById('heatmap');
   if (!container) return;
@@ -304,4 +345,4 @@ function drawEdaTables(data) {
   if (anomalyTable) anomalyTable.innerHTML = highRows.join('') + lowRows.join('');
 }
 
-loadData().then((data) => { setText(data); drawCharts(data); drawHeatmap(data); drawRanking(data); drawStationMap(data); drawPredictionExample(data); drawModels(data); drawModelComparison(data); drawBandBars(data); drawEdaTables(data); drawWeatherAnalysis(data); }).catch((error) => { console.error(error); });
+loadData().then((data) => { setText(data); drawCharts(data); drawHeatmap(data); drawRanking(data); drawStationMap(data); drawPredictionExample(data); drawModels(data); drawModelComparison(data); drawBandBars(data); drawEdaTables(data); drawMainWeatherSummary(data); drawWeatherAnalysis(data); }).catch((error) => { console.error(error); });

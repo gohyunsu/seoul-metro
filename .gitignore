@@ -8,3 +8,7 @@ reports/generated/
 data/processed/
 data/interim/
 *.log
+
+# Local-only assignment report and its figure builder
+/submission/
+/scripts/build_submission_figures.py

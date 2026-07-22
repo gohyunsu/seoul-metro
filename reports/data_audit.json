@@ -78,8 +78,5 @@
         "HistGradientBoosting": 9282
       }
     }
-  },
-  "externalInputs": {
-    "weatherRows": 365
   }
 }

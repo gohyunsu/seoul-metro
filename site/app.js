@@ -15,7 +15,6 @@ function setText(data) {
     ...data.eda.daily,
     ...data.spatial,
     ...(data.inputProfile?.contract || {}),
-    ...(data.weatherAnalysis?.summary || {}),
   };
   document.querySelectorAll('[data-value]').forEach((element) => {
     const key = element.dataset.value;
@@ -39,50 +38,6 @@ function drawCharts(data) {
   const direction = data.direction;
   const directionChart = document.getElementById('directionChart');
   if (directionChart) new Chart(directionChart, { type: 'line', data: { labels: direction.labels, datasets: [{ label: '승차', data: direction.boarding, borderColor: '#ff8b4a', borderWidth: 2, pointRadius: 2, tension: .3 }, { label: '하차', data: direction.alighting, borderColor: '#1c5b43', borderWidth: 2, pointRadius: 2, tension: .3 }] }, options: { ...chartDefaults(), plugins: { ...chartDefaults().plugins, legend: { display: true, labels: { color: '#526159', boxWidth: 10, font: { family: 'DM Mono', size: 9 } } } } } });
-}
-
-function drawMainWeatherSummary(data) {
-  const analysis = data.weatherAnalysis;
-  const container = document.getElementById('mainWeatherSummary');
-  const chart = document.getElementById('mainWeatherChart');
-  if (!analysis || (!container && !chart)) return;
-
-  const seasonal = analysis.baselines.seasonal.test.mae;
-  const ridge = analysis.baselines.ridge.test.mae;
-  const fullWeather = analysis.experiments.find((item) => item.id === 'lagged_weather_full');
-  if (!fullWeather) return;
-  const gain = fullWeather.comparison.testMaeChangeVsRidge * 100;
-  const gainLabel = gain >= 0
-    ? `Ridge 대비 테스트 MAE ${gain.toFixed(1)}% 감소`
-    : `Ridge 대비 테스트 MAE ${Math.abs(gain).toFixed(1)}% 증가`;
-
-  if (container) {
-    container.innerHTML = `<div><span>전날 전체 날씨 8개</span><strong>${numberFormat.format(fullWeather.test.mae)}명</strong><small>${gainLabel}</small></div><div><span>최종 운영 기준선</span><strong>${numberFormat.format(seasonal)}명</strong><small>7일 전 같은 시리즈를 쓰는 seasonal-naive</small></div><div><span>결정</span><strong>미채택</strong><small>검증 구간에서 기준선을 넘지 못함</small></div>`;
-  }
-
-  if (chart && window.Chart) {
-    new Chart(chart, {
-      type: 'bar',
-      data: {
-        labels: ['7일 반복 기준선', 'Ridge / 날씨 없음', 'Ridge / 전날 전체 날씨'],
-        datasets: [{
-          label: '테스트 MAE (명, 낮을수록 좋음)',
-          data: [seasonal, ridge, fullWeather.test.mae],
-          backgroundColor: ['#1c5b43', '#9aaea1', '#ff8b4a'],
-          borderWidth: 0,
-          borderRadius: 3,
-        }],
-      },
-      options: {
-        indexAxis: 'y', responsive: true, maintainAspectRatio: false,
-        plugins: { legend: { display: false }, tooltip: { backgroundColor: '#18241e', padding: 12, displayColors: false, callbacks: { label: (context) => `${numberFormat.format(context.raw)}명` } } },
-        scales: {
-          x: { grid: { color: '#d8e1db' }, ticks: { color: '#708078', font: { family: 'DM Mono', size: 9 }, callback: (value) => `${compactFormat.format(value)}명` } },
-          y: { grid: { display: false }, ticks: { color: '#526159', font: { family: 'Noto Sans KR', size: 11 } } },
-        },
-      },
-    });
-  }
 }
 
 function drawHeatmap(data) {
@@ -216,85 +171,6 @@ function drawModels(data) {
     const row = document.createElement('div'); row.className = `model-row ${model.best ? 'best' : ''}`;
     row.innerHTML = `<strong>${model.name}</strong><span>${numberFormat.format(Math.round(model.mae))}</span><span>${numberFormat.format(Math.round(model.rmse))}</span><span>${(model.wape * 100).toFixed(1)}%</span>`;
     container.appendChild(row);
-  });
-}
-
-function formatMetric(value) {
-  return numberFormat.format(Math.round(value));
-}
-
-function formatChange(value) {
-  const sign = value > 0 ? '+' : '';
-  return `${sign}${(value * 100).toFixed(1)}%`;
-}
-
-function drawWeatherAnalysis(data) {
-  const analysis = data.weatherAnalysis;
-  if (!analysis) return;
-  const { weather, experiments, baselines, summary } = analysis;
-  const decision = document.getElementById('weatherDecision');
-  if (decision) decision.textContent = summary.weatherDecision;
-
-  const sourceFacts = document.getElementById('weatherSources');
-  if (sourceFacts) {
-    sourceFacts.innerHTML = `
-      <article><span>WEATHER COVERAGE</span><strong>${weather.dateStart}–${weather.dateEnd}</strong><p>${numberFormat.format(weather.rowCount)} daily rows · Seoul WMO ${weather.stationId}</p></article>
-      <article><span>USABLE AT t</span><strong>t−1 only</strong><p>8 lagged weather variables are eligible for an operational candidate</p></article>
-      <article><span>ABLATION STEPS</span><strong>0 → 4 → 8</strong><p>baseline, thermal-humidity subset, then full weather feature set</p></article>`;
-  }
-
-  const weatherLedger = document.getElementById('weatherLedger');
-  if (weatherLedger) {
-    weatherLedger.innerHTML = weather.fields.map((field) => `<tr>
-      <td><code>${escapeHtml(field.name)}</code></td><td>${escapeHtml(field.label)}</td><td>${escapeHtml(field.unit)}</td>
-      <td>${numberFormat.format(field.missingBeforePolicy)}</td><td><code>${escapeHtml(field.strictFeature)}</code></td>
-    </tr>`).join('');
-  }
-
-  const resultTable = document.getElementById('weatherResults');
-  const names = {
-    lagged_thermal_humidity: '전날 열·습도 4개',
-    lagged_weather_full: '전날 전체 날씨 8개',
-    target_weather_oracle: '목표일 사후 날씨 8개',
-  };
-  if (resultTable) {
-    const baseRows = [
-      `<div class="weather-result-row baseline"><strong>Seasonal naive</strong><span>운영 기준선</span><b>${formatMetric(baselines.seasonal.validation.mae)}</b><b>${formatMetric(baselines.seasonal.test.mae)}</b><i>최종 비교 기준</i></div>`,
-      `<div class="weather-result-row baseline"><strong>Ridge / 날씨 없음</strong><span>10개 핵심 변수</span><b>${formatMetric(baselines.ridge.validation.mae)}</b><b>${formatMetric(baselines.ridge.test.mae)}</b><i>날씨 ablation 기준</i></div>`,
-    ];
-    const rows = experiments.map((experiment) => `<div class="weather-result-row ${experiment.eligibility.includes('불가') ? 'oracle' : ''}">
-      <strong>${names[experiment.id] || escapeHtml(experiment.id)}</strong><span>${escapeHtml(experiment.eligibility)} · ${experiment.featureCount} inputs</span>
-      <b>${formatMetric(experiment.validation.mae)}</b><b>${formatMetric(experiment.test.mae)}</b>
-      <i>Ridge 대비 ${formatChange(experiment.comparison.testMaeChangeVsRidge)}</i></div>`);
-    resultTable.innerHTML = `<div class="weather-result-row weather-result-head"><span>VARIANT</span><span>AVAILABILITY / INPUTS</span><span>VALID MAE</span><span>TEST MAE</span><span>TEST Δ vs Ridge</span></div>${baseRows.join('')}${rows.join('')}`;
-  }
-
-  if (!window.Chart) return;
-  const dailyChart = document.getElementById('weatherDailyChart');
-  if (dailyChart) new Chart(dailyChart, {
-    data: {
-      labels: weather.visual.daily.labels,
-      datasets: [
-        { type: 'line', label: '평균 기온 (°C)', data: weather.visual.daily.temp, borderColor: '#ff8b4a', backgroundColor: 'rgba(255,139,74,.12)', fill: true, pointRadius: 0, borderWidth: 1.7, tension: .25, yAxisID: 'temperature' },
-        { type: 'bar', label: '강수량 (mm)', data: weather.visual.daily.prcp, backgroundColor: 'rgba(28,91,67,.45)', borderWidth: 0, yAxisID: 'precipitation' },
-      ],
-    },
-    options: { responsive: true, maintainAspectRatio: false, interaction: { intersect: false, mode: 'index' }, plugins: { legend: { display: true, labels: { color: '#526159', boxWidth: 10, font: { family: 'DM Mono', size: 9 } } }, tooltip: { backgroundColor: '#18241e', displayColors: false } }, scales: { x: { grid: { display: false }, ticks: { color: '#708078', maxTicksLimit: 8, font: { family: 'DM Mono', size: 9 } } }, temperature: { position: 'left', grid: { color: '#d8e1db' }, ticks: { color: '#ff8b4a' } }, precipitation: { position: 'right', grid: { drawOnChartArea: false }, ticks: { color: '#1c5b43' }, beginAtZero: true } } },
-  });
-  const monthlyChart = document.getElementById('weatherMonthlyChart');
-  if (monthlyChart) new Chart(monthlyChart, {
-    data: { labels: weather.visual.monthly.labels, datasets: [
-      { type: 'bar', label: '월 강수량 (mm)', data: weather.visual.monthly.prcp, backgroundColor: 'rgba(28,91,67,.64)', borderWidth: 0, yAxisID: 'precipitation' },
-      { type: 'line', label: '월 평균 기온 (°C)', data: weather.visual.monthly.temp, borderColor: '#ff8b4a', pointBackgroundColor: '#ff8b4a', pointRadius: 3, borderWidth: 2, tension: .28, yAxisID: 'temperature' },
-      { type: 'line', label: '월 평균 습도 (%)', data: weather.visual.monthly.rhum, borderColor: '#d5b73b', pointRadius: 2, borderWidth: 1.7, tension: .28, yAxisID: 'humidity' },
-    ] },
-    options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: true, labels: { color: '#526159', boxWidth: 10, font: { family: 'DM Mono', size: 9 } } }, tooltip: { backgroundColor: '#18241e', displayColors: false } }, scales: { x: { grid: { display: false }, ticks: { color: '#708078', font: { family: 'DM Mono', size: 9 } } }, precipitation: { position: 'left', beginAtZero: true, grid: { color: '#d8e1db' }, ticks: { color: '#1c5b43' } }, temperature: { position: 'right', grid: { drawOnChartArea: false }, ticks: { color: '#ff8b4a' } }, humidity: { display: false, min: 0, max: 100 } } },
-  });
-  const ablationChart = document.getElementById('weatherAblationChart');
-  if (ablationChart) new Chart(ablationChart, {
-    type: 'bar',
-    data: { labels: ['Seasonal', 'Ridge / no weather', 't−1 thermal + humidity', 't−1 full weather', 't oracle'], datasets: [{ label: 'Test MAE (lower is better)', data: [baselines.seasonal.test.mae, baselines.ridge.test.mae, ...experiments.map((item) => item.test.mae)], backgroundColor: ['#1c5b43', '#9aaea1', '#d5b73b', '#ff8b4a', '#c75238'], borderWidth: 0 }] },
-    options: { ...chartDefaults(), plugins: { ...chartDefaults().plugins, legend: { display: false }, tooltip: { backgroundColor: '#18241e', displayColors: false } }, scales: { x: { ...chartDefaults().scales.x, ticks: { color: '#526159', font: { family: 'DM Mono', size: 8 }, maxRotation: 0, autoSkip: false } }, y: { ...chartDefaults().scales.y, beginAtZero: false } } },
   });
 }
 
@@ -465,4 +341,4 @@ function drawEdaTables(data) {
   if (anomalyTable) anomalyTable.innerHTML = highRows.join('') + lowRows.join('');
 }
 
-loadData().then((data) => { setText(data); drawCharts(data); drawHeatmap(data); drawRanking(data); drawStationMap(data); drawPredictionExample(data); drawModels(data); drawModelComparison(data); drawInputProfileOverview(data); drawInputProfile(data); drawEdaTables(data); drawMainWeatherSummary(data); drawWeatherAnalysis(data); }).catch((error) => { console.error(error); });
+loadData().then((data) => { setText(data); drawCharts(data); drawHeatmap(data); drawRanking(data); drawStationMap(data); drawPredictionExample(data); drawModels(data); drawModelComparison(data); drawInputProfileOverview(data); drawInputProfile(data); drawEdaTables(data); }).catch((error) => { console.error(error); });

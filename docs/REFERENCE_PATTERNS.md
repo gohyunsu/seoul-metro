@@ -16,7 +16,7 @@ Source: https://www.kaggle.com/datasets/princehobby/metropolitan-transportation-
 
 ## Seoul bike sharing dataset
 
-The Seoul bike sharing dataset demonstrates a clear time-series framing with calendar and environmental features. We adopt the calendar-feature and forecasting framing, but keep the first version honest about the absence of weather, event, and service-disruption data. Those variables are future extensions rather than silently invented inputs.
+The Seoul bike sharing dataset demonstrates a clear time-series framing with calendar features. We adopt the calendar-feature and forecasting framing, but keep the first version honest about the absence of event and service-disruption data. Those variables are future extensions rather than silently invented inputs.
 
 Source: https://www.kaggle.com/datasets/lnoahl/seoul-bike-sharing-dataset
 

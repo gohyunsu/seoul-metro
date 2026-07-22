@@ -43,4 +43,4 @@ The source includes line-specific operating boundaries. It does not represent ev
 - A count is a recorded boarding or alighting volume, not a unique-person count.
 - A high station total may reflect transfer behavior, surrounding land use, or the provider's station boundary; the dataset alone cannot identify causality.
 - The 2025-only snapshot supports within-year seasonality and short-horizon forecasting, but not robust long-run trend claims.
-- Public holidays, weather, events, service disruptions, school calendars, and station changes are not included in the source file. Their absence belongs in the limitations section.
+- Public holidays, events, service disruptions, school calendars, and station changes are not included in the source file. Their absence belongs in the limitations section.

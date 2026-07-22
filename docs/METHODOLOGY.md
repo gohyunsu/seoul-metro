@@ -13,7 +13,7 @@ The unit is a station-line-direction-day series. The target is `daily_total`, th
 - Calendar: weekday, weekend, month, week-of-year, day-of-month, day-of-year.
 - Identity: line, station, station number, and boarding direction.
 - History: lag 1, lag 7, lag 14, lag 28 and rolling mean features within each station-line-direction series.
-- Optional later extension: holiday, weather, event, disruption, and transfer-volume features.
+- Optional later extension: holiday, event, disruption, and transfer-volume features.
 
 The source-wide table is retained for modeling and `daily_total` is added. For EDA, the 20 time-band columns are reshaped into a long view. Calendar and historical features are generated only after sorting each station-line-direction series by date. Rows without the required history are excluded from model training, never imputed from future observations.
 

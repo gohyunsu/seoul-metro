@@ -16,22 +16,10 @@ from sklearn.preprocessing import OneHotEncoder, StandardScaler
 
 ROOT = Path(__file__).resolve().parents[1]
 RAW_PATH = ROOT / 'data/raw/seoul_metro_ridership_2025.csv'
-WEATHER_PATH = ROOT / 'data/raw/seoul_weather_2025_meteostat.csv'
 SITE_DATA_PATH = ROOT / 'site/generated/site_data.json'
 REPORT_DIR = ROOT / 'reports'
 FIGURE_DIR = REPORT_DIR / 'figures'
 
-WEATHER_COLUMNS = ['temp', 'tmin', 'tmax', 'rhum', 'prcp', 'wspd', 'pres', 'cldc']
-WEATHER_FIELD_DETAILS = {
-    'temp': {'label': '평균 기온', 'unit': '°C'},
-    'tmin': {'label': '최저 기온', 'unit': '°C'},
-    'tmax': {'label': '최고 기온', 'unit': '°C'},
-    'rhum': {'label': '평균 상대습도', 'unit': '%'},
-    'prcp': {'label': '강수량', 'unit': 'mm'},
-    'wspd': {'label': '평균 풍속', 'unit': 'km/h'},
-    'pres': {'label': '평균 해면기압', 'unit': 'hPa'},
-    'cldc': {'label': '평균 운량', 'unit': 'okta'},
-}
 # The core model deliberately uses a small, predeclared input contract.  Each
 # field has a distinct role and is available by the prediction cutoff: fixed
 # series identity (3), target-date calendar (2), and past demand history (5).
@@ -43,7 +31,6 @@ BASE_FEATURE_COLUMNS = [
     'lag_1', 'lag_7', 'lag_14', 'lag_28', 'rolling_7',
 ]
 BASE_CATEGORICAL_COLUMNS = ['line', 'station_code', 'direction']
-METEOSTAT_SOURCE_URL = 'https://data.meteostat.net/daily/2025/47108.csv.gz'
 
 # Representative centroids for the ten ranked station names. These were read from
 # the Korean national subway-station spatial feature service (2026.04 reference)
@@ -403,183 +390,6 @@ def make_figures(daily, band_totals, line_totals, station_totals, heatmap, time_
     figure.tight_layout(); figure.savefig(FIGURE_DIR / 'station_ranking.png', bbox_inches='tight'); plt.close(figure)
 
 
-def load_weather():
-    if not WEATHER_PATH.exists():
-        raise FileNotFoundError(
-            f'{WEATHER_PATH} is required. Run scripts/fetch_enrichment_data.py first.'
-        )
-    weather = pd.read_csv(WEATHER_PATH)
-    weather['date'] = pd.to_datetime(weather[['year', 'month', 'day']])
-    missing_before = {column: int(weather[column].isna().sum()) for column in WEATHER_COLUMNS}
-    weather['prcp'] = weather['prcp'].fillna(0)
-    selected = weather[['date', *WEATHER_COLUMNS]].copy()
-    selected = selected.rename(columns={column: f'weather_{column}' for column in WEATHER_COLUMNS})
-    for column in WEATHER_COLUMNS:
-        selected[f'weather_{column}_lag1'] = selected[f'weather_{column}'].shift(1)
-    source_mix = {
-        column: weather[f'{column}_source'].dropna().value_counts().to_dict()
-        for column in WEATHER_COLUMNS
-        if f'{column}_source' in weather
-    }
-    monthly = weather.groupby('month')[['temp', 'rhum', 'prcp', 'wspd', 'cldc']].agg({
-        'temp': 'mean', 'rhum': 'mean', 'prcp': 'sum', 'wspd': 'mean', 'cldc': 'mean',
-    }).reindex(range(1, 13))
-    audit = {
-        'sourceName': 'Meteostat daily / Seoul WMO 47108',
-        'sourceUrl': METEOSTAT_SOURCE_URL,
-        'stationId': '47108',
-        'rowCount': int(len(weather)),
-        'dateStart': weather['date'].min().strftime('%Y-%m-%d'),
-        'dateEnd': weather['date'].max().strftime('%Y-%m-%d'),
-        'fields': [
-            {
-                'name': f'weather_{column}',
-                **WEATHER_FIELD_DETAILS[column],
-                'missingBeforePolicy': missing_before[column],
-                'targetDayStatus': '사후 실현값 — 운영 입력 불가',
-                'strictFeature': f'weather_{column}_lag1',
-            }
-            for column in WEATHER_COLUMNS
-        ],
-        'imputation': {
-            'weather_prcp': '11개 결측을 0 mm로 대체; 결측은 강수 관측 부재이므로 보수적으로 무강수로 처리',
-        },
-        'sourceMix': source_mix,
-        'visual': {
-            'daily': {
-                'labels': [date.strftime('%m-%d') for date in weather['date']],
-                'temp': [float(value) for value in weather['temp']],
-                'rhum': [float(value) for value in weather['rhum']],
-                'prcp': [float(value) for value in weather['prcp']],
-            },
-            'monthly': {
-                'labels': [f'{month}월' for month in range(1, 13)],
-                'temp': [float(value) for value in monthly['temp']],
-                'rhum': [float(value) for value in monthly['rhum']],
-                'prcp': [float(value) for value in monthly['prcp']],
-                'wspd': [float(value) for value in monthly['wspd']],
-                'cldc': [float(value) for value in monthly['cldc']],
-            },
-        },
-    }
-    return selected, audit
-
-
-def split_time_series(model_frame, feature_columns):
-    ready = model_frame.dropna(subset=feature_columns).copy()
-    dates = sorted(ready['date'].unique())
-    train_end = dates[int(len(dates) * .8) - 1]
-    validation_end = dates[int(len(dates) * .9) - 1]
-    return (
-        ready[ready['date'] <= train_end].copy(),
-        ready[(ready['date'] > train_end) & (ready['date'] <= validation_end)].copy(),
-        ready[ready['date'] > validation_end].copy(),
-    )
-
-
-def run_ridge_experiment(name, model_frame, feature_columns, categorical_columns, eligibility, note):
-    # Keep only the fields used by this variant before splitting. The merged
-    # weather frame otherwise carries unused observed/lagged columns into every
-    # train, validation, and test copy.
-    experiment_frame = model_frame[['date', 'passengers', *feature_columns]].copy()
-    train, validation, test = split_time_series(experiment_frame, feature_columns)
-    numeric_columns = [column for column in feature_columns if column not in categorical_columns]
-    sample = train.sample(n=min(250_000, len(train)), random_state=42)
-    preprocessor = ColumnTransformer([
-        ('categorical', OneHotEncoder(handle_unknown='ignore'), categorical_columns),
-        ('numeric', StandardScaler(), numeric_columns),
-    ])
-    model = Pipeline([
-        ('preprocess', preprocessor),
-        ('model', Ridge(alpha=10.0)),
-    ])
-    model.fit(sample[feature_columns], sample['passengers'])
-    validation_metrics = metric_row(name, validation['passengers'], model.predict(validation[feature_columns]))
-    test_metrics = metric_row(name, test['passengers'], model.predict(test[feature_columns]))
-    return {
-        'id': name,
-        'model': 'Ridge',
-        'eligibility': eligibility,
-        'note': note,
-        'featureCount': len(feature_columns),
-        'categoricalFeatures': categorical_columns,
-        'numericFeatures': numeric_columns,
-        'rows': {'train': int(len(train)), 'validation': int(len(validation)), 'test': int(len(test))},
-        'validation': {key: value for key, value in validation_metrics.items() if key != 'name'},
-        'test': {key: value for key, value in test_metrics.items() if key != 'name'},
-    }
-
-
-def percent_mae_change(reference, candidate):
-    return float((reference - candidate) / reference) if reference else 0.0
-
-
-def run_weather_ablation(model_frame, models):
-    lagged_weather_features = [f'weather_{column}_lag1' for column in WEATHER_COLUMNS]
-    thermal_humidity_features = [
-        'weather_temp_lag1', 'weather_tmin_lag1', 'weather_tmax_lag1', 'weather_rhum_lag1',
-    ]
-    observed_weather_features = [f'weather_{column}' for column in WEATHER_COLUMNS]
-    specs = [
-        (
-            'lagged_thermal_humidity', [*BASE_FEATURE_COLUMNS, *thermal_humidity_features], '운영 사용 가능',
-            '전날의 평균·최저·최고 기온과 상대습도만 넣어, 날씨의 가장 기본적인 열·습도 신호를 분리합니다.',
-        ),
-        (
-            'lagged_weather_full', [*BASE_FEATURE_COLUMNS, *lagged_weather_features], '운영 사용 가능',
-            '목표일 t에는 전날 t−1까지 확정된 일별 기상값만 사용합니다. 목표일의 사후 실현값은 보지 않습니다.',
-        ),
-        (
-            'target_weather_oracle', [*BASE_FEATURE_COLUMNS, *observed_weather_features], '운영 사용 불가 — 사후 대조군',
-            '목표일 t의 사후 실현 기상값을 넣은 비운영 대조군입니다. 예보가 아니라 목표일 후에 확정되는 값이므로 누수 가드를 확인하는 용도 외에는 채택하지 않습니다.',
-        ),
-    ]
-    # The same one-hot + L2 Ridge specification is refit for every variant.
-    # Consequently the only treatment difference is the 0 / 4 / 8 added
-    # weather columns, not an arbitrary model or split change.
-    experiments = [
-        run_ridge_experiment(name, model_frame, features, BASE_CATEGORICAL_COLUMNS, eligibility, note)
-        for name, features, eligibility, note in specs
-    ]
-    ridge = next(model for model in models if model['name'] == 'Ridge')
-    seasonal = next(model for model in models if model['name'] == 'Seasonal naive')
-    for experiment in experiments:
-        experiment['comparison'] = {
-            'validationMaeChangeVsRidge': percent_mae_change(ridge['validation']['mae'], experiment['validation']['mae']),
-            'testMaeChangeVsRidge': percent_mae_change(ridge['mae'], experiment['test']['mae']),
-            'validationMaeChangeVsSeasonal': percent_mae_change(seasonal['validation']['mae'], experiment['validation']['mae']),
-            'testMaeChangeVsSeasonal': percent_mae_change(seasonal['mae'], experiment['test']['mae']),
-        }
-    full_weather = next(item for item in experiments if item['id'] == 'lagged_weather_full')
-    validation_delta = percent_mae_change(ridge['validation']['mae'], full_weather['validation']['mae'])
-    test_delta = percent_mae_change(ridge['mae'], full_weather['test']['mae'])
-    if validation_delta > 0:
-        decision = (
-            f'미채택 — 전날 전체 날씨는 Ridge validation MAE를 {validation_delta * 100:.1f}% 낮췄지만, '
-            '7일 계절 기준선을 넘지 못했습니다.'
-        )
-    else:
-        decision = (
-            f'미채택 — 전날 전체 날씨는 Ridge validation MAE를 {abs(validation_delta) * 100:.1f}%, '
-            f'test MAE를 {abs(test_delta) * 100:.1f}% 높였습니다. 7일 계절 기준선도 넘지 못했습니다.'
-        )
-    return {
-        'experiments': experiments,
-        'baselines': {
-            'ridge': {'validation': ridge['validation'], 'test': {key: ridge[key] for key in ['mae', 'rmse', 'wape', 'smape']}},
-            'seasonal': {'validation': seasonal['validation'], 'test': {key: seasonal[key] for key in ['mae', 'rmse', 'wape', 'smape']}},
-        },
-        'summary': {
-            'weatherDecision': decision,
-            'fullWeatherValidationGainVsRidge': validation_delta,
-            'fullWeatherTestGainVsRidge': test_delta,
-            'fullWeatherValidationGapVsSeasonal': percent_mae_change(seasonal['validation']['mae'], full_weather['validation']['mae']),
-            'fullWeatherTestGapVsSeasonal': percent_mae_change(seasonal['mae'], full_weather['test']['mae']),
-            'fullWeatherTestMae': full_weather['test']['mae'],
-        },
-    }
-
-
 def run_models(model_frame):
     feature_columns = BASE_FEATURE_COLUMNS
     categorical = BASE_CATEGORICAL_COLUMNS
@@ -717,12 +527,9 @@ def main():
     REPORT_DIR.mkdir(parents=True, exist_ok=True)
     source, time_columns, source_audit = load_source()
     model_frame = build_model_frame(source, time_columns)
-    weather_frame, weather_audit = load_weather()
-    weather_model_frame = model_frame.merge(weather_frame, on='date', how='left', validate='many_to_one')
     summary, daily, band_totals, line_totals, station_totals, heatmap, eda = build_summary(source, time_columns)
     make_figures(daily, band_totals, line_totals, station_totals, heatmap, time_columns)
     models, model_audit, input_profile = run_models(model_frame)
-    weather_analysis = run_weather_ablation(weather_model_frame, models)
     summary['selectedModel'] = model_audit['selectedByValidation']
     summary['testWindow'] = f"{model_audit['testStart']}–{model_audit['testEnd']}"
     selected_test = next(model for model in models if model['best'])
@@ -758,27 +565,17 @@ def main():
         },
         'models': models,
         'inputProfile': input_profile,
-        'weatherAnalysis': {
-            'weather': weather_audit,
-            **weather_analysis,
-        },
         'eda': eda,
         'audit': {
             **source_audit,
             'stationCount': int(source['station'].nunique()),
             'lineCount': int(source['line'].nunique()),
             'model': model_audit,
-            'externalInputs': {
-                'weatherRows': weather_audit['rowCount'],
-            },
         },
     }
     SITE_DATA_PATH.parent.mkdir(parents=True, exist_ok=True)
     SITE_DATA_PATH.write_text(json.dumps(site_data, ensure_ascii=False, indent=2), encoding='utf-8')
     (REPORT_DIR / 'data_audit.json').write_text(json.dumps(site_data['audit'], ensure_ascii=False, indent=2), encoding='utf-8')
-    (REPORT_DIR / 'weather_ablation.json').write_text(
-        json.dumps(site_data['weatherAnalysis'], ensure_ascii=False, indent=2), encoding='utf-8'
-    )
     (REPORT_DIR / 'input_profile.json').write_text(
         json.dumps(input_profile, ensure_ascii=False, indent=2), encoding='utf-8'
     )

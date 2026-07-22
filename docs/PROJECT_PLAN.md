@@ -24,7 +24,7 @@ The task is deliberately narrower than claiming to forecast the entire city's fu
 | Analysis and preprocessing | Blank-row removal, type conversion, key validation, daily target construction, chronological split, lag and rolling features | `scripts/`, `docs/METHODOLOGY.md` |
 | Algorithms | Transparent baseline plus regularized and tree-based regressors | model comparison table and experiment log |
 | Evaluation | Time-aware holdout, MAE, RMSE, WAPE, sMAPE, residual review, segment-level performance | `reports/model_metrics.csv`, site model section |
-| Future improvement | External calendar, weather, events, service disruptions, longer historical window, probabilistic forecasts | limitations and next-steps section |
+| Future improvement | External calendar, events, service disruptions, longer historical window, probabilistic forecasts | limitations and next-steps section |
 
 ## Research workflow
 

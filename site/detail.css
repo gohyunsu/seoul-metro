@@ -195,50 +195,6 @@
   font-size: 13px;
 }
 
-.weather-source-facts {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 1px;
-  border: 1px solid var(--line);
-  background: var(--line);
-}
-
-.weather-source-facts article { min-height: 130px; padding: 22px; background: rgba(255,255,255,.5); }
-.weather-source-facts span, .weather-timeline span { display: block; color: var(--muted); font-family: var(--mono); font-size: 9px; letter-spacing: .08em; }
-.weather-source-facts strong { display: block; margin: 10px 0 6px; color: var(--green); font-size: 19px; letter-spacing: -.05em; }
-.weather-source-facts p { margin: 0; color: #526159; font-size: 11px; }
-.weather-source-line { margin-top: 18px; }
-
-.weather-chart-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px; margin-top: 18px; }
-.weather-chart-card { padding: 24px; }
-.weather-chart-wrap { height: 290px; margin-top: 20px; }
-.weather-ablation-wrap { height: 330px; }
-
-.weather-timeline { display: grid; grid-template-columns: 1fr 42px 1fr 42px 1fr; align-items: stretch; margin-top: 20px; border: 1px solid var(--line); }
-.weather-timeline > div { padding: 21px; background: rgba(255,255,255,.42); }
-.weather-timeline > i { display: grid; place-items: center; color: var(--green); font-style: normal; font-size: 20px; background: rgba(185,227,204,.32); }
-.weather-timeline strong { display: block; margin-top: 8px; font-size: 15px; letter-spacing: -.04em; }
-.weather-timeline p { margin: 8px 0 0; color: #526159; font-size: 11px; line-height: 1.5; }
-.weather-timeline .timeline-target { background: var(--mint); }
-.weather-timeline .timeline-blocked { background: #f8e6df; }
-.weather-timeline .timeline-blocked strong { color: #a74937; }
-
-.weather-ablation-notes > div { margin-top: 16px; padding-top: 14px; border-top: 1px solid var(--line); }
-.weather-ablation-notes span { color: var(--green); font-family: var(--mono); font-size: 9px; letter-spacing: .06em; }
-.weather-ablation-notes p { margin: 5px 0 0; color: #526159; font-size: 12px; }
-.weather-ablation-notes .oracle-note span { color: #a74937; }
-.weather-ablation-notes .oracle-note { border-color: #e7c5b8; }
-
-.weather-results { margin: 20px 0; border-top: 1px solid var(--line); }
-.weather-result-row { display: grid; grid-template-columns: 1.45fr 1.1fr .78fr .78fr 1fr; gap: 12px; align-items: center; min-height: 62px; padding: 12px 14px; border: 1px solid var(--line); border-top: 0; background: rgba(255,255,255,.44); font-size: 12px; }
-.weather-result-row strong { font-size: 13px; letter-spacing: -.03em; }
-.weather-result-row > span, .weather-result-row i { color: var(--muted); font-family: var(--mono); font-size: 9px; font-style: normal; line-height: 1.45; }
-.weather-result-row b { color: var(--green); font-family: var(--mono); font-size: 12px; }
-.weather-result-row.baseline { background: rgba(185,227,204,.22); }
-.weather-result-row.oracle { background: #f8e6df; }
-.weather-result-head { min-height: 38px; padding-top: 9px; padding-bottom: 9px; background: var(--dark); color: var(--mint); }
-.weather-result-head span { color: var(--mint); font-size: 8px; letter-spacing: .05em; }
-
 .code-path-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
@@ -856,9 +812,6 @@
   .io-arrow { min-height: 55px; flex-direction: row; }
   .model-explainer { min-height: 0; }
   .execution-ledger { grid-template-columns: 1fr; }
-  .weather-source-facts, .weather-chart-grid { grid-template-columns: 1fr; }
-  .weather-timeline { grid-template-columns: 1fr; }
-  .weather-timeline > i { min-height: 28px; transform: rotate(90deg); }
   .method-path > div { grid-template-columns: 46px 1fr; }
   .method-path p { grid-column: 2; }
 }
@@ -901,11 +854,6 @@
   .comparison-card { padding: 22px; }
   .comparison-row { grid-template-columns: 1.35fr repeat(3, 1fr); gap: 5px; font-size: 9px; }
   .execution-step { grid-template-columns: 30px 1fr; padding: 21px; gap: 9px; }
-  .weather-result-row { grid-template-columns: 1.4fr 1fr 1fr; gap: 8px; min-height: 0; }
-  .weather-result-row > span { display: none; }
-  .weather-result-row i { grid-column: 1 / -1; }
-  .weather-result-head { display: none; }
-  .weather-chart-wrap { height: 250px; }
   .detail-list > div { grid-template-columns: 1fr; gap: 5px; }
   .detail-chart-grid .chart-wrap { height: 245px; }
   .method-path > div { grid-template-columns: 38px 1fr; gap: 10px; }

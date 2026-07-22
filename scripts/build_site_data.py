@@ -147,6 +147,51 @@ def quantile_profile(values):
     }
 
 
+def compact_bin_value(value):
+    value = float(value)
+    if value >= 1_000_000:
+        return f'{value / 1_000_000:.1f}m'
+    if value >= 1_000:
+        return f'{value / 1_000:.1f}k'
+    return f'{value:.0f}'
+
+
+def shared_log_histogram(series_rows, bins=16, upper_quantile=.995, lower_bound=0.0):
+    """Create comparable percentage histograms on shared log-spaced raw-value bins."""
+    cleaned = [pd.Series(values).dropna().clip(lower=0).astype('float64') for _, _, values in series_rows]
+    combined = pd.concat(cleaned, ignore_index=True)
+    cap = max(float(combined.quantile(upper_quantile)), 1.0)
+    lower_bound = max(0.0, min(float(lower_bound), cap))
+    log_edges = np.linspace(np.log1p(lower_bound), np.log1p(cap), bins + 1)
+    raw_edges = np.expm1(log_edges)
+    labels = [
+        f'{compact_bin_value(raw_edges[index])}–{compact_bin_value(raw_edges[index + 1])}'
+        for index in range(bins)
+    ]
+    labels[-1] = f'≥{compact_bin_value(raw_edges[-2])}'
+    rows = []
+    for (key, label, _), values in zip(series_rows, cleaned):
+        clipped = values.clip(lower=lower_bound, upper=cap)
+        counts, _ = np.histogram(np.log1p(clipped), bins=log_edges)
+        rows.append({
+            'key': key,
+            'label': label,
+            'counts': [int(value) for value in counts],
+            'shares': [float(value / max(len(values), 1)) for value in counts],
+            'zeroShare': float((values == 0).mean()),
+            'p995': float(values.quantile(upper_quantile)),
+            'maximum': float(values.max()),
+        })
+    return {
+        'labels': labels,
+        'cap': cap,
+        'upperQuantile': upper_quantile,
+        'lowerBound': lower_bound,
+        'binning': 'raw values clipped to the declared bounds, then log1p-spaced into equal-width bins',
+        'rows': rows,
+    }
+
+
 def binned_target_profile(frame, feature, bins=10):
     """Return a post-hoc target profile over quantile bins of one input."""
     values = frame[feature]
@@ -203,6 +248,17 @@ def build_input_profile(model_frame, train, validation, test, ridge, ridge_valid
         }
         for column in history_columns
     ]
+    numeric_columns = ['weekday', 'week_of_year', *history_columns, 'passengers']
+    numeric_labels = {**INPUT_LABELS, 'passengers': '목표 일일 수요'}
+    numeric_distribution = shared_log_histogram([
+        (column, numeric_labels[column], profile[column])
+        for column in [*history_columns, 'passengers']
+    ])
+    numeric_correlation = profile[numeric_columns].corr()
+    scatter = profile[['lag_7', 'passengers']].sample(n=min(2600, len(profile)), random_state=42)
+    scatter_x_cap = float(profile['lag_7'].quantile(.995))
+    scatter_y_cap = float(profile['passengers'].quantile(.995))
+    station_target = model_frame.groupby('station_code')['passengers'].agg(['size', 'mean', 'median'])
     weekday = (
         profile.groupby('weekday')['passengers'].agg(['size', 'mean', 'median'])
         .reindex(range(7))
@@ -247,6 +303,8 @@ def build_input_profile(model_frame, train, validation, test, ridge, ridge_valid
                 'medianSeries': float(station_series.median()),
                 'maxSeries': int(station_series.max()),
                 'multiplicity': [{'seriesPerCode': int(level), 'stationCodeCount': int(count)} for level, count in multiplicity.items()],
+                'rowsPerCode': quantile_profile(station_target['size']),
+                'medianTargetAcrossCodes': quantile_profile(station_target['median']),
             },
         },
         'calendar': {
@@ -263,6 +321,29 @@ def build_input_profile(model_frame, train, validation, test, ridge, ridge_valid
             'quantiles': history_summary,
             'correlation': history_correlations,
             'targetByLag7Decile': binned_target_profile(profile, 'lag_7'),
+            'distribution': numeric_distribution,
+            'lag7Scatter': {
+                'sampleMethod': 'deterministic simple random sample, random_state=42',
+                'rows': int(len(scatter)),
+                'xCap': scatter_x_cap,
+                'yCap': scatter_y_cap,
+                'points': [
+                    {
+                        'x': float(min(row['lag_7'], scatter_x_cap)),
+                        'y': float(min(row['passengers'], scatter_y_cap)),
+                    }
+                    for _, row in scatter.iterrows()
+                ],
+            },
+        },
+        'numericCorrelation': {
+            'keys': numeric_columns,
+            'labels': [numeric_labels[column] for column in numeric_columns],
+            'values': [
+                [float(numeric_correlation.loc[row, column]) for column in numeric_columns]
+                for row in numeric_columns
+            ],
+            'method': 'Pearson correlation over every feature-ready series-day',
         },
         'split': {
             'train': split_distribution(train),
@@ -329,6 +410,23 @@ def build_summary(source, time_columns):
         for date, value in values.items()
     ]
     top10_share = float(station_totals.head(10).sum() / station_totals.sum())
+    monthly = daily.groupby(daily.index.month).agg(['size', 'mean', 'median', 'min', 'max'])
+    monthly_quantiles = daily.groupby(daily.index.month).quantile([.1, .25, .75, .9]).unstack()
+    daily_change = daily.pct_change().dropna() * 100
+    change_cap = max(float(daily_change.abs().quantile(.99)), 1.0)
+    change_edges = np.linspace(-change_cap, change_cap, 19)
+    change_counts, _ = np.histogram(daily_change.clip(-change_cap, change_cap), bins=change_edges)
+    change_labels = [
+        f'{change_edges[index]:+.0f}–{change_edges[index + 1]:+.0f}%'
+        for index in range(len(change_edges) - 1)
+    ]
+    line_time = source.groupby('line')[time_columns].sum().sort_index() / len(daily)
+    line_direction = source.groupby(['line', 'direction'])[time_columns].sum().sum(axis=1).unstack(fill_value=0).sort_index()
+    cumulative_station_share = station_totals.cumsum() / station_totals.sum()
+    station_distribution = shared_log_histogram([
+        ('annual_station_total', '역별 연간 승하차량', station_totals)
+    ], bins=18, upper_quantile=1.0, lower_bound=float(station_totals.min()))
+    monthly_labels = [f'{int(month)}월' for month in monthly.index]
     return {
         'totalPassengers': int(source[time_columns].to_numpy().sum()),
         'stationCount': int(source['station'].nunique()),
@@ -360,6 +458,64 @@ def build_summary(source, time_columns):
         'highDates': date_records(high_dates),
         'lowDates': date_records(low_dates),
         'daily': {'mean': int(daily.mean()), 'median': int(daily.median()), 'std': int(daily.std()), 'min': int(daily.min()), 'max': int(daily.max()), 'minDate': daily.idxmin().strftime('%m.%d'), 'maxDate': daily.idxmax().strftime('%m.%d')},
+        'monthlyDistribution': {
+            'labels': monthly_labels,
+            'rows': [
+                {
+                    'label': f'{int(month)}월',
+                    'days': int(row['size']),
+                    'mean': float(row['mean']),
+                    'median': float(row['median']),
+                    'min': float(row['min']),
+                    'p10': float(monthly_quantiles.loc[month, .1]),
+                    'p25': float(monthly_quantiles.loc[month, .25]),
+                    'p75': float(monthly_quantiles.loc[month, .75]),
+                    'p90': float(monthly_quantiles.loc[month, .9]),
+                    'max': float(row['max']),
+                }
+                for month, row in monthly.iterrows()
+            ],
+        },
+        'dailyChange': {
+            'labels': change_labels,
+            'counts': [int(value) for value in change_counts],
+            'cap': change_cap,
+            'median': float(daily_change.median()),
+            'p10': float(daily_change.quantile(.1)),
+            'p90': float(daily_change.quantile(.9)),
+            'largestRise': {'date': daily_change.idxmax().strftime('%m.%d'), 'value': float(daily_change.max())},
+            'largestDrop': {'date': daily_change.idxmin().strftime('%m.%d'), 'value': float(daily_change.min())},
+        },
+        'lineTimeHeatmap': {
+            'rows': [str(value) for value in line_time.index],
+            'columns': time_columns,
+            'values': [[int(value) for value in line_time.loc[line].values] for line in line_time.index],
+            'min': int(line_time.to_numpy().min()),
+            'max': int(line_time.to_numpy().max()),
+            'unit': 'mean passengers per calendar day',
+        },
+        'lineDirectionBalance': [
+            {
+                'label': str(line),
+                'boarding': int(row.get('승차', 0)),
+                'alighting': int(row.get('하차', 0)),
+                'boardingShare': float(row.get('승차', 0) / max(row.sum(), 1)),
+                'balancePct': float((row.get('승차', 0) - row.get('하차', 0)) / max(row.sum(), 1) * 100),
+            }
+            for line, row in line_direction.iterrows()
+        ],
+        'stationConcentration': {
+            'stationCount': int(len(station_totals)),
+            'points': [
+                {'rank': int(rank), 'share': float(share)}
+                for rank, share in enumerate(cumulative_station_share.values, start=1)
+            ],
+            'top1Share': float(cumulative_station_share.iloc[0]),
+            'top10Share': float(cumulative_station_share.iloc[min(9, len(cumulative_station_share) - 1)]),
+            'top25Share': float(cumulative_station_share.iloc[min(24, len(cumulative_station_share) - 1)]),
+            'top50Share': float(cumulative_station_share.iloc[min(49, len(cumulative_station_share) - 1)]),
+            'distribution': station_distribution,
+        },
     }
 
 

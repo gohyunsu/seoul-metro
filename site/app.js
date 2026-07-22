@@ -200,6 +200,178 @@ function profileChartOptions({ indexAxis = 'x', tickLimit = 8 } = {}) {
   };
 }
 
+function percentageChartOptions({ indexAxis = 'x', tickLimit = 8 } = {}) {
+  const options = profileChartOptions({ indexAxis, tickLimit });
+  const valueAxis = indexAxis === 'y' ? 'x' : 'y';
+  options.scales[valueAxis].ticks.callback = (value) => `${Number(value).toFixed(0)}%`;
+  return options;
+}
+
+function drawDistributionChart(canvas, distribution, keys = null) {
+  if (!canvas || !window.Chart || !distribution) return;
+  const palette = ['#1c5b43', '#ff8b4a', '#d5b73b', '#719d86', '#708078', '#c75238'];
+  const visibleRows = keys
+    ? keys.map((key) => distribution.rows.find((row) => row.key === key)).filter(Boolean)
+    : distribution.rows;
+  new Chart(canvas, {
+    type: 'line',
+    data: {
+      labels: distribution.labels,
+      datasets: visibleRows.map((row, index) => ({
+        label: row.label,
+        data: row.shares.map((value) => value * 100),
+        borderColor: palette[index % palette.length],
+        backgroundColor: `${palette[index % palette.length]}18`,
+        borderDash: row.key === 'passengers' ? [5, 4] : [],
+        borderWidth: row.key === 'passengers' ? 2.5 : 1.7,
+        pointRadius: 0,
+        fill: false,
+        tension: .24,
+      })),
+    },
+    options: {
+      ...percentageChartOptions({ tickLimit: 8 }),
+      interaction: { intersect: false, mode: 'nearest' },
+      plugins: {
+        ...percentageChartOptions().plugins,
+        tooltip: {
+          ...chartDefaults().plugins.tooltip,
+          displayColors: true,
+          callbacks: { label: (context) => `${context.dataset.label}: ${context.parsed.y.toFixed(2)}%` },
+        },
+      },
+    },
+  });
+}
+
+function drawMatrix(container, matrix, { diverging = false, formatter = (value) => numberFormat.format(value) } = {}) {
+  if (!container || !matrix) return;
+  container.style.setProperty('--matrix-cols', matrix.columns.length);
+  container.innerHTML = '';
+  const corner = document.createElement('span');
+  corner.className = 'matrix-label matrix-corner';
+  container.appendChild(corner);
+  matrix.columns.forEach((label) => {
+    const cell = document.createElement('span');
+    cell.className = 'matrix-label matrix-column';
+    cell.textContent = label;
+    cell.title = label;
+    container.appendChild(cell);
+  });
+  const flattened = matrix.values.flat();
+  const minimum = matrix.min ?? Math.min(...flattened);
+  const maximum = matrix.max ?? Math.max(...flattened);
+  matrix.rows.forEach((label, rowIndex) => {
+    const rowLabel = document.createElement('span');
+    rowLabel.className = 'matrix-label matrix-row';
+    rowLabel.textContent = label;
+    container.appendChild(rowLabel);
+    matrix.values[rowIndex].forEach((value, columnIndex) => {
+      const cell = document.createElement('span');
+      cell.className = 'matrix-cell';
+      if (diverging) {
+        const strength = Math.min(1, Math.abs(value));
+        cell.style.backgroundColor = value >= 0
+          ? `rgba(28,91,67,${(0.08 + strength * .86).toFixed(2)})`
+          : `rgba(199,82,56,${(0.08 + strength * .86).toFixed(2)})`;
+        cell.style.color = strength > .58 ? '#ffffff' : '#17211d';
+      } else {
+        const ratio = (value - minimum) / (maximum - minimum || 1);
+        cell.style.backgroundColor = `rgba(28,91,67,${(0.08 + ratio * .86).toFixed(2)})`;
+        cell.style.color = ratio > .58 ? '#ffffff' : '#17211d';
+      }
+      cell.textContent = formatter(value);
+      cell.title = `${label} × ${matrix.columns[columnIndex]} · ${formatter(value)}`;
+      container.appendChild(cell);
+    });
+  });
+}
+
+function drawExtendedEda(data) {
+  const eda = data.eda;
+  if (!eda) return;
+  const monthlyChart = document.getElementById('monthlyProfileChart');
+  if (monthlyChart && window.Chart) {
+    const rows = eda.monthlyDistribution.rows;
+    new Chart(monthlyChart, {
+      type: 'line',
+      data: {
+        labels: rows.map((row) => row.label),
+        datasets: [
+          { label: 'P10', data: rows.map((row) => row.p10), borderColor: '#b9e3cc', pointRadius: 0, borderWidth: 1.5, tension: .24 },
+          { label: 'P90', data: rows.map((row) => row.p90), borderColor: '#b9e3cc', backgroundColor: 'rgba(185,227,204,.28)', fill: '-1', pointRadius: 0, borderWidth: 1.5, tension: .24 },
+          { label: '중앙값', data: rows.map((row) => row.median), borderColor: '#1c5b43', pointBackgroundColor: '#1c5b43', pointRadius: 2, borderWidth: 2.5, tension: .24 },
+        ],
+      },
+      options: profileChartOptions({ tickLimit: 12 }),
+    });
+  }
+  const changeChart = document.getElementById('dailyChangeChart');
+  if (changeChart && window.Chart) {
+    const middle = Math.floor(eda.dailyChange.counts.length / 2);
+    new Chart(changeChart, {
+      type: 'bar',
+      data: {
+        labels: eda.dailyChange.labels,
+        datasets: [{
+          label: '날짜 수',
+          data: eda.dailyChange.counts,
+          backgroundColor: eda.dailyChange.counts.map((_, index) => index < middle ? '#ff8b4a' : '#1c5b43'),
+          borderWidth: 0,
+          barPercentage: 1,
+          categoryPercentage: .96,
+        }],
+      },
+      options: profileChartOptions({ tickLimit: 7 }),
+    });
+  }
+  const concentrationChart = document.getElementById('stationConcentrationChart');
+  if (concentrationChart && window.Chart) {
+    new Chart(concentrationChart, {
+      type: 'line',
+      data: { datasets: [{ label: '누적 수요 비중', data: eda.stationConcentration.points.map((row) => ({ x: row.rank, y: row.share * 100 })), borderColor: '#1c5b43', backgroundColor: 'rgba(185,227,204,.28)', fill: true, borderWidth: 2.4, pointRadius: 0, tension: .16 }] },
+      options: {
+        ...percentageChartOptions({ tickLimit: 7 }),
+        parsing: false,
+        scales: {
+          x: { type: 'linear', min: 1, max: eda.stationConcentration.stationCount, grid: { display: false }, title: { display: true, text: '상위 N개 역', color: '#708078', font: { family: 'DM Mono', size: 9 } }, ticks: { color: '#708078', font: { family: 'DM Mono', size: 9 }, maxTicksLimit: 7 } },
+          y: { min: 0, max: 100, grid: { color: '#d8e1db' }, ticks: { color: '#708078', font: { family: 'DM Mono', size: 9 }, callback: (value) => `${value}%` } },
+        },
+      },
+    });
+  }
+  const concentrationFacts = document.getElementById('stationConcentrationFacts');
+  if (concentrationFacts) {
+    const profile = eda.stationConcentration;
+    concentrationFacts.innerHTML = [['TOP 1', profile.top1Share], ['TOP 10', profile.top10Share], ['TOP 25', profile.top25Share], ['TOP 50', profile.top50Share]]
+      .map(([label, value]) => `<div><span>${label}</span><strong>${(value * 100).toFixed(1)}%</strong></div>`).join('');
+  }
+  drawDistributionChart(document.getElementById('stationDistributionChart'), eda.stationConcentration.distribution);
+  const lineBalanceChart = document.getElementById('lineDirectionBalanceChart');
+  if (lineBalanceChart && window.Chart) {
+    const rows = eda.lineDirectionBalance;
+    new Chart(lineBalanceChart, {
+      type: 'bar',
+      data: {
+        labels: rows.map((row) => row.label),
+        datasets: [
+          { label: '승차', data: rows.map((row) => row.boardingShare * 100), backgroundColor: '#ff8b4a', borderWidth: 0 },
+          { label: '하차', data: rows.map((row) => (1 - row.boardingShare) * 100), backgroundColor: '#1c5b43', borderWidth: 0 },
+        ],
+      },
+      options: { ...percentageChartOptions({ indexAxis: 'y', tickLimit: 6 }), scales: { x: { stacked: true, min: 0, max: 100, grid: { color: '#d8e1db' }, ticks: { color: '#708078', font: { family: 'DM Mono', size: 9 }, callback: (value) => `${value}%` } }, y: { stacked: true, grid: { display: false }, ticks: { color: '#526159', font: { family: 'Noto Sans KR', size: 10 } } } } },
+    });
+  }
+  const lineTime = eda.lineTimeHeatmap;
+  drawMatrix(document.getElementById('lineTimeMatrix'), {
+    rows: lineTime.rows,
+    columns: lineTime.columns.map((label) => label.replace('시간대', '').replace('시이전', '↓').replace('시이후', '↑')),
+    values: lineTime.values,
+    min: lineTime.min,
+    max: lineTime.max,
+  }, { formatter: (value) => compactFormat.format(value) });
+}
+
 function drawInputProfileOverview(data) {
   const profile = data.inputProfile;
   if (!profile) return;
@@ -216,6 +388,17 @@ function drawInputProfileOverview(data) {
     data: { labels: rows.map((row) => row.label), datasets: [{ label: 'validation MAE 증가 (명)', data: rows.map((row) => row.maeIncrease), backgroundColor: '#1c5b43', borderWidth: 0, borderRadius: 3 }] },
     options: profileChartOptions({ indexAxis: 'y', tickLimit: 6 }),
   });
+  drawDistributionChart(
+    document.getElementById('mainInputDistributionChart'),
+    profile.history.distribution,
+    ['lag_1', 'lag_7', 'rolling_7', 'passengers'],
+  );
+  const correlation = profile.numericCorrelation;
+  drawMatrix(document.getElementById('mainInputCorrelation'), {
+    rows: correlation.labels,
+    columns: correlation.labels,
+    values: correlation.values,
+  }, { diverging: true, formatter: (value) => value.toFixed(2) });
 }
 
 function drawInputProfile(data) {
@@ -240,7 +423,8 @@ function drawInputProfile(data) {
   const stationFacts = document.getElementById('stationCodeFacts');
   if (stationFacts) {
     const station = categorical.stationCode;
-    stationFacts.innerHTML = `<div><span>CATEGORIES</span><strong>${numberFormat.format(station.levels)}</strong></div><div><span>MEDIAN SERIES / CODE</span><strong>${station.medianSeries.toFixed(1)}</strong></div><div><span>RANGE</span><strong>${station.minSeries}–${station.maxSeries}</strong></div>`;
+    const rowMedian = Object.fromEntries(station.rowsPerCode.quantiles.map((point) => [point.label, point.value])).P50;
+    stationFacts.innerHTML = `<div><span>CATEGORIES</span><strong>${numberFormat.format(station.levels)}</strong></div><div><span>MEDIAN SERIES / CODE</span><strong>${station.medianSeries.toFixed(1)}</strong></div><div><span>RANGE</span><strong>${station.minSeries}–${station.maxSeries}</strong></div><div><span>MEDIAN ROWS / CODE</span><strong>${numberFormat.format(Math.round(rowMedian))}</strong></div>`;
   }
   const stationMultiplicity = document.getElementById('stationMultiplicity');
   if (stationMultiplicity) {
@@ -265,6 +449,27 @@ function drawInputProfile(data) {
   }
   const calendarTable = document.getElementById('calendarProfileTable');
   if (calendarTable) calendarTable.innerHTML = `<div class="profile-table-head"><span>WEEKDAY</span><span>ROWS</span><span>TARGET MEAN</span><span>TARGET MEDIAN</span></div>${calendar.weekday.map((row) => `<div><strong>${row.label}</strong><span>${numberFormat.format(row.rows)}</span><span>${numberFormat.format(Math.round(row.targetMean))}명</span><span>${numberFormat.format(Math.round(row.targetMedian))}명</span></div>`).join('')}`;
+  const calendarFrequencyChart = document.getElementById('calendarFrequencyChart');
+  if (calendarFrequencyChart && window.Chart) {
+    new Chart(calendarFrequencyChart, {
+      type: 'bar',
+      data: { labels: calendar.isoWeek.map((row) => `W${String(row.week).padStart(2, '0')}`), datasets: [{ label: 'feature-ready rows', data: calendar.isoWeek.map((row) => row.rows), backgroundColor: '#719d86', borderWidth: 0, borderRadius: 2 }] },
+      options: profileChartOptions({ tickLimit: 10 }),
+    });
+  }
+  drawDistributionChart(document.getElementById('historyDistributionChart'), history.distribution);
+  const scatterChart = document.getElementById('lagScatterChart');
+  if (scatterChart && window.Chart) {
+    const cap = Math.max(history.lag7Scatter.xCap, history.lag7Scatter.yCap);
+    new Chart(scatterChart, {
+      type: 'scatter',
+      data: { datasets: [
+        { label: '표본 series-days', data: history.lag7Scatter.points, backgroundColor: 'rgba(28,91,67,.18)', borderColor: 'rgba(28,91,67,.35)', pointRadius: 1.6, pointHoverRadius: 4 },
+        { label: 'y = x', type: 'line', data: [{ x: 0, y: 0 }, { x: cap, y: cap }], borderColor: '#ff8b4a', borderDash: [5, 5], borderWidth: 1.5, pointRadius: 0 },
+      ] },
+      options: { ...profileChartOptions({ tickLimit: 6 }), parsing: false, interaction: { intersect: false, mode: 'nearest' }, scales: { x: { min: 0, max: history.lag7Scatter.xCap, grid: { color: '#d8e1db' }, title: { display: true, text: 'lag_7 (명)', color: '#708078', font: { family: 'DM Mono', size: 9 } }, ticks: { color: '#708078', font: { family: 'DM Mono', size: 9 }, maxTicksLimit: 6, callback: (value) => compactFormat.format(value) } }, y: { min: 0, max: history.lag7Scatter.yCap, grid: { color: '#d8e1db' }, title: { display: true, text: 'target (명)', color: '#708078', font: { family: 'DM Mono', size: 9 } }, ticks: { color: '#708078', font: { family: 'DM Mono', size: 9 }, maxTicksLimit: 6, callback: (value) => compactFormat.format(value) } } } },
+    });
+  }
   const quantileChart = document.getElementById('historyQuantileChart');
   if (quantileChart && window.Chart) {
     const colors = ['#1c5b43', '#ff8b4a', '#d5b73b', '#719d86', '#708078'];
@@ -293,6 +498,23 @@ function drawInputProfile(data) {
     const rows = [['TRAIN', split.train], ['VALIDATION', split.validation], ['TEST', split.test]];
     splitTable.innerHTML = `<div class="split-profile-head"><span>SPLIT</span><span>ROWS</span><span>TARGET P05</span><span>TARGET P50</span><span>TARGET P95</span><span>LAG_7 P50</span><span>ROLLING_7 P50</span></div>${rows.map(([label, row]) => { const points = Object.fromEntries(row.target.quantiles.map((item) => [item.label, item.value])); return `<div><strong>${label}</strong><span>${numberFormat.format(row.rows)}</span><span>${numberFormat.format(Math.round(points.P05))}</span><span>${numberFormat.format(Math.round(points.P50))}</span><span>${numberFormat.format(Math.round(points.P95))}</span><span>${numberFormat.format(Math.round(row.lag7Median))}</span><span>${numberFormat.format(Math.round(row.rolling7Median))}</span></div>`; }).join('')}`;
   }
+  const splitDistributionChart = document.getElementById('splitDistributionChart');
+  if (splitDistributionChart && window.Chart) {
+    const splitRows = [['TRAIN', split.train], ['VALID', split.validation], ['TEST', split.test]];
+    const quantiles = ['P05', 'P25', 'P50', 'P75', 'P95'];
+    const colors = ['#b9e3cc', '#719d86', '#1c5b43', '#d5b73b', '#ff8b4a'];
+    new Chart(splitDistributionChart, {
+      type: 'line',
+      data: { labels: splitRows.map(([label]) => label), datasets: quantiles.map((quantile, index) => ({ label: quantile, data: splitRows.map(([, row]) => Object.fromEntries(row.target.quantiles.map((point) => [point.label, point.value]))[quantile]), borderColor: colors[index], pointBackgroundColor: colors[index], pointRadius: 3, borderWidth: quantile === 'P50' ? 2.8 : 1.5, tension: .15 })) },
+      options: profileChartOptions({ tickLimit: 3 }),
+    });
+  }
+  const correlation = profile.numericCorrelation;
+  drawMatrix(document.getElementById('inputCorrelationMatrix'), {
+    rows: correlation.labels,
+    columns: correlation.labels,
+    values: correlation.values,
+  }, { diverging: true, formatter: (value) => value.toFixed(2) });
   const importanceChart = document.getElementById('importanceChart');
   if (importanceChart && window.Chart) {
     const rows = [...importance.rows].reverse();
@@ -341,4 +563,4 @@ function drawEdaTables(data) {
   if (anomalyTable) anomalyTable.innerHTML = highRows.join('') + lowRows.join('');
 }
 
-loadData().then((data) => { setText(data); drawCharts(data); drawHeatmap(data); drawRanking(data); drawStationMap(data); drawPredictionExample(data); drawModels(data); drawModelComparison(data); drawInputProfileOverview(data); drawInputProfile(data); drawEdaTables(data); }).catch((error) => { console.error(error); });
+loadData().then((data) => { setText(data); drawCharts(data); drawHeatmap(data); drawRanking(data); drawStationMap(data); drawPredictionExample(data); drawModels(data); drawModelComparison(data); drawInputProfileOverview(data); drawInputProfile(data); drawEdaTables(data); drawExtendedEda(data); }).catch((error) => { console.error(error); });

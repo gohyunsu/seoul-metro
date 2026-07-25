@@ -2,51 +2,77 @@
 
 ## Research question
 
-Can recent station-level patterns and calendar context estimate the next calendar day's passenger volume for each station, line, and boarding direction?
+Can a deep model improve next-day hourly passenger forecasts without discarding
+the strong weekly seasonal pattern already captured by a four-week median?
 
 ## Target and unit of analysis
 
-The unit is a station-line-direction-day series. The target is `daily_total`, the sum of passenger counts across the 20 time bands on the next calendar date. Time-band behavior remains central to the descriptive analysis, while the daily target keeps the forecasting experiment efficient and directly interpretable.
+The observation unit is `(target date, line-station-direction series, service
+hour)`. Each sample outputs the 18 regular one-hour bands from 06:00 through
+23:00 for one of 546 line-station-direction series. The irregular `before
+06:00` and `after 24:00` aggregates are excluded.
 
-## Features
+## Operational information set
 
-- Calendar: weekday, weekend, month, week-of-year, day-of-month, day-of-year.
-- Identity: line, station, station number, and boarding direction.
-- History: lag 1, lag 7, lag 14, lag 28 and rolling mean features within each station-line-direction series.
-- Optional later extension: holiday, event, disruption, and transfer-volume features.
+- Demand history: the strictly previous 56 days by 18 service hours.
+- Explicit same-hour lags: 1, 7, 14, 21, 28, 35, 42, 49, and 56 days.
+- Identity: station, line, and boarding direction as categorical embeddings.
+- Time: service-hour embedding, weekday embedding, and cyclic day-of-year.
+- Optional forecast weather: eight target-day KMA fields and missingness masks.
+- Optional special-day context: holiday, day before, day after, and consecutive
+  holiday length.
 
-The source-wide table is retained for modeling and `daily_total` is added. For EDA, the 20 time-band columns are reshaped into a long view. Calendar and historical features are generated only after sorting each station-line-direction series by date. Rows without the required history are excluded from model training, never imputed from future observations.
+Station numbers are lookup categories, not ordered numeric measurements.
+Addresses are not model inputs. Target-day weather is limited to the latest
+forecast issued no later than 05:10 KST; realized target-day observations are
+never used by the deployable models.
 
-## Split
+## Anchor and residual target
 
-Use the earliest 80% of dates for training, the next 10% for validation, and the final 10% for the untouched test period. Hyperparameters are selected using the validation period. The final test score is reported once for the selected configuration.
+The fixed anchor is the median of the same hour from 7, 14, 21, and 28 days
+earlier. A scale is estimated separately for each series and service hour from
+training dates only. Every V2 neural model starts with exactly zero correction,
+so its epoch-zero output is numerically identical to the anchor.
 
-## Model ladder
+The causal encoder applies a shared six-block TCN independently to each service
+hour. Kernel size 2 and dilations `1, 2, 4, 8, 16, 32` give a 64-day receptive
+field, covering the complete 56-day input. A shallow convolution over the 18
+hour tokens is tested separately. Output corrections are bounded with `tanh`;
+the candidate gate is tested by ablation. Special-day correction is isolated
+from ordinary-day correction.
 
-1. Seasonal-naive: use the same series' value seven days earlier.
-2. Ridge regression: a stable, interpretable linear reference after one-hot encoding identities and scaling numeric features.
-3. HistGradientBoostingRegressor: a non-linear model able to capture interactions between calendar signals, station identity, and recent demand.
+## Objective and split
 
-The goal is not to maximize a leaderboard score. It is to show whether additional model complexity produces a meaningful and stable improvement over a defensible baseline.
+The primary loss is raw-passenger MAE divided by the training target mean.
+A smaller Huber term on scaled residuals prevents large stations from
+completely dominating optimization. Correction and gate penalties discourage
+unnecessary departures from the anchor.
 
-## Metrics
+- Parameter-estimation dates: 2025-02-26 through 2025-10-31.
+- Ordinary validation: 2025-11-01 through 2025-11-14.
+- Special-day stress validation: 2025-08-15 and 2025-10-03 through 2025-10-09,
+  removed from parameter estimation.
+- Final test: 2025-11-15 through 2025-12-31.
 
-- MAE: average absolute error in passengers, easy to interpret operationally.
-- RMSE: penalizes large misses more heavily.
-- WAPE: total absolute error divided by total observed volume, useful across demand scales.
-- sMAPE: symmetric percentage error with a zero-safe denominator.
+Checkpoint selection uses
+`0.85 × ordinary-MAE/ordinary-anchor-MAE + 0.15 ×
+event-MAE/event-anchor-MAE`. The stress set is not a pure terminal
+rolling-origin split; this selection-bias limitation is explicit.
 
-Metrics are shown overall and by line, boarding direction, weekday/weekend, and demand quantile. A model that performs well only on large stations will not be presented as uniformly reliable.
+## Comparison ladder
 
-## Visual analysis set
+1. Previous day, previous week, and four-week same-hour median.
+2. Ridge and HistGradientBoosting references.
+3. V1 Embedding MLP, GRU, TCN, and hierarchical fusion models.
+4. V2 causal residual base.
+5. Weather-only, special-day-only, and combined V2 inputs.
+6. Gate and cross-hour ablations.
+7. Three random-seed repetitions of the validation-selected configuration.
 
-1. Daily network demand trend with weekday/weekend annotation.
-2. Line share and station ranking by annual passenger volume.
-3. Hour × weekday heatmap for network demand.
-4. Boarding versus alighting profiles by time band.
-5. Station profile small multiples for selected high-volume and contrasting stations.
-6. Predicted-versus-observed and residual distribution on the test period.
+## Metrics and interpretation
 
-## Ethical and practical boundaries
-
-The forecast is a planning aid, not a promise of exact future demand. It should not be used to infer individual movement, because the source is aggregate. Any operational deployment would require monitoring drift, validating service changes, and adding external context that explains exceptional dates.
+MAE is primary. RMSE, WAPE, sMAPE, bias, absolute-error quantiles, hourly MAE,
+calendar slices, weather-condition slices, and correction diagnostics are
+reported. Weather ablations diagnose predictive contribution, not causal
+effect. A single-year result is not evidence of deployment stability; a
+multi-year outer holdout remains required.

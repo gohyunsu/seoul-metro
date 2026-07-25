@@ -7,6 +7,7 @@ instruction/
 reports/generated/
 data/processed/
 data/interim/
+data/raw/*.zip
 *.log
 
 # Local-only assignment report and its figure builder

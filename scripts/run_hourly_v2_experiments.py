@@ -849,9 +849,10 @@ def core_configs() -> list[ModelConfig]:
 def seed_configs() -> list[ModelConfig]:
     return [
         ModelConfig(
-            f"causal_residual_full_seed_{seed}",
+            f"causal_residual_full_no_gate_seed_{seed}",
             weather=True,
             calendar=True,
+            gate=False,
             seed=seed,
         )
         for seed in (123, 2025)

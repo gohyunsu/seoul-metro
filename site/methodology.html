@@ -4,15 +4,16 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="description" content="seoul-metro의 재현 절차, 코드 책임, 검증 체크리스트, 해석 한계와 공식 참고문헌입니다.">
-  <title>재현·한계·참고문헌 | seoul-metro</title>
+  <title>재현·한계·참고문헌 | Seoul in Motion</title>
   <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Manrope:wght@400;500;600;700;800&family=Noto+Sans+KR:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="styles.css"><link rel="stylesheet" href="overrides.css"><link rel="stylesheet" href="detail.css">
+  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:wght@400;500;600;700&family=Noto+Sans+KR:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css"><link rel="stylesheet" href="overrides.css"><link rel="stylesheet" href="detail.css"><link rel="stylesheet" href="detail-refinement.css?v=2">
 </head>
 <body class="detail-page">
-  <header class="site-header detail-header"><a class="brand brand-wordmark" href="index.html" aria-label="seoul-metro 홈"><span class="brand-mark">↗</span><span>seoul-metro</span></a><nav class="main-nav" aria-label="상세 메뉴"><a href="data-audit.html">수집·감사</a><a href="daily-rhythm.html">시간 패턴</a><a href="station-guide.html">역 패턴</a><a href="input-profile.html">입력 설계</a><a href="forecast-guide.html">모델·평가</a><a href="methodology.html" aria-current="page">재현·참고</a></nav><span class="header-status"><span class="status-dot"></span>2025 snapshot</span></header>
+  <header class="site-header detail-header"><a class="brand brand-wordmark" href="index.html" aria-label="Seoul in Motion 홈"><span class="detail-mark" aria-hidden="true"><i></i><i></i><i></i></span><span>Seoul <b>in Motion</b></span></a><nav class="main-nav" aria-label="상세 메뉴"><a href="data-audit.html">수집·감사</a><a href="daily-rhythm.html">시간 패턴</a><a href="station-guide.html">역 패턴</a><a href="input-profile.html">입력 설계</a><a href="forecast-guide.html">모델·평가</a><a href="methodology.html" aria-current="page">재현·참고</a><a href="hourly-study.html">시간대 예측</a></nav><span class="header-status"><span class="status-dot"></span>2025 snapshot</span><details class="detail-mobile"><summary>메뉴 ☰</summary><nav aria-label="모바일 상세 메뉴"><a href="index.html">홈</a><a href="hourly-study.html">시간대 예측 연구</a><a href="data-audit.html">수집·감사</a><a href="daily-rhythm.html">시간 패턴</a><a href="station-guide.html">역 패턴</a><a href="input-profile.html">일일 예측 입력</a><a href="forecast-guide.html">일일 예측 평가</a><a href="methodology.html">재현·참고</a></nav></details></header>
+  <div class="archive-banner"><p><strong>이전 연구 / 일일 수요 예측</strong> · 이 페이지는 하루 총량을 목표로 한 별도 실험입니다. 최신 연구는 18개 시간대 예측을 다룹니다.</p><a href="hourly-study.html">시간대 예측 연구 보기 ↗</a></div>
   <main class="detail-main">
-    <section class="detail-hero section-shell"><a class="back-link" href="index.html#future">← 메인의 한계·향후 연구로 돌아가기</a><div class="detail-hero-grid"><div><p class="eyebrow">REPRODUCIBILITY / 07–08</p><h1 class="detail-title">결과를 다시 만들고,<br><em>말할 수 있는 범위를 남긴다.</em></h1></div><p class="detail-intro">이 문서는 원본에서 사이트까지의 실행 경로, 단계별 불변 조건, 해석의 한계와 참고문헌을 한곳에 모읍니다. 결과 수치보다 중요한 것은 같은 규칙으로 다시 계산했을 때 같은 결론에 도달하는가입니다.</p></div></section>
+    <section class="detail-hero section-shell"><a class="back-link" href="index.html#library">← 연구 자료로 돌아가기</a><div class="detail-hero-grid"><div><p class="eyebrow">REPRODUCIBILITY / 07–08</p><h1 class="detail-title">결과를 다시 만들고,<br><em>말할 수 있는 범위를 남긴다.</em></h1></div><p class="detail-intro">이 문서는 원본에서 사이트까지의 실행 경로, 단계별 불변 조건, 해석의 한계와 참고문헌을 한곳에 모읍니다. 결과 수치보다 중요한 것은 같은 규칙으로 다시 계산했을 때 같은 결론에 도달하는가입니다.</p></div></section>
     <section class="detail-section section-shell"><div class="detail-meta"><div><span>PRIMARY SOURCE</span><strong>서울 열린데이터광장<br>OA-12921</strong></div><div><span>COMPUTE ENTRY</span><strong><code>scripts/<br>build_site_data.py</code></strong></div><div><span>PUBLISHED CONTRACT</span><strong><code>site/generated/<br>site_data.json</code></strong></div></div></section>
     <section class="detail-section section-shell"><div class="page-contract"><div><p class="detail-card-label">PAGE ROLE / REPRODUCIBILITY &amp; BOUNDARIES</p><h2>앞선 페이지의 숫자를 반복하지 않고, 그 숫자를 재생성하고 반박할 방법을 설명합니다.</h2></div><dl><div><dt>REBUILD</dt><dd>원본 → 감사 → EDA → 입력 → 모델 → 정적 JSON</dd></div><div><dt>VERIFY</dt><dd>행 수·시점·시리즈 키·분할·지표의 불변 조건</dd></div><div><dt>LIMIT</dt><dd>집계 자료와 단일 연도에서 허용되는 해석 범위</dd></div><div><dt>REFERENCE</dt><dd>데이터·알고리즘·지표의 공식 원문</dd></div></dl></div></section>
 
@@ -28,6 +29,6 @@
 
     <section class="detail-section section-shell"><div class="detail-callout"><strong>출처와 이용 고지</strong><p>원자료와 파생 결과를 이용하거나 배포할 때에는 서울 열린데이터광장의 최신 이용 조건과 출처 표기 요건을 원자료 페이지에서 확인해야 합니다. <a href="https://data.seoul.go.kr/dataList/OA-12921/F/1/datasetView.do" target="_blank" rel="noreferrer">원자료 페이지 열기 ↗</a></p></div></section>
   </main>
-  <footer class="site-footer detail-footer section-shell"><div class="brand brand-wordmark"><span class="brand-mark">↗</span><span>seoul-metro</span></div><p>Reproducible analysis, explicit limits, primary references</p><a href="index.html#references">Overview ←</a></footer>
+  <footer class="site-footer detail-footer section-shell"><div class="brand brand-wordmark"><span class="detail-mark" aria-hidden="true"><i></i><i></i><i></i></span><span>Seoul <b>in Motion</b></span></div><p>Reproducible analysis, explicit limits, primary references</p><a href="index.html#library">Overview ←</a></footer>
 </body>
 </html>

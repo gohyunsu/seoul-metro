@@ -8,6 +8,8 @@
 - 공개 사이트: <https://gohyunsu.github.io/seoul-metro/>
 - 원자료: [서울 열린데이터광장 OA-12921](https://data.seoul.go.kr/dataList/OA-12921/F/1/datasetView.do)
 
+사이트 첫 화면은 최신 **다음 날 18개 시간대 예측**을 소개합니다. [시간대 예측 연구 페이지](https://gohyunsu.github.io/seoul-metro/hourly-study.html)에서 입력 시점, 4주 중앙값 기준선, 검증·테스트 구간과 한계를 확인할 수 있습니다. 사이트의 일일 수요 입력·평가 페이지는 앞선 실험의 아카이브이며, 두 실험은 목표 단위와 지표가 다릅니다.
+
 ## 연구 흐름
 
 1. **문제 정의** — 목표 날짜 `t`의 시리즈별 06–23시 승객 수 18개를 예측 대상으로 고정합니다.

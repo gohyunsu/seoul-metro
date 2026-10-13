@@ -1,4 +1,4 @@
-const fmt = new Intl.NumberFormat('ko-KR');
+const fmt = new Intl.NumberFormat('en-US');
 const serviceHours = Array.from({ length: 18 }, (_, index) => String(index + 6).padStart(2, '0'));
 
 function weekdayCounts(dates, year) {
@@ -34,7 +34,7 @@ function renderHero(data) {
     const bar = document.createElement('span');
     bar.className = 'art-bar' + (index === 12 ? ' peak' : '');
     bar.style.setProperty('--bar-height', `${Math.max(5, (value / max) * 72)}%`);
-    bar.title = `${serviceHours[index]}:00–${String(index + 7).padStart(2, '0')}:00 · 일평균 ${fmt.format(Math.round(value))}명`;
+    bar.title = `${serviceHours[index]}:00–${String(index + 7).padStart(2, '0')}:00 · daily average ${fmt.format(Math.round(value))} passengers`;
     container.appendChild(bar);
   });
   const points = values.map((value, index) => `${(index + .5) / 18 * 1000},${300 - (value / max) * 192}`);
@@ -64,7 +64,7 @@ function renderRhythm(profiles, type) {
     const bar = document.createElement('div');
     bar.className = 'rhythm-bar' + (index === peak ? ' peak' : '');
     bar.style.setProperty('--bar-height', `${Math.max(3, (value / max) * 88)}%`);
-    bar.title = `${serviceHours[index]}:00–${String(index + 7).padStart(2, '0')}:00 · ${fmt.format(Math.round(value))}명`;
+    bar.title = `${serviceHours[index]}:00–${String(index + 7).padStart(2, '0')}:00 · ${fmt.format(Math.round(value))} passengers`;
     const column = document.createElement('i');
     bar.appendChild(column);
     if (index === peak) {
@@ -74,9 +74,9 @@ function renderRhythm(profiles, type) {
     }
     plot.appendChild(bar);
   });
-  const label = type === 'weekday' ? '평일' : '주말';
-  plot.setAttribute('aria-label', `${label} 06–23시 시간대별 네트워크 하루 평균 승하차량. 최대 ${serviceHours[peak]}시에 ${fmt.format(Math.round(values[peak]))}명`);
-  insight.textContent = `${label}의 가장 큰 시간대는 ${serviceHours[peak]}–${String(peak + 7).padStart(2, '0')}시 · 평균 ${fmt.format(Math.round(values[peak]))}명`;
+  const label = type === 'weekday' ? 'Weekday' : 'Weekend';
+  plot.setAttribute('aria-label', `${label} average network ridership by service hour, 06:00–23:00. Peak at ${serviceHours[peak]}:00 with ${fmt.format(Math.round(values[peak]))} passengers`);
+  insight.textContent = `${label} peak: ${serviceHours[peak]}:00–${String(peak + 7).padStart(2, '0')}:00 · ${fmt.format(Math.round(values[peak]))} passengers on average`;
   document.querySelectorAll('[data-rhythm]').forEach((button) => {
     const active = button.dataset.rhythm === type;
     button.classList.toggle('is-active', active);
@@ -95,9 +95,9 @@ async function start() {
     document.querySelectorAll('[data-rhythm]').forEach((button) => button.addEventListener('click', () => renderRhythm(profiles, button.dataset.rhythm)));
   } catch {
     const plot = document.getElementById('rhythmPlot');
-    if (plot) plot.textContent = '그래프 데이터를 불러올 수 없습니다.';
+    if (plot) plot.textContent = 'Chart data could not be loaded.';
     const insight = document.getElementById('rhythmInsight');
-    if (insight) insight.textContent = '잠시 후 다시 시도해 주세요.';
+    if (insight) insight.textContent = 'Please try again later.';
   }
 }
 

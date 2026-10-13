@@ -27,17 +27,10 @@ body { -webkit-font-smoothing: antialiased; }
 .team-image-frame { position: relative; padding: 13px; background: #f7f4ec; box-shadow: 18px 18px 0 #d1d9c9, 0 14px 42px rgba(28,49,35,.12); }
 .team-image-frame:before { content: ""; position: absolute; inset: 13px; border: 1px solid rgba(59,86,61,.18); pointer-events: none; z-index: 1; }
 .team-image-frame img { display: block; width: 100%; height: auto; aspect-ratio: 3/2; object-fit: cover; }
-.team-figure figcaption { margin-top: 30px; }
-.team-caption-label { display: block; margin-bottom: 12px; color: var(--green); font: 10px var(--mono); letter-spacing: .11em; }
-.team-members { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); border-top: 1px solid #b9c7b9; }
-.team-member { min-width: 0; padding: 18px 18px 17px 0; border-bottom: 1px solid #b9c7b9; }
-.team-member:nth-child(even) { padding-left: 18px; }
-.team-member a { display: inline-block; color: var(--ink); text-decoration: none; border-bottom: 1px solid transparent; }
-.team-member a:hover, .team-member a:focus-visible { color: var(--green); border-color: currentColor; }
-.team-member strong { font-size: 17px; font-weight: 700; letter-spacing: -.035em; }
-.team-member span, .team-member small { display: block; color: #647169; font-size: 11px; line-height: 1.55; }
-.team-member span { margin-top: 5px; }
-.team-member small { margin-top: 3px; font-family: var(--mono); font-size: 9px; letter-spacing: .025em; text-transform: uppercase; }
+.team-figure figcaption { max-width: 680px; margin-top: 30px; padding-top: 20px; border-top: 1px solid #b9c7b9; color: #53615a; font-size: 13px; line-height: 1.9; }
+.team-figure figcaption a { color: var(--ink); text-decoration: none; border-bottom: 1px solid #94aa9c; }
+.team-figure figcaption a:hover, .team-figure figcaption a:focus-visible { color: var(--green); border-color: currentColor; }
+.team-figure figcaption strong { font-weight: 700; }
 .library-section { background: #f5f2ea; }
 .library-grid a { background: #f9f7f1; }
 .library-grid .library-feature { background: #2b584b; }
@@ -75,8 +68,6 @@ body { -webkit-font-smoothing: antialiased; }
   .archive-page .archive-callout a { display: inline-block; margin-top: 20px; }
 }
 @media (max-width: 500px) {
-  .team-members { grid-template-columns: 1fr; }
-  .team-member:nth-child(even) { padding-left: 0; }
   .team-image-frame { padding: 7px; }
   .team-image-frame:before { inset: 7px; }
   .team-figure figcaption { margin-top: 24px; }
